@@ -2,71 +2,71 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://kvachev.com/tags/fog/</loc>
+    <loc>https://kvachev.com/blog/tags/fog/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/posts/fog-for-topdown-games/</loc>
+    <loc>https://kvachev.com/blog/posts/fog-for-topdown-games/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/posts/</loc>
+    <loc>https://kvachev.com/blog/posts/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/strategy/</loc>
+    <loc>https://kvachev.com/blog/tags/strategy/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/</loc>
+    <loc>https://kvachev.com/blog/tags/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/tech-art/</loc>
+    <loc>https://kvachev.com/blog/tags/tech-art/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/tutorial/</loc>
+    <loc>https://kvachev.com/blog/tags/tutorial/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/unreal-engine/</loc>
+    <loc>https://kvachev.com/blog/tags/unreal-engine/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/vfx/</loc>
+    <loc>https://kvachev.com/blog/tags/vfx/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/</loc>
+    <loc>https://kvachev.com/blog/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/boilerplate/</loc>
+    <loc>https://kvachev.com/blog/tags/boilerplate/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/grpc/</loc>
+    <loc>https://kvachev.com/blog/tags/grpc/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/posts/grpc-with-unreal-engine/</loc>
+    <loc>https://kvachev.com/blog/posts/grpc-with-unreal-engine/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/protobuf/</loc>
+    <loc>https://kvachev.com/blog/tags/protobuf/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/posts/c-of-x-intro/</loc>
+    <loc>https://kvachev.com/blog/posts/c-of-x-intro/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/fp/</loc>
+    <loc>https://kvachev.com/blog/tags/fp/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/programming-language-theory/</loc>
+    <loc>https://kvachev.com/blog/tags/programming-language-theory/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/refinement-types/</loc>
+    <loc>https://kvachev.com/blog/tags/refinement-types/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/tags/types/</loc>
+    <loc>https://kvachev.com/blog/tags/types/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kvachev.com/archives.fr/</loc>
+    <loc>https://kvachev.com/blog/archives.fr/</loc>
   </url><url>
-    <loc>https://kvachev.com/archives/</loc>
+    <loc>https://kvachev.com/blog/archives/</loc>
   </url><url>
-    <loc>https://kvachev.com/search/</loc>
+    <loc>https://kvachev.com/blog/search/</loc>
   </url><url>
-    <loc>https://kvachev.com/search.fr/</loc>
+    <loc>https://kvachev.com/blog/search.fr/</loc>
   </url><url>
-    <loc>https://kvachev.com/series/</loc>
+    <loc>https://kvachev.com/blog/series/</loc>
   </url>
 </urlset>

@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>programming language theory on vsevolod&#39;s blog</title>
-    <link>https://kvachev.com/tags/programming-language-theory/</link>
+    <link>https://kvachev.com/blog/tags/programming-language-theory/</link>
     <description>Recent content in programming language theory on vsevolod&#39;s blog</description>
     <image>
-      <url>https://kvachev.com/papermod-cover.png</url>
-      <link>https://kvachev.com/papermod-cover.png</link>
+      <url>https://kvachev.com/blog/papermod-cover.png</url>
+      <link>https://kvachev.com/blog/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 10 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/tags/programming-language-theory/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/programming-language-theory/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>c(x) intro</title>
-      <link>https://kvachev.com/posts/c-of-x-intro/</link>
+      <link>https://kvachev.com/blog/posts/c-of-x-intro/</link>
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/posts/c-of-x-intro/</guid>
+      <guid>https://kvachev.com/blog/posts/c-of-x-intro/</guid>
       <description>One of articles about my old project with cool type system</description>
     </item>
     

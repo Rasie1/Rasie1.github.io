@@ -2,29 +2,29 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>unreal engine on vsevolod&#39;s blog</title>
-    <link>https://kvachev.com/tags/unreal-engine/</link>
+    <link>https://kvachev.com/blog/tags/unreal-engine/</link>
     <description>Recent content in unreal engine on vsevolod&#39;s blog</description>
     <image>
-      <url>https://kvachev.com/papermod-cover.png</url>
-      <link>https://kvachev.com/papermod-cover.png</link>
+      <url>https://kvachev.com/blog/papermod-cover.png</url>
+      <link>https://kvachev.com/blog/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/tags/unreal-engine/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/unreal-engine/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fog for Top-Down Games</title>
-      <link>https://kvachev.com/posts/fog-for-topdown-games/</link>
+      <link>https://kvachev.com/blog/posts/fog-for-topdown-games/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/posts/fog-for-topdown-games/</guid>
+      <guid>https://kvachev.com/blog/posts/fog-for-topdown-games/</guid>
       <description>&lt;p&gt;This fog looks almost like volumetrics but takes almost no time to render&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>GRPC with Unreal Engine</title>
-      <link>https://kvachev.com/posts/grpc-with-unreal-engine/</link>
+      <link>https://kvachev.com/blog/posts/grpc-with-unreal-engine/</link>
       <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/posts/grpc-with-unreal-engine/</guid>
+      <guid>https://kvachev.com/blog/posts/grpc-with-unreal-engine/</guid>
       <description>&lt;p&gt;&lt;em&gt;There was some unsolved issues in my old Medium article, dozens of people viewed it every day and tried to use it nevetheless, so I deleted it. Now there are no issues, and it&amp;rsquo;s possible to link and flawlessly use protobuf without restrictions&lt;/em&gt;&lt;/p&gt;</description>
     </item>
     
