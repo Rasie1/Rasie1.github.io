@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Fog for Top-Down Games | vsevolod&#39;s blog</title>
+<meta name="keywords" content="tech art, fog, strategy, vfx, unreal engine, tutorial" />
+<meta name="description" content="This fog looks almost like volumetrics but takes almost no time to render">
+<meta name="author" content="Vsevolod Kvachev">
+<link rel="canonical" href="https://kvachev.com/posts/fog-for-topdown-games/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.a61660ffd3481ceb6582a1bc8d9405544fbf523ffb533724569a7fcad8c4032b.css" integrity="sha256-phZg/9NIHOtlgqG8jZQFVE&#43;/Uj/7UzckVpp/ytjEAys=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://kvachev.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://kvachev.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://kvachev.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Fog for Top-Down Games" />
+<meta property="og:description" content="This fog looks almost like volumetrics but takes almost no time to render" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://kvachev.com/posts/fog-for-topdown-games/" /><meta property="og:image" content="https://kvachev.com/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-01T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-07-01T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://kvachev.com/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Fog for Top-Down Games"/>
+<meta name="twitter:description" content="This fog looks almost like volumetrics but takes almost no time to render"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://kvachev.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Fog for Top-Down Games",
+      "item": "https://kvachev.com/posts/fog-for-topdown-games/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Fog for Top-Down Games",
+  "name": "Fog for Top-Down Games",
+  "description": "This fog looks almost like volumetrics but takes almost no time to render\n",
+  "keywords": [
+    "tech art", "fog", "strategy", "vfx", "unreal engine", "tutorial"
+  ],
+  "articleBody": "This fog looks almost like volumetrics but takes almost no time to render\nYour browser does not support the video tag.  Intro I’ve been requested many times since I posted this video on social networks to write an article about how this fog works. Ok, this will be a tutorial with some details about every part of implementation, so that you can make your own fog with similar steps. Coefficients will have to be different depending on your world size, slopes, camera heights and angles, so simply copying this implementation won’t work.\n Fog brings a lot of atmosphere into photos, 3d environments, games, etc. Fancy-looking fog implementations are still an open issue:\n  volumetrics look insanely good and flexible but take ages to render\n  atmospheric fog is useful only for decorating far landscapes, you can’t have different fog heights at the same time\n  And this solution - I would call it “Fog Mesh” - is not perfect too, but it would work very well for top-down games: you can get beautiful fading, all kinds of animations, and have it rendered with almost zero cost.\nThis approach is useful both for implementing fog of war for strategy games and for just decoration purposes. Unfortunately, it won’t fit first-person games (unless your character is looking down from a helicopter, for example) - it will have some visual artifacts when you’re looking from inside the fog! Yet, I hope to see more usages of this for top-down games.\nThe Composition  The fog mesh implementation can be broken down into:\n heightmap mesh that covers your terrain gaussian blur on heightmap (in mesh or in material, depending on what you need from the fog) depth fade \u0026 translucency in mesh material world-aligned texture (unless you want a flat-colored fog) in mesh material change of opacity depending on the distance to the camera in mesh material  So, as you see, nothing fancy, just a careful combination of parameters, mined out using a lot of iteration - you will definitely need to tweak the parameters for your terrain size, height, and camera angles. I’ll go through each part in detail. But first, let’s look at how to control it.\n Different fog colors can make a great contribution to environment flavor.\n Representation/Heightmap Input:\n You’ll need a heightmap of your terrain - texture/array of its height locations. If your terrain is flat, skip this step. You’ll need a texture/array of fog data - it can be either bools or floats. In Colossal Citadels, the fog of war is gradual and there can be fog/visibility with a value of 0.42, but usually in strategies with incomplete information you either have fog of war in a certain location or you don’t have it. Color, texture, etc will go to material parameters, but you can use vertex buffers of the fog mesh to pass color to the material as well. Just make sure they’re smooth enough  Intermediate representation:\nIf you don’t have to update the fog every frame, then you can just put fog vertices into the vertex buffer along with some additional data. You will still be able to smoothly blend between two fog states: just swap two fog meshes with world position offset animation in shader.\nYour browser does not support the video tag.  In case if you have a real-time game, which reveals a little part of fog of war every frame, you can make fog use data from a RenderTarget and draw to it instead. Then GPU will have to take some costs of processing visibility and blurring - that’s the tradeoff of such flexibility. In my example, fog changes only once in a while, and you don’t have to use RenderTarget to blend smoothly.\nFog Visibility Preprocessing This is the simplest step. Here is how I convert fog value to special intermediate values:\nstd::vectorfloat visibilityA; std::vectorfloat visibilityB; for (int y = 0; y  worldHeight; ++y) for (int x = 0; x  worldWidth; ++x) { int i = tileCoordsToFogMeshIndex(x, y); auto i1 = fogMeshIndexToTileIndex(i); const auto\u0026 tile = map-GetTile(i1); auto modifyAlpha = [\u0026](int coord, const TileInfo\u0026 tile){ if (tile.visibility() = 0.f) { float visibility = std::clamp(tile.visibility(), 0.f, 1.f); visibility = 1.f - visibility; visibility *= visibility; visibility = 1.f - visibility; // this part is specific to Colossal Citadels and reduced visibilites  // around the objects - areas with little amount of fog should look completely clear  int newAlpha = static_castint(visibilityA[coord]) - static_castint(visibility * 42.5f) - 16; visibilityA[coord] = (newAlpha  0) ? 0 : newAlpha; visibilityB[coord] = visibility * 255.f; } }; modifyAlpha(i, tile1); modifyAlpha(i + 1, tile1); modifyAlpha(i + fogWidth, tile1); modifyAlpha(i + 1 + fogWidth, tile1); } Next, apply a reasonable amount of blur to these fog values:\niir_gauss_blurfloat, 1(worldWidth, worldHeight, visibilityA.data(), RenderingParameters.Other[\"FogVisibilityBlur\"]); iir_gauss_blurfloat, 1(worldWidth, worldHeight, visibilityB.data(), RenderingParameters.Other[\"FogVisibilityBlur\"]); All these magic values will have to be tweaked for your project. Here are some additional magic formulas that go right after:\nfor (auto\u0026 b: visibilityB) { b /= 256.f; b = -b * 210.f; } for (auto\u0026 a: visibilityA) { a /= 256.f; a = std::tanf((1.f - a) * 1.571f) * 3.f; } Note that if you use RenderTargets, you’ll have to put similar code to fog material instead.\nI use TexCoord buffers to feed fog values into material:\nTangents.SetNum(verticesInFog); TexCoords.SetNum(verticesInFog); for (int y = 0; y  worldHeight; ++y) for (int x = 0; x  worldWidth; ++x) { int idx = tileCoordsToFogMeshIndex(x, y); TexCoords.SetTexCoord(idx, FVector2D(visibilityB[idx], visibilityA[idx])); } Depth Fade This is the core of the fog. We already have difficult formula for FadeDistance. We connect output of DepthFade straight to opacity of the translucent material of the fog mesh.\n Camera Angles Note that on changing angles, fog becomes denser or dissappears - this might be not wanted for implementing fog of war, which needs to clearly show where the fog starts. Also, it looks weird when you move the camera and the fog “moves” too. We’ll already mostly fixed this using previous formulas, but it camera height also messes it up. Here is one more step that makes it look better on zoom in.\n Note that in Colossal Citadels map blends between isometric and almost orthographic projection by changing field of view. For most cameras, these coefficients would be insane, so tweak them!\nTexture Your browser does not support the video tag.  This is the most artistic step - you can put any texture you want - just make sure to put it on a world-aligned virtual plane, or you will observe “artifacts” on height slopes due\nVirtual Planes I made two virtual planes using shifting perlin noise texture. Because two planes have some distance between them, it looks ridiculously good, like the fog is 3-dimensional!\nYour browser does not support the video tag.  We need to draw a plane on top of material transform the texture so that it looks like a plane parallel to the ground. Luckily, unreal engine implements that already:\n Combination of Noises These two values from previous snipped need to be combined:\n This goes to Emissive Color.\nOn the snipped above I also do do blend between texture and flat color - in my opinion it looks better on very close zoom in.\nYour browser does not support the video tag.  Smooth update of fog? Yes, you can blend between two fog states, for example, when you just moved your units and revealed some new territory. There are a variety of ways of doing that:\n initially store fog position in a texture that is used as a heightmap in the shader of fog “plane”. Draw on this position directly or blend between two images. Have two meshes that gradually swap between each other  Useful Additions It’s also possible to embed shadows and godrays here after some additional work - maybe I’ll try these someday. You can also have gradual blends between different colors (depending or tile data or just with fog shader).\nIssues The biggest issue is that fog edges still can cut abruptly if you look at it from an angle. You are also going to observe this issue if the slope is too big, for example you have too high mountains.\nHere is what I mean by unwanted angles:\n It’s possible to at least partially overcome this by:\n forbidding certain camera angles. render fog mesh to stencil or depth buffer and blur edges or/and screen in postprocessing  Fresnel won’t look good unless you have an inadequate amount of vertices.\n",
+  "wordCount" : "1403",
+  "inLanguage": "en",
+  "datePublished": "2022-07-01T00:00:00Z",
+  "dateModified": "2022-07-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Vsevolod Kvachev"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://kvachev.com/posts/fog-for-topdown-games/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "vsevolod's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kvachev.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://kvachev.com" accesskey="h" title="vsevolod&#39;s blog (Alt + H)">vsevolod&#39;s blog</a>
+        </div>
+        <ul id="menu">
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+            <li>
+                <a href="https://kvachev.com/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Fog for Top-Down Games
+    </h1>
+    <div class="post-meta"><span title='2022-07-01 00:00:00 +0000 UTC'>July 1, 2022</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Vsevolod Kvachev
+
+</div>
+  </header> 
+  <div class="post-content"><p>This fog looks almost like volumetrics but takes almost no time to render</p>
+ 
+<video width=100% autoplay loop>
+    <source src="../videos/fog-0.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<h2 id="intro">Intro<a hidden class="anchor" aria-hidden="true" href="#intro">#</a></h2>
+<p>I&rsquo;ve been requested many times since I posted this <a href="https://www.reddit.com/r/unrealengine/comments/tuec89/3d_fog_for_topdown_games_that_looks_like/">video on social networks</a> to write an article about how this fog works. Ok, this will be a tutorial with some details about every part of implementation, so that you can make your own fog with similar steps. Coefficients will have to be different depending on your world size, slopes, camera heights and angles, so simply copying this implementation won&rsquo;t work.</p>
+<p>
+<img loading="lazy" src="../images/fog-2.jpg" alt="image"  /></p>
+<p>Fog brings a lot of atmosphere into photos, 3d environments, games, etc. Fancy-looking fog implementations are still an open issue:</p>
+<ul>
+<li>
+<p>volumetrics look <a href="http://asher.gg/?p=2600">insanely good</a> and flexible but take ages to render</p>
+</li>
+<li>
+<p><a href="https://docs.unrealengine.com/4.27/en-US/BuildingWorlds/FogEffects/AtmosphericFog/">atmospheric fog</a> is useful only for decorating far landscapes, you can&rsquo;t have different fog heights at the same time</p>
+</li>
+</ul>
+<p>And this solution - I would call it &ldquo;Fog Mesh&rdquo; - is not perfect too, but it would work very well for top-down games: you can get beautiful fading, all kinds of animations, and have it rendered with almost zero cost.</p>
+<p>This approach is useful both for implementing fog of war for strategy games and for just decoration purposes. Unfortunately, it won&rsquo;t fit first-person games (unless your character is looking down from a helicopter, for example) - it will have some visual artifacts when you&rsquo;re looking from inside the fog! Yet, I hope to see more usages of this for top-down games.</p>
+<h2 id="the-composition">The Composition<a hidden class="anchor" aria-hidden="true" href="#the-composition">#</a></h2>
+<p>
+<img loading="lazy" src="../images/fog-3.jpg" alt="image"  /></p>
+<p>The fog mesh implementation can be broken down into:</p>
+<ul>
+<li>heightmap mesh that covers your terrain</li>
+<li>gaussian blur on heightmap (in mesh or in material, depending on what you need from the fog)</li>
+<li>depth fade &amp; translucency in mesh material</li>
+<li>world-aligned texture (unless you want a flat-colored fog) in mesh material</li>
+<li>change of opacity depending on the distance to the camera in mesh material</li>
+</ul>
+<p>So, as you see, nothing fancy, just a careful combination of parameters, mined out using a lot of iteration - you will definitely need to tweak the parameters for your terrain size, height, and camera angles. I&rsquo;ll go through each part in detail. But first, let&rsquo;s look at how to control it.</p>
+<p>
+<img loading="lazy" src="../images/fog-1.jpg" alt="image"  /></p>
+<p>Different fog colors can make a great contribution to environment flavor.</p>
+<p>
+<img loading="lazy" src="../images/fog-4.jpg" alt="image"  /></p>
+<h2 id="representationheightmap">Representation/Heightmap<a hidden class="anchor" aria-hidden="true" href="#representationheightmap">#</a></h2>
+<p>Input:</p>
+<ol>
+<li>You&rsquo;ll need a heightmap of your terrain - texture/array of its height locations. If your terrain is flat, skip this step.</li>
+<li>You&rsquo;ll need a texture/array of fog data - it can be either <code>bool</code>s or <code>float</code>s. In Colossal Citadels, the fog of war is gradual and there can be fog/visibility with a value of <code>0.42</code>, but usually in strategies with incomplete information you either have fog of war in a certain location or you don&rsquo;t have it.</li>
+<li>Color, texture, etc will go to material parameters, but you can use vertex buffers of the fog mesh to pass color to the material as well. Just make sure they&rsquo;re smooth enough</li>
+</ol>
+<p>Intermediate representation:</p>
+<p>If you don&rsquo;t have to update the fog every frame, then you can just put fog vertices into the vertex buffer along with some additional data. You will still be able to smoothly blend between two fog states: just swap two fog meshes with world position offset animation in shader.</p>
+
+ 
+<video width=100% autoplay loop>
+    <source src="../videos/fog-3.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<p>In case if you have a real-time game, which reveals a little part of fog of war every frame, you can make fog use data from a RenderTarget and draw to it instead. Then GPU will have to take some costs of processing visibility and blurring - that&rsquo;s the tradeoff of such flexibility. In my example, fog changes only once in a while, and you don&rsquo;t have to use RenderTarget to blend smoothly.</p>
+<h2 id="fog-visibility-preprocessing">Fog Visibility Preprocessing<a hidden class="anchor" aria-hidden="true" href="#fog-visibility-preprocessing">#</a></h2>
+<p>This is the simplest step. Here is how I convert fog value to special intermediate values:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">visibilityA</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">visibilityB</span><span class="p">;</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">worldHeight</span><span class="p">;</span> <span class="o">++</span><span class="n">y</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">worldWidth</span><span class="p">;</span> <span class="o">++</span><span class="n">x</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">tileCoordsToFogMeshIndex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">i1</span> <span class="o">=</span> <span class="n">fogMeshIndexToTileIndex</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">tile</span> <span class="o">=</span> <span class="n">map</span><span class="o">-&gt;</span><span class="n">GetTile</span><span class="p">(</span><span class="n">i1</span><span class="p">);</span>
+
+    <span class="k">auto</span> <span class="n">modifyAlpha</span> <span class="o">=</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">coord</span><span class="p">,</span> <span class="k">const</span> <span class="n">TileInfo</span><span class="o">&amp;</span> <span class="n">tile</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">tile</span><span class="p">.</span><span class="n">visibility</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mf">0.f</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">float</span> <span class="n">visibility</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">clamp</span><span class="p">(</span><span class="n">tile</span><span class="p">.</span><span class="n">visibility</span><span class="p">(),</span> <span class="mf">0.f</span><span class="p">,</span> <span class="mf">1.f</span><span class="p">);</span>
+            <span class="n">visibility</span> <span class="o">=</span> <span class="mf">1.f</span> <span class="o">-</span> <span class="n">visibility</span><span class="p">;</span>
+            <span class="n">visibility</span> <span class="o">*=</span> <span class="n">visibility</span><span class="p">;</span>
+            <span class="n">visibility</span> <span class="o">=</span> <span class="mf">1.f</span> <span class="o">-</span> <span class="n">visibility</span><span class="p">;</span>
+            <span class="c1">// this part is specific to Colossal Citadels and reduced visibilites
+</span><span class="c1"></span>            <span class="c1">// around the objects - areas with little amount of fog should look completely clear
+</span><span class="c1"></span>            <span class="kt">int</span> <span class="n">newAlpha</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">visibilityA</span><span class="p">[</span><span class="n">coord</span><span class="p">])</span> <span class="o">-</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">visibility</span> <span class="o">*</span> <span class="mf">42.5f</span><span class="p">)</span> <span class="o">-</span> <span class="mi">16</span><span class="p">;</span>
+            <span class="n">visibilityA</span><span class="p">[</span><span class="n">coord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">newAlpha</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">newAlpha</span><span class="p">;</span>
+            <span class="n">visibilityB</span><span class="p">[</span><span class="n">coord</span><span class="p">]</span> <span class="o">=</span> <span class="n">visibility</span> <span class="o">*</span> <span class="mf">255.f</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+    <span class="n">modifyAlpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">tile1</span><span class="p">);</span>
+    <span class="n">modifyAlpha</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tile1</span><span class="p">);</span>
+    <span class="n">modifyAlpha</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">fogWidth</span><span class="p">,</span> <span class="n">tile1</span><span class="p">);</span>
+    <span class="n">modifyAlpha</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">fogWidth</span><span class="p">,</span> <span class="n">tile1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Next, apply a reasonable amount of blur to these fog values:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="n">iir_gauss_blur</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">worldWidth</span><span class="p">,</span> <span class="n">worldHeight</span><span class="p">,</span> <span class="n">visibilityA</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> 
+                         <span class="n">RenderingParameters</span><span class="p">.</span><span class="n">Other</span><span class="p">[</span><span class="s">&#34;FogVisibilityBlur&#34;</span><span class="p">]);</span>
+<span class="n">iir_gauss_blur</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">worldWidth</span><span class="p">,</span> <span class="n">worldHeight</span><span class="p">,</span> <span class="n">visibilityB</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> 
+                         <span class="n">RenderingParameters</span><span class="p">.</span><span class="n">Other</span><span class="p">[</span><span class="s">&#34;FogVisibilityBlur&#34;</span><span class="p">]);</span>
+</code></pre></div><p>All these magic values will have to be tweaked for your project. Here are some additional magic formulas that go right after:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">b</span><span class="p">:</span> <span class="n">visibilityB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">b</span> <span class="o">/=</span> <span class="mf">256.f</span><span class="p">;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">b</span> <span class="o">*</span> <span class="mf">210.f</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">a</span><span class="p">:</span> <span class="n">visibilityA</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">a</span> <span class="o">/=</span> <span class="mf">256.f</span><span class="p">;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">tanf</span><span class="p">((</span><span class="mf">1.f</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.571f</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3.f</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Note that if you use RenderTargets, you&rsquo;ll have to put similar code to fog material instead.</p>
+<p>I use TexCoord buffers to feed fog values into material:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++">    <span class="n">Tangents</span><span class="p">.</span><span class="n">SetNum</span><span class="p">(</span><span class="n">verticesInFog</span><span class="p">);</span>
+    <span class="n">TexCoords</span><span class="p">.</span><span class="n">SetNum</span><span class="p">(</span><span class="n">verticesInFog</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">worldHeight</span><span class="p">;</span> <span class="o">++</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">worldWidth</span><span class="p">;</span> <span class="o">++</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">tileCoordsToFogMeshIndex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+        <span class="n">TexCoords</span><span class="p">.</span><span class="n">SetTexCoord</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">FVector2D</span><span class="p">(</span><span class="n">visibilityB</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">visibilityA</span><span class="p">[</span><span class="n">idx</span><span class="p">]));</span>
+    <span class="p">}</span>
+</code></pre></div><h2 id="depth-fade">Depth Fade<a hidden class="anchor" aria-hidden="true" href="#depth-fade">#</a></h2>
+<p>This is the core of the fog. We already have difficult formula for <code>FadeDistance</code>. We connect output of DepthFade straight to opacity of the translucent material of the fog mesh.</p>
+<p>
+<img loading="lazy" src="../images/fog-blueprint-1.jpg" alt="image"  /></p>
+<h2 id="camera-angles">Camera Angles<a hidden class="anchor" aria-hidden="true" href="#camera-angles">#</a></h2>
+<p>Note that on changing angles, fog becomes denser or dissappears - this might be not wanted for implementing fog of war, which needs to clearly show where the fog starts. Also, it looks weird when you move the camera and the fog &ldquo;moves&rdquo; too. We&rsquo;ll already mostly fixed this using previous formulas, but it camera height also messes it up. Here is one more step that makes it look better on zoom in.</p>
+<p>
+<img loading="lazy" src="../images/fog-blueprint-2.jpg" alt="image"  /></p>
+<p>Note that in Colossal Citadels map blends between isometric and almost orthographic projection by changing field of view. For most cameras, these coefficients would be insane, so tweak them!</p>
+<h2 id="texture">Texture<a hidden class="anchor" aria-hidden="true" href="#texture">#</a></h2>
+
+ 
+<video width=100% autoplay loop>
+    <source src="../videos/fog-5.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<p>This is the most artistic step - you can put any texture you want - just make sure to put it on a world-aligned virtual plane, or you will observe &ldquo;artifacts&rdquo; on height slopes due</p>
+<h3 id="virtual-planes">Virtual Planes<a hidden class="anchor" aria-hidden="true" href="#virtual-planes">#</a></h3>
+<p>I made two virtual planes using shifting perlin noise texture. Because two planes have some distance between them, it looks ridiculously good, like the fog is 3-dimensional!</p>
+
+ 
+<video width=100% autoplay loop>
+    <source src="../videos/fog-2.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<p>We need <del>to draw a plane on top of material</del> transform the texture so that it looks like a plane parallel to the ground. Luckily, unreal engine implements that already:</p>
+<p>
+<img loading="lazy" src="../images/fog-blueprint-3.jpg" alt="image"  /></p>
+<h3 id="combination-of-noises">Combination of Noises<a hidden class="anchor" aria-hidden="true" href="#combination-of-noises">#</a></h3>
+<p>These two values from previous snipped need to be combined:</p>
+<p>
+<img loading="lazy" src="../images/fog-blueprint-4.jpg" alt="image"  /></p>
+<p>This goes to Emissive Color.</p>
+<p>On the snipped above I also do do blend between texture and flat color - in my opinion it looks better on very close zoom in.</p>
+
+ 
+<video width=100% autoplay loop>
+    <source src="../videos/fog-1.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<h2 id="smooth-update-of-fog">Smooth update of fog?<a hidden class="anchor" aria-hidden="true" href="#smooth-update-of-fog">#</a></h2>
+<p>Yes, you can blend between two fog states, for example, when you just moved your units and revealed some new territory. There are a variety of ways of doing that:</p>
+<ol>
+<li>initially store fog position in a texture that is used as a heightmap in the shader of fog &ldquo;plane&rdquo;. Draw on this position directly or blend between two images.</li>
+<li>Have two meshes that gradually swap between each other</li>
+</ol>
+<h2 id="useful-additions">Useful Additions<a hidden class="anchor" aria-hidden="true" href="#useful-additions">#</a></h2>
+<p>It&rsquo;s also possible to embed shadows and godrays here after some additional work - maybe I&rsquo;ll try these someday. You can also have gradual blends between different colors (depending or tile data or just with fog shader).</p>
+<h2 id="issues">Issues<a hidden class="anchor" aria-hidden="true" href="#issues">#</a></h2>
+<p>The biggest issue is that fog edges still can cut abruptly if you look at it from an angle. You are also going to observe this issue if the slope is too big, for example you have too high mountains.</p>
+<p>Here is what I mean by unwanted angles:</p>
+<p>
+<img loading="lazy" src="../images/fog-5.jpg" alt="image"  /></p>
+<p>It&rsquo;s possible to at least partially overcome this by:</p>
+<ul>
+<li>forbidding certain camera angles.</li>
+<li>render fog mesh to stencil or depth buffer and blur edges or/and screen in postprocessing</li>
+</ul>
+<p>Fresnel won&rsquo;t look good unless you have an inadequate amount of vertices.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://kvachev.com/tags/tech-art/">tech art</a></li>
+      <li><a href="https://kvachev.com/tags/fog/">fog</a></li>
+      <li><a href="https://kvachev.com/tags/strategy/">strategy</a></li>
+      <li><a href="https://kvachev.com/tags/vfx/">vfx</a></li>
+      <li><a href="https://kvachev.com/tags/unreal-engine/">unreal engine</a></li>
+      <li><a href="https://kvachev.com/tags/tutorial/">tutorial</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://kvachev.com/posts/grpc-with-unreal-engine/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>GRPC with Unreal Engine</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Fog for Top-Down Games on twitter"
+        href="https://twitter.com/intent/tweet/?text=Fog%20for%20Top-Down%20Games&amp;url=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f&amp;hashtags=techart%2cfog%2cstrategy%2cvfx%2cunrealengine%2ctutorial">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Fog for Top-Down Games on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f&amp;title=Fog%20for%20Top-Down%20Games&amp;summary=Fog%20for%20Top-Down%20Games&amp;source=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Fog for Top-Down Games on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f&title=Fog%20for%20Top-Down%20Games">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Fog for Top-Down Games on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Fog for Top-Down Games on telegram"
+        href="https://telegram.me/share/url?text=Fog%20for%20Top-Down%20Games&amp;url=https%3a%2f%2fkvachev.com%2fposts%2ffog-for-topdown-games%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://kvachev.com">vsevolod&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

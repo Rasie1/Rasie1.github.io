@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on vsevolod&#39;s blog</title>
+    <link>https://kvachev.com/tags/</link>
+    <description>Recent content in Tags on vsevolod&#39;s blog</description>
+    <image>
+      <url>https://kvachev.com/papermod-cover.png</url>
+      <link>https://kvachev.com/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>fog</title>
+      <link>https://kvachev.com/tags/fog/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/fog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>strategy</title>
+      <link>https://kvachev.com/tags/strategy/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/strategy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tech art</title>
+      <link>https://kvachev.com/tags/tech-art/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/tech-art/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tutorial</title>
+      <link>https://kvachev.com/tags/tutorial/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/tutorial/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unreal engine</title>
+      <link>https://kvachev.com/tags/unreal-engine/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/unreal-engine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vfx</title>
+      <link>https://kvachev.com/tags/vfx/</link>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/vfx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>boilerplate</title>
+      <link>https://kvachev.com/tags/boilerplate/</link>
+      <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/boilerplate/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>grpc</title>
+      <link>https://kvachev.com/tags/grpc/</link>
+      <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/grpc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>protobuf</title>
+      <link>https://kvachev.com/tags/protobuf/</link>
+      <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/protobuf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fp</title>
+      <link>https://kvachev.com/tags/fp/</link>
+      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/fp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>programming language theory</title>
+      <link>https://kvachev.com/tags/programming-language-theory/</link>
+      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/programming-language-theory/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>refinement types</title>
+      <link>https://kvachev.com/tags/refinement-types/</link>
+      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/refinement-types/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>types</title>
+      <link>https://kvachev.com/tags/types/</link>
+      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/tags/types/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
