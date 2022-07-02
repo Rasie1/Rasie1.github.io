@@ -197,7 +197,7 @@
   </header> 
   <div class="post-content"><p>This fog looks almost like volumetrics but takes almost no time to render</p>
  
-<video width=100% autoplay loop>
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
     <source src="../videos/fog-0.mp4" type="video/mp4">
     Your browser does not support the video tag.  
 </video>
@@ -245,7 +245,7 @@
 <p>If you don&rsquo;t have to update the fog every frame, then you can just put fog vertices into the vertex buffer along with some additional data. You will still be able to smoothly blend between two fog states: just swap two fog meshes with world position offset animation in shader.</p>
 
  
-<video width=100% autoplay loop>
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
     <source src="../videos/fog-3.mp4" type="video/mp4">
     Your browser does not support the video tag.  
 </video>
@@ -317,7 +317,7 @@
 <h2 id="texture">Texture<a hidden class="anchor" aria-hidden="true" href="#texture">#</a></h2>
 
  
-<video width=100% autoplay loop>
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
     <source src="../videos/fog-5.mp4" type="video/mp4">
     Your browser does not support the video tag.  
 </video>
@@ -327,7 +327,7 @@
 <p>I made two virtual planes using shifting perlin noise texture. Because two planes have some distance between them, it looks ridiculously good, like the fog is 3-dimensional!</p>
 
  
-<video width=100% autoplay loop>
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
     <source src="../videos/fog-2.mp4" type="video/mp4">
     Your browser does not support the video tag.  
 </video>
@@ -343,7 +343,7 @@
 <p>On the snipped above I also do do blend between texture and flat color - in my opinion it looks better on very close zoom in.</p>
 
  
-<video width=100% autoplay loop>
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
     <source src="../videos/fog-1.mp4" type="video/mp4">
     Your browser does not support the video tag.  
 </video>
