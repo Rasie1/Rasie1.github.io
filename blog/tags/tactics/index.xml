@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>tactics on rasie1&#39;s blog</title>
+    <link>https://kvachev.com/blog/tags/tactics/</link>
+    <description>Recent content in tactics on rasie1&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 07 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/tactics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Triangle Grids</title>
+      <link>https://kvachev.com/blog/posts/triangular-grid/</link>
+      <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/blog/posts/triangular-grid/</guid>
+      <description>&lt;p&gt;Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&amp;rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

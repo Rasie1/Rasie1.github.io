@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Triangle Grids | rasie1&#39;s blog</title>
+<meta name="keywords" content="game design, grids, tactics" />
+<meta name="description" content="Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?">
+<meta name="author" content="Vsevolod Kvachev">
+<link rel="canonical" href="https://kvachev.com/blog/posts/triangular-grid/" />
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.88c57ef20baeb2e97d19b7cf8a77ae455291dd288ddaae861286dd6d99e2c3e1.css" integrity="sha256-iMV&#43;8guusul9GbfPineuRVKR3SiN2q6GEobdbZniw&#43;E=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/blog/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://kvachev.com/blog/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/blog/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://kvachev.com/blog/apple-touch-icon.png">
+<link rel="mask-icon" href="https://kvachev.com/blog/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: #000;
+                --entry: rgb(2, 2, 2);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                --accent: #5AF;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Triangle Grids" />
+<meta property="og:description" content="Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://kvachev.com/blog/posts/triangular-grid/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-07T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-07-07T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Triangle Grids"/>
+<meta name="twitter:description" content="Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://kvachev.com/blog/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Triangle Grids",
+      "item": "https://kvachev.com/blog/posts/triangular-grid/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Triangle Grids",
+  "name": "Triangle Grids",
+  "description": "Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player\u0026rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?\n",
+  "keywords": [
+    "game design", "grids", "tactics"
+  ],
+  "articleBody": "Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player’s tactical mind. The most popular grid types are hexes and squares. But what about triangles?\nYour browser does not support the video tag.  Types of Grids: Comparison We are perfectly familiar with square and hex grids, as most turn-based games use one of them. Both have upsides and downsides. I will go through each of these and include the triangle grid in comparison.\n Visuals Square grids will contribute to visuals for non-natural environments, such as towns, dungeons, streets, and building interiors.\nHex grids look nice with natural environments instead, improving the realism of curvy things, such as islands, mountains, small roads, etc.\nIn the case with looks, triangle grids lie in between: like squares, they allow straight lines and walls without half-tiles, and like hexes, they allow more curvy environments. In fact, triangle grids contain both in itself! You can even have rhombus (huge) and hex (colossal) creatures on top of the triangle grid, like this:\n On top of that, it has a bonus: like the square grid, it can contain bigger and smaller grids in itself.\nThe only visual downside before the square grid is that it can’t express rectangle buildings. In this case, the same cheat from the hex grid can be used: use half tiles. A blocking object (wall) goes through half of the tile and the tile is blocked completely.\n There are also two special cases that make triangles shine. The first is line formations. When the second row of spearmen/riflemen stays between the first, like on the picture above, they can attack enemy formation too without a friend obstructing the view.\nSo it’s possible to directly represent lines of soldiers on triangular grids; formations will also have the ability to rotate in 6 directions. But this point applies to hex grids too, it’s just that the second row will be further away from enemies, and with triangles, enemies in front of the formations are diagonally-adjacent to the second row. I’ll tell you more about diagonals and diagonal distances in a minute.\n Another thing is citadels/bastions. These angles allow more convenient defenses, and fortifications were often built this way throughout history. In Colossal Citadels I made walls and houses follow the triangular grid and I love how these procedurally-generated castles turned out:\n Directions and Adjacent Tiles The number of tactical options (movements, attacks, ranged straight-line attacks) depends on the type of grid. It also depends on whether or not you allow diagonal directions. Let’s count how many non-diagonal directions each grid type allows:\n  Square grid: 4 adjacent tiles, 4 directions Hex grid: 6 adjacent tiles, 6 directions Triangle grid: 3 adjacent tiles, 6 directions  Restricting the number of options would make sense in a tight puzzle-like tactics game, and in bigger strategy games you might want to increase the variety of options to depend less on micro tactics on movement.\nDirections And Adjacent Tiles: Diagonals Some games increase these numbers by allowing diagonal tiles and directions. This is where triangle grids overcome other variants!\n  Square grid: 9 adjacent tiles, 8 directions Hex grid: 6 adjacent tiles, 6 directions Triangle grid: 12 adjacent tiles, 12 directions  So, if you want to have more options, triangle grids with diagonals is the best choice. Ranged “line” attacks also look slightly better because they’re not alternating as with the hex grids; be sure to highlight the lines in 6 straight diagonals, or it will look not so good.\nDistances   Hex grids are very good at estimating the closest path - you can naturally see the closest point. Square grids without diagonals are not so convenient, but distances are always easy to calculate. Triangle grids without diagonals are fine, but there is an issue when you have an opposing triangle: it takes 3 steps to move to it. This might look weird and unnatural. We can fix this by introducing diagonals: allow jumping to the opposing triangle at the cost of 2 instead of three. Then, triangular grid becomes convenient to use and more realistic:   You can find calculating functions for all distances (and explanations) in the end of this article. By the way, I believe I was the first to mention triangle diagonal distance in the internet here.\nSo, this way of calculating distance is quite fine for movements, but for less edgy shapes (for example, buildings), you might want to have something even simpler: full diagonal distances. Treat all tiles that touch the current triangle with one of the vertices as a distance of 1.\n Unfortunately, this approach is not a panacea: you can’t use it for movement, because a moving unit can cheat and move two times faster than intended! Can you figure out how? But this type of distance is very good for ranged attacks and zones! So, I would suggest using either the previous formula, or both: full diagonals for ranges and diagonal shortcut for movements.\nHeightmap Terrains This is not a gameplay point, but it’s still worth mentioning. There is a way of drawing terrain meshes with triangles instead of quads. This way can save some percentage of triangle count and fixes some other issues automatically. If terrain tiles are tied to gameplay, this is going to look interesting. I’ve not seen a triangular grid voxel minecraft-like game yet!\n How To Use Triangular Grid Red Blob Games’s article provides a lot of thoughts on representations of triangle grid, but I’ll just use the best one and supply it with a lot of common useful operations on it.\nCoordinate Representation The most convenient option is to represent it as square grid coordinates PLUS a number that means half-square - 0 or 1.\nstruct Pos { int x, y, s; }; Conversions Conversions between index, coordinates, and 2D world coordinates are going to be the most common operations.\nIndex  Coordinates int toIndex(const Pos\u0026 pos, int gridWidth) { return pos.x * 2 + pos.y * gridWidth * 2 + pos.s; } Pos fromIndex(int i, int gridWidth) { return Pos{(i / 2) % gridWidth, (i / 2) / gridWidth, i % 2}; } World  Coordinates struct Vec2 { float x, y; }; We will need some constants for representing tile size in world space. I use these:\nnamespace TriangleConstants { const float Height = 150.f; const float Side = 173.20508075689f; } Vec2 gridToWorld( const Pos\u0026 pos, float worldspaceTriangleSide, float worldspaceTriangleHeight) { return Vec2{ pos.x * worldspaceTriangleSide + pos.y * worldspaceTriangleSide / 2.f, pos.y * worldspaceTriangleHeight }; } Pos worldToGrid(const Vec2\u0026 pos) { float y = std::get1(pos) / TriangleConstants::Height; float x = std::get0(pos) / TriangleConstants::Side - y / 2.f; bool s = (x - floorf(x) + y - floorf(y))  1.f; return Pos{int(x), int(y), int(s)}; } Trianglular Grid  Square Grid It’s just as simple as taking x and y components and adding or removing third coordinate from them.\nTriangle Tile Distance To calculate simple tile distance you can use Manhattan distance with addition of third component difference.\nint distance(const Pos\u0026 a, const Pos\u0026 b) { auto dx = a.x - b.x; auto dy = a.y - b.y; auto ds = a.s - b.s; return abs(dx) + abs(dy) + abs(dx + dy + ds); } The logic behind this formula is that first you need to convert your coordinates to intermediate representation (adx, adx, adz), that reflects distances from initial point on three axes, each one parallel to one side of a triangle. Since it is just a taxicab distance, you need to just sum three components up.\nConvenient distance functions are a bit more complex:\nDiagonal Triangle Tile Distance (Shortcuts) To allow movement through diagonal, you have to subtract the minimum of three distance components from the previous formula. Why is that and how did I find this? That information is lost… Probably, I just noticed it from staring at triangular grid for too long.\nint triangleDistanceDiagonal(const TilePosition\u0026 a, const TilePosition\u0026 b) { auto dx = a.x - b.x; auto dy = a.y - b.y; auto ds = a.s - b.s; auto adx = abs(dx); auto ady = abs(dy); auto adz = abs(dx + dy + ds); auto m = std::min({adx, ady, adz}); return adx + ady + adz - m; } Diagonal Triangle Tile Distance (Full) This is much simpler. To treat all diagonal tiles as distance one, you have to find maximum of all three components instead:\nint triangleDistanceFullDiagonal(const TilePosition\u0026 a, const TilePosition\u0026 b) { auto dx = a.x - b.x; auto dy = a.y - b.y; auto ds = a.s - b.s; auto adx = abs(dx); auto ady = abs(dy); auto adz = abs(dx + dy + ds); return std::max({adx, ady, adz}); } Source Code All these functions plus some lesser ones, for example, calculating adjacent coordinate with or without diagonals, are included in my tiny header library. Feel free to use it, it’s published under CC0.\nYour browser does not support the video tag.  Conclusion Triangular grids are a fantastic option too. As far as I know, there are no released games that make use of triangle grids yet. Maybe my project (from the screenshots above) will be the first? There are some board games - someone even tried to play Go on triangular grids.\nHowever, the design of my game doesn’t need precise movement controls. You still play with grids with abilities and town-building, but the positioning of creatures is automatic. So, the space for classic turn-based tactics on triangle grids will be still open.\nThere are also other bizarre and irregular grid types. I can see some interesting gameplay ideas coming out from these, e.g. buildings can only go on big tiles, or smaller tiles are for “upgrades” that apply to big tiles, and so on.\n ",
+  "wordCount" : "1659",
+  "inLanguage": "en",
+  "datePublished": "2022-07-07T00:00:00Z",
+  "dateModified": "2022-07-07T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Vsevolod Kvachev"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://kvachev.com/blog/posts/triangular-grid/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "rasie1's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kvachev.com/blog/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://kvachev.com/blog" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
+        </div>
+        <ul id="menu">
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+            <li>
+                <a href="https://kvachev.com/blog/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Triangle Grids
+    </h1>
+    <div class="post-meta"><span title='2022-07-07 00:00:00 +0000 UTC'>July 7, 2022</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Vsevolod Kvachev
+
+</div>
+  </header> 
+  <div class="post-content"><p>Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?</p>
+ 
+<video width=100% autoplay loop playsmuted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="../videos/triangle-0.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<h2 id="types-of-grids-comparison">Types of Grids: Comparison<a hidden class="anchor" aria-hidden="true" href="#types-of-grids-comparison">#</a></h2>
+<p>We are perfectly familiar with square and hex grids, as most turn-based games use one of them. Both have upsides and downsides. I will go through each of these and include the triangle grid in comparison.</p>
+<p>
+<img loading="lazy" src="../images/triangle-1.jpg" alt="image"  /></p>
+<h3 id="visuals">Visuals<a hidden class="anchor" aria-hidden="true" href="#visuals">#</a></h3>
+<p><strong>Square grids</strong> will contribute to visuals for non-natural environments, such as towns, dungeons, streets, and building interiors.</p>
+<p><strong>Hex grids</strong> look nice with natural environments instead, improving the realism of curvy things, such as islands, mountains, small roads, etc.</p>
+<p>In the case with looks, triangle grids lie in between: like squares, they allow straight lines and walls without half-tiles, and like hexes, they allow more curvy environments. In fact, triangle grids contain both in itself! You can even have rhombus (huge) and hex (colossal) creatures on top of the triangle grid, like this:</p>
+<p>
+<img loading="lazy" src="../images/triangle-2.jpg" alt="image"  /></p>
+<p>On top of that, it has a bonus: like the square grid, it can contain bigger and smaller grids in itself.</p>
+<p>The only visual downside before the square grid is that it can&rsquo;t express rectangle buildings. In this case, the same cheat from the hex grid can be used: use half tiles. A blocking object (wall) goes through half of the tile and the tile is blocked completely.</p>
+<p>
+<img loading="lazy" src="../images/triangle-6.jpg" alt="image"  /></p>
+<p>There are also two special cases that make triangles shine. The first is <strong>line formations</strong>. When the second row of spearmen/riflemen stays between the first, like on the picture above, they can attack enemy formation too without a friend obstructing the view.</p>
+<p>So it&rsquo;s possible to directly represent lines of soldiers on triangular grids; formations will also have the ability to rotate in 6 directions. But this point applies to hex grids too, it&rsquo;s just that the second row will be further away from enemies, and with triangles, enemies in front of the formations are diagonally-adjacent to the second row. I&rsquo;ll tell you more about diagonals and diagonal distances in a minute.</p>
+<p>
+<img loading="lazy" src="../images/triangle-5.jpg" alt="image"  /></p>
+<p>Another thing is <strong>citadels/bastions</strong>. These angles allow more convenient defenses, and fortifications were often built this way throughout history. In <a href="http://colossalcitadels.com/">Colossal Citadels</a> I made walls and houses follow the triangular grid and I love how these procedurally-generated castles turned out:</p>
+<p>
+<img loading="lazy" src="../images/triangle-4.jpg" alt="image"  /></p>
+<h3 id="directions-and-adjacent-tiles">Directions and Adjacent Tiles<a hidden class="anchor" aria-hidden="true" href="#directions-and-adjacent-tiles">#</a></h3>
+<p>The number of tactical options (movements, attacks, ranged straight-line attacks) depends on the type of grid. It also depends on whether or not you allow diagonal directions. Let&rsquo;s count how many non-diagonal directions each grid type allows:</p>
+<p>
+<img loading="lazy" src="../images/triangle-0.png" alt="image"  /></p>
+<ul>
+<li><strong>Square grid:</strong> 4 adjacent tiles, 4 directions</li>
+<li><strong>Hex grid:</strong> 6 adjacent tiles, 6 directions</li>
+<li><strong>Triangle grid:</strong> 3 adjacent tiles, 6 directions</li>
+</ul>
+<p>Restricting the number of options would make sense in a tight puzzle-like tactics game, and in bigger strategy games you might want to increase the variety of options to depend less on micro tactics on movement.</p>
+<h3 id="directions-and-adjacent-tiles-diagonals">Directions And Adjacent Tiles: Diagonals<a hidden class="anchor" aria-hidden="true" href="#directions-and-adjacent-tiles-diagonals">#</a></h3>
+<p>Some games increase these numbers by allowing diagonal tiles and directions. This is where triangle grids overcome other variants!</p>
+<p>
+<img loading="lazy" src="../images/triangle-6.png" alt="image"  /></p>
+<ul>
+<li><strong>Square grid:</strong> 9 adjacent tiles, 8 directions</li>
+<li><strong>Hex grid:</strong> 6 adjacent tiles, 6 directions</li>
+<li><strong>Triangle grid:</strong> 12 adjacent tiles, 12 directions</li>
+</ul>
+<p>So, if you want to have more options, triangle grids with diagonals is the best choice. Ranged &ldquo;line&rdquo; attacks also look slightly better because they&rsquo;re not alternating as with the hex grids; be sure to highlight the lines in 6 straight diagonals, or it will look not so good.</p>
+<h3 id="distances">Distances<a hidden class="anchor" aria-hidden="true" href="#distances">#</a></h3>
+<p>
+<img loading="lazy" src="../images/triangle-2.png" alt="image"  /></p>
+<ul>
+<li><strong>Hex grids</strong> are very good at estimating the closest path - you can naturally see the closest point.</li>
+<li><strong>Square grids</strong> without diagonals are not so convenient, but distances are always easy to calculate.</li>
+<li><strong>Triangle grids</strong> without diagonals are fine, but there is an issue when you have an opposing triangle: it takes 3 steps to move to it. This might look weird and unnatural. We can fix this by introducing diagonals: allow jumping to the opposing triangle at the cost of 2 instead of three. Then, triangular grid becomes convenient to use and more realistic:</li>
+</ul>
+<p>
+<img loading="lazy" src="../images/triangle-3.png" alt="image"  /></p>
+<p>You can find calculating functions for all distances (and explanations) in the end of this article. <em>By the way, I believe I was the first to mention triangle diagonal distance in the internet here</em>.</p>
+<p>So, this way of calculating distance is quite fine for movements, but for less edgy shapes (for example, buildings), you might want to have something even simpler: full diagonal distances. Treat all tiles that touch the current triangle with one of the vertices as a distance of 1.</p>
+<p>
+<img loading="lazy" src="../images/triangle-4.png" alt="image"  /></p>
+<p>Unfortunately, this approach is not a panacea: you can&rsquo;t use it for movement, because a moving unit can cheat and move two times faster than intended! Can you figure out how? But this type of distance is very good for ranged attacks and zones! So, I would suggest using either the previous formula, or both: full diagonals for ranges and diagonal shortcut for movements.</p>
+<h3 id="heightmap-terrains">Heightmap Terrains<a hidden class="anchor" aria-hidden="true" href="#heightmap-terrains">#</a></h3>
+<p>This is not a gameplay point, but it&rsquo;s still worth mentioning. There is a way of drawing terrain meshes with triangles instead of quads. This way can save some percentage of triangle count and fixes <a href="https://catlikecoding.com/unity/tutorials/procedural-meshes/triangle-grid">some other issues</a> automatically. If terrain tiles are tied to gameplay, this is going to look interesting. I&rsquo;ve not seen a triangular grid voxel minecraft-like game yet!</p>
+<p>
+<img loading="lazy" src="../images/triangle-3.jpg" alt="image"  /></p>
+<h2 id="how-to-use-triangular-grid">How To Use Triangular Grid<a hidden class="anchor" aria-hidden="true" href="#how-to-use-triangular-grid">#</a></h2>
+<p><a href="https://www.redblobgames.com/grids/triangles/">Red Blob Games&rsquo;s article</a> provides a lot of thoughts on representations of triangle grid, but I&rsquo;ll just use the best one and supply it with a lot of common useful operations on it.</p>
+<h3 id="coordinate-representation">Coordinate Representation<a hidden class="anchor" aria-hidden="true" href="#coordinate-representation">#</a></h3>
+<p>The most convenient option is to represent it as square grid coordinates PLUS a number that means half-square - 0 or 1.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="k">struct</span> <span class="nc">Pos</span> 
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div><h3 id="conversions">Conversions<a hidden class="anchor" aria-hidden="true" href="#conversions">#</a></h3>
+<p>Conversions between index, coordinates, and 2D world coordinates are going to be the most common operations.</p>
+<h4 id="index---coordinates">Index &lt;-&gt; Coordinates<a hidden class="anchor" aria-hidden="true" href="#index---coordinates">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">toIndex</span><span class="p">(</span><span class="k">const</span> <span class="n">Pos</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span> <span class="kt">int</span> <span class="n">gridWidth</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">pos</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">gridWidth</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Pos</span> <span class="nf">fromIndex</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">gridWidth</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Pos</span><span class="p">{(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="n">gridWidth</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">gridWidth</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="world---coordinates">World &lt;-&gt; Coordinates<a hidden class="anchor" aria-hidden="true" href="#world---coordinates">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="k">struct</span> <span class="nc">Vec2</span> 
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div><p>We will need some constants for representing tile size in world space. I use these:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="k">namespace</span> <span class="n">TriangleConstants</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">Height</span> <span class="o">=</span> <span class="mf">150.f</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">Side</span> <span class="o">=</span> <span class="mf">173.20508075689f</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="n">Vec2</span> <span class="nf">gridToWorld</span><span class="p">(</span>
+    <span class="k">const</span> <span class="n">Pos</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span>
+    <span class="kt">float</span> <span class="n">worldspaceTriangleSide</span><span class="p">,</span>
+    <span class="kt">float</span> <span class="n">worldspaceTriangleHeight</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Vec2</span><span class="p">{</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">worldspaceTriangleSide</span> <span class="o">+</span> <span class="n">pos</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">worldspaceTriangleSide</span> <span class="o">/</span> <span class="mf">2.f</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">worldspaceTriangleHeight</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="n">Pos</span> <span class="nf">worldToGrid</span><span class="p">(</span><span class="k">const</span> <span class="n">Vec2</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">/</span> <span class="n">TriangleConstants</span><span class="o">::</span><span class="n">Height</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">/</span> <span class="n">TriangleConstants</span><span class="o">::</span><span class="n">Side</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="mf">2.f</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">floorf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span> <span class="o">-</span> <span class="n">floorf</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1.f</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">Pos</span><span class="p">{</span><span class="kt">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="kt">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="kt">int</span><span class="p">(</span><span class="n">s</span><span class="p">)};</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="trianglular-grid---square-grid">Trianglular Grid &lt;-&gt; Square Grid<a hidden class="anchor" aria-hidden="true" href="#trianglular-grid---square-grid">#</a></h4>
+<p>It&rsquo;s just as simple as taking <code>x</code> and <code>y</code> components and adding or removing third coordinate from them.</p>
+<h3 id="triangle-tile-distance">Triangle Tile Distance<a hidden class="anchor" aria-hidden="true" href="#triangle-tile-distance">#</a></h3>
+<p>To calculate simple tile distance you can use Manhattan distance with addition of third component difference.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">distance</span><span class="p">(</span><span class="k">const</span> <span class="n">Pos</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">Pos</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">auto</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span> <span class="o">+</span> <span class="n">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span> <span class="o">+</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">+</span> <span class="n">ds</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>The logic behind this formula is that first you need to convert your coordinates to intermediate representation (<code>adx</code>, <code>adx</code>, <code>adz</code>), that reflects distances from initial point on three axes, each one parallel to one side of a triangle. Since it is just a taxicab distance, you need to just sum three components up.</p>
+<p>Convenient distance functions are a bit more complex:</p>
+<h3 id="diagonal-triangle-tile-distance-shortcuts">Diagonal Triangle Tile Distance (Shortcuts)<a hidden class="anchor" aria-hidden="true" href="#diagonal-triangle-tile-distance-shortcuts">#</a></h3>
+<p>To allow movement through diagonal, you have to subtract the minimum of three distance components from the previous formula. Why is that and how did I find this? That information is lost&hellip; Probably, I just noticed it from staring at triangular grid for too long.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">triangleDistanceDiagonal</span><span class="p">(</span><span class="k">const</span> <span class="n">TilePosition</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">TilePosition</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">auto</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">adx</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">ady</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">adz</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">+</span> <span class="n">ds</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">m</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">({</span><span class="n">adx</span><span class="p">,</span> <span class="n">ady</span><span class="p">,</span> <span class="n">adz</span><span class="p">});</span>
+    <span class="k">return</span> <span class="n">adx</span> <span class="o">+</span> <span class="n">ady</span> <span class="o">+</span> <span class="n">adz</span> <span class="o">-</span> <span class="n">m</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div><h3 id="diagonal-triangle-tile-distance-full">Diagonal Triangle Tile Distance (Full)<a hidden class="anchor" aria-hidden="true" href="#diagonal-triangle-tile-distance-full">#</a></h3>
+<p>This is much simpler. To treat all diagonal tiles as distance one, you have to find maximum of all three components instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">triangleDistanceFullDiagonal</span><span class="p">(</span><span class="k">const</span> <span class="n">TilePosition</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">TilePosition</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">auto</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">.</span><span class="n">s</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">adx</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">ady</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">adz</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">+</span> <span class="n">ds</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">({</span><span class="n">adx</span><span class="p">,</span> <span class="n">ady</span><span class="p">,</span> <span class="n">adz</span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="source-code">Source Code<a hidden class="anchor" aria-hidden="true" href="#source-code">#</a></h2>
+<p>All these functions plus some lesser ones, for example, calculating adjacent coordinate with or without diagonals, are included in my <a href="https://github.com/Rasie1/triangle">tiny header library</a>. Feel free to use it, it&rsquo;s published under CC0.</p>
+
+ 
+<video width=100% autoplay loop playsmuted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="../videos/triangle-1.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Triangular grids are a fantastic option too. As far as I know, there are no released games that make use of triangle grids yet. Maybe <a href="https://store.steampowered.com/app/1854570/Colossal_Citadels/">my project</a> (from the screenshots above) will be the first? There are some board games - someone even tried to play <a href="http://xahlee.info/math/go_board_variations.html">Go on triangular grids</a>.</p>
+<p>However, the design of my game doesn&rsquo;t need precise movement controls. You still play with grids with abilities and town-building, but the positioning of creatures is automatic. So, the space for classic turn-based tactics on triangle grids will be still open.</p>
+<p>There are also other bizarre and irregular grid types. I can see some interesting gameplay ideas coming out from these, e.g. buildings can only go on big tiles, or smaller tiles are for &ldquo;upgrades&rdquo; that apply to big tiles, and so on.</p>
+<p>
+<img loading="lazy" src="../images/grids.jpg" alt="image"  /></p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://kvachev.com/blog/tags/game-design/">game design</a></li>
+      <li><a href="https://kvachev.com/blog/tags/grids/">grids</a></li>
+      <li><a href="https://kvachev.com/blog/tags/tactics/">tactics</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://kvachev.com/blog/posts/fog-for-topdown-games/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Fog for Top-Down Games</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Triangle Grids on twitter"
+        href="https://twitter.com/intent/tweet/?text=Triangle%20Grids&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f&amp;hashtags=gamedesign%2cgrids%2ctactics">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Triangle Grids on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f&amp;title=Triangle%20Grids&amp;summary=Triangle%20Grids&amp;source=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Triangle Grids on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f&title=Triangle%20Grids">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Triangle Grids on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Triangle Grids on telegram"
+        href="https://telegram.me/share/url?text=Triangle%20Grids&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2ftriangular-grid%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://kvachev.com/blog">rasie1&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
