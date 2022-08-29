@@ -10,7 +10,7 @@
 <meta name="description" content="Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?">
 <meta name="author" content="Vsevolod Kvachev">
 <link rel="canonical" href="https://kvachev.com/blog/posts/triangular-grid/" />
-<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.88c57ef20baeb2e97d19b7cf8a77ae455291dd288ddaae861286dd6d99e2c3e1.css" integrity="sha256-iMV&#43;8guusul9GbfPineuRVKR3SiN2q6GEobdbZniw&#43;E=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.81561c6e94160153e9e3cc1b9f22de354e3779b3de766eed6e7c418d88f71a4e.css" integrity="sha256-gVYcbpQWAVPp48wbnyLeNU43ebPedm7tbnxBjYj3Gk4=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/blog/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://kvachev.com/blog/favicon.ico">
@@ -205,7 +205,59 @@ if (!doNotTrack) {
     <div class="post-meta"><span title='2022-07-07 00:00:00 +0000 UTC'>July 7, 2022</span>&nbsp;·&nbsp;9 min&nbsp;·&nbsp;Vsevolod Kvachev
 
 </div>
-  </header> 
+  </header> <div class="toc side right">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#types-of-grids-comparison" aria-label="Types of Grids: Comparison">Types of Grids: Comparison</a><ul>
+                        
+                <li>
+                    <a href="#visuals" aria-label="Visuals">Visuals</a></li>
+                <li>
+                    <a href="#directions-and-adjacent-tiles" aria-label="Directions and Adjacent Tiles">Directions and Adjacent Tiles</a></li>
+                <li>
+                    <a href="#directions-and-adjacent-tiles-diagonals" aria-label="Directions And Adjacent Tiles: Diagonals">Directions And Adjacent Tiles: Diagonals</a></li>
+                <li>
+                    <a href="#distances" aria-label="Distances">Distances</a></li>
+                <li>
+                    <a href="#heightmap-terrains" aria-label="Heightmap Terrains">Heightmap Terrains</a></li></ul>
+                </li>
+                <li>
+                    <a href="#how-to-use-triangular-grid" aria-label="How To Use Triangular Grid">How To Use Triangular Grid</a><ul>
+                        
+                <li>
+                    <a href="#coordinate-representation" aria-label="Coordinate Representation">Coordinate Representation</a></li>
+                <li>
+                    <a href="#conversions" aria-label="Conversions">Conversions</a><ul>
+                        
+                <li>
+                    <a href="#index---coordinates" aria-label="Index &amp;lt;-&amp;gt; Coordinates">Index &lt;-&gt; Coordinates</a></li>
+                <li>
+                    <a href="#world---coordinates" aria-label="World &amp;lt;-&amp;gt; Coordinates">World &lt;-&gt; Coordinates</a></li>
+                <li>
+                    <a href="#trianglular-grid---square-grid" aria-label="Trianglular Grid &amp;lt;-&amp;gt; Square Grid">Trianglular Grid &lt;-&gt; Square Grid</a></li></ul>
+                </li>
+                <li>
+                    <a href="#triangle-tile-distance" aria-label="Triangle Tile Distance">Triangle Tile Distance</a></li>
+                <li>
+                    <a href="#diagonal-triangle-tile-distance-shortcuts" aria-label="Diagonal Triangle Tile Distance (Shortcuts)">Diagonal Triangle Tile Distance (Shortcuts)</a></li>
+                <li>
+                    <a href="#diagonal-triangle-tile-distance-full" aria-label="Diagonal Triangle Tile Distance (Full)">Diagonal Triangle Tile Distance (Full)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#source-code" aria-label="Source Code">Source Code</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><p>Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?</p>
  
 <video width=100% autoplay loop playsmuted [muted]="'muted'" autoplay="autoplay" loop="loop">
@@ -504,6 +556,88 @@ if (!doNotTrack) {
     })
 
 </script>
+
+
+
+<script>
+  if (window.scrollListeners) {
+    
+    for (const listener of scrollListeners) {
+      window.removeEventListener('scroll', listener)
+    }
+  }
+  window.scrollListeners = []
+</script>
+
+    <script>
+    
+    
+    (function() {
+        const enableTocScroll = '1' == '1'
+        if (!enableTocScroll) {
+        return
+        }
+        if (!document.querySelector('.toc')) {
+        console.log('no toc found, ignore toc scroll')
+        return
+        }
+        
+
+        
+        const scrollListeners = window.scrollListeners
+        const headings = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+        const activeClass = 'active';
+
+        
+        let activeHeading = headings[0];
+        getLinkByHeading(activeHeading).classList.add(activeClass);
+
+        const onScroll = () => {
+        const passedHeadings = [];
+        for (const h of headings) {
+            
+            if (getOffsetTop(h) < 5) {
+            passedHeadings.push(h)
+            } else {
+            break;
+            }
+        }
+        if (passedHeadings.length > 0) {
+            newActiveHeading = passedHeadings[passedHeadings.length - 1];
+        } else {
+            newActiveHeading = headings[0];
+        }
+        if (activeHeading != newActiveHeading) {
+            getLinkByHeading(activeHeading).classList.remove(activeClass);
+            activeHeading = newActiveHeading;
+            getLinkByHeading(activeHeading).classList.add(activeClass);
+        }
+        }
+
+        let timer = null;
+        const scrollListener = () => {
+        if (timer !== null) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(onScroll, 50)
+        }
+        window.addEventListener('scroll', scrollListener, false);
+        scrollListeners.push(scrollListener)
+
+        function getLinkByHeading(heading) {
+        const id = encodeURI(heading.getAttribute('id')).toLowerCase();
+        return document.querySelector(`.toc ul li a[href="#${id}"]`);
+        }
+
+        function getOffsetTop(heading) {
+        if (!heading.getClientRects().length) {
+            return 0;
+        }
+        let rect = heading.getBoundingClientRect();
+        return rect.top
+        }
+    })();
+    </script>
 <script>
     document.querySelectorAll('pre > code').forEach((codeblock) => {
         const container = codeblock.parentNode.parentNode;

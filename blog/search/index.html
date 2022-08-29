@@ -10,7 +10,7 @@
 <meta name="description" content="Search - rasie1&#39;s blog">
 <meta name="author" content="Vsevolod Kvachev">
 <link rel="canonical" href="https://kvachev.com/blog/search/" />
-<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.88c57ef20baeb2e97d19b7cf8a77ae455291dd288ddaae861286dd6d99e2c3e1.css" integrity="sha256-iMV&#43;8guusul9GbfPineuRVKR3SiN2q6GEobdbZniw&#43;E=" rel="preload stylesheet" as="style"><link crossorigin="anonymous" rel="preload" as="fetch" href="../index.json">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.81561c6e94160153e9e3cc1b9f22de354e3779b3de766eed6e7c418d88f71a4e.css" integrity="sha256-gVYcbpQWAVPp48wbnyLeNU43ebPedm7tbnxBjYj3Gk4=" rel="preload stylesheet" as="style"><link crossorigin="anonymous" rel="preload" as="fetch" href="../index.json">
 <script defer crossorigin="anonymous" src="/blog/assets/js/search.min.6a9a7eb2e837edc2f9236bb0c733bf12998c2a01b7c92054b7fbdda7370a68b9.js" integrity="sha256-app&#43;sug37cL5I2uwxzO/EpmMKgG3ySBUt/vdpzcKaLk="></script>
 <link rel="icon" href="https://kvachev.com/blog/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
@@ -274,6 +274,88 @@ if (!doNotTrack) {
     })
 
 </script>
+
+
+
+<script>
+  if (window.scrollListeners) {
+    
+    for (const listener of scrollListeners) {
+      window.removeEventListener('scroll', listener)
+    }
+  }
+  window.scrollListeners = []
+</script>
+
+    <script>
+    
+    
+    (function() {
+        const enableTocScroll = '' == '1'
+        if (!enableTocScroll) {
+        return
+        }
+        if (!document.querySelector('.toc')) {
+        console.log('no toc found, ignore toc scroll')
+        return
+        }
+        
+
+        
+        const scrollListeners = window.scrollListeners
+        const headings = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+        const activeClass = 'active';
+
+        
+        let activeHeading = headings[0];
+        getLinkByHeading(activeHeading).classList.add(activeClass);
+
+        const onScroll = () => {
+        const passedHeadings = [];
+        for (const h of headings) {
+            
+            if (getOffsetTop(h) < 5) {
+            passedHeadings.push(h)
+            } else {
+            break;
+            }
+        }
+        if (passedHeadings.length > 0) {
+            newActiveHeading = passedHeadings[passedHeadings.length - 1];
+        } else {
+            newActiveHeading = headings[0];
+        }
+        if (activeHeading != newActiveHeading) {
+            getLinkByHeading(activeHeading).classList.remove(activeClass);
+            activeHeading = newActiveHeading;
+            getLinkByHeading(activeHeading).classList.add(activeClass);
+        }
+        }
+
+        let timer = null;
+        const scrollListener = () => {
+        if (timer !== null) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(onScroll, 50)
+        }
+        window.addEventListener('scroll', scrollListener, false);
+        scrollListeners.push(scrollListener)
+
+        function getLinkByHeading(heading) {
+        const id = encodeURI(heading.getAttribute('id')).toLowerCase();
+        return document.querySelector(`.toc ul li a[href="#${id}"]`);
+        }
+
+        function getOffsetTop(heading) {
+        if (!heading.getClientRects().length) {
+            return 0;
+        }
+        let rect = heading.getBoundingClientRect();
+        return rect.top
+        }
+    })();
+    </script>
 </body>
 
 </html>
