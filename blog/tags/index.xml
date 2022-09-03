@@ -5,13 +5,31 @@
     <link>https://kvachev.com/blog/tags/</link>
     <description>Recent content in Tags on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 07 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>game design</title>
       <link>https://kvachev.com/blog/tags/game-design/</link>
-      <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>https://kvachev.com/blog/tags/game-design/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tactics</title>
+      <link>https://kvachev.com/blog/tags/tactics/</link>
+      <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/blog/tags/tactics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>turn-based</title>
+      <link>https://kvachev.com/blog/tags/turn-based/</link>
+      <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://kvachev.com/blog/tags/turn-based/</guid>
       <description></description>
     </item>
     
@@ -21,15 +39,6 @@
       <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
       
       <guid>https://kvachev.com/blog/tags/grids/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>tactics</title>
-      <link>https://kvachev.com/blog/tags/tactics/</link>
-      <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://kvachev.com/blog/tags/tactics/</guid>
       <description></description>
     </item>
     

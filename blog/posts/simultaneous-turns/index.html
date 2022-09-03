@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Simultaneous Turns | rasie1&#39;s blog</title>
+<meta name="keywords" content="tactics, game design, turn-based" />
+<meta name="description" content="Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges">
+<meta name="author" content="Vsevolod Kvachev">
+<link rel="canonical" href="https://kvachev.com/blog/posts/simultaneous-turns/" />
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.33b7062bc729efc33bd2179f7bbd47dcc11220e827d79192cbbbe3d6010e48eb.css" integrity="sha256-M7cGK8cp78M70hefe71H3MESIOgn15GSy7vj1gEOSOs=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/blog/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://kvachev.com/blog/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/blog/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://kvachev.com/blog/apple-touch-icon.png">
+<link rel="mask-icon" href="https://kvachev.com/blog/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: #000;
+                --entry: rgb(2, 2, 2);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                --accent: #5AF;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P7B3CD65K7"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-P7B3CD65K7', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Simultaneous Turns" />
+<meta property="og:description" content="Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://kvachev.com/blog/posts/simultaneous-turns/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-03T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-09-03T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Simultaneous Turns"/>
+<meta name="twitter:description" content="Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://kvachev.com/blog/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Simultaneous Turns",
+      "item": "https://kvachev.com/blog/posts/simultaneous-turns/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Simultaneous Turns",
+  "name": "Simultaneous Turns",
+  "description": "Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges\n",
+  "keywords": [
+    "tactics", "game design", "turn-based"
+  ],
+  "articleBody": "Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges\nParallel Multiplayer  Showing a black screen at the time of another player’s turn is really boring: it breaks the flow, multiplies game session times, and sometimes even makes players angry at each other for taking turns too slowly. Unless it’s a single player game, you might want to resolve this somehow, and it’s better to think on it as early as possible. Let’s have an overview of alternatives to sequential turns.\nReal-Time Elements Some games resort to adding real-time elements: all players make moves at the same time, but you have to make important conflicting actions really fast at the beginning of your turn, otherwise your opponent will do this first and you might lose significant advantage. This opposes the cold and strategic nature of turn-based games, also it depends on internet speed, animation speed and delays after actions that your designers have unfortunately decided to set up.\nNotable examples: Civilization 6, modded HoMM 5\nThere is a lot of fun in turn-based games when you add multiplayer in it, but if you want well-balanced competitive play, it’s good to consider less straightforward options too:\nResolution Phase Other games explicitly define a resolution phase: after every player has completed their turns and submitted them, the game will calculate the state for the next turn. Games with resolution phase may vary from setting AI schemes for every unit to setting movement trajectories and projectile paths.\nNotable examples: Dominions 5, Circle Empires Tactics, Colossal Citadels\n Screenshot from Atlas Reactor - it based on exact planning of all actions for every unit\n(In)complete Information The third option is what most board games use: they still offer parallel gameplay without giving players the ability to make actions at other players' turns. This gameplay is represented by analyzing other players' actions: you can see everything (or at least something) that they do, making you plan changes to your strategy until it’s your turn.\nWith small enough turns, you possibly can eliminate waiting, as some players might think ahead and make the turns immediately after their turns have started\nNotable examples: Chess, Hearthstone\nBut, of course, this category is not describing purely simultaneous turn games.\nLong Term Planning Some games with sequential turns also allow making queues of actions during player (or non-player turns). For example, place a very long movement order that will span through multiple turns, push 5 productions into a city’s queue, and so on.\nNotable examples: every 4X game\nAlternating Phases This is a weird unexplored idea. Imagine if some parts of the game did not depend on each other at every moment of time: that would allow different players to do different things at the same time. For example, one of the players is currently in the building stage, and the other one is in the exploration stage. Both click END TURN, and their roles invert!\nI don’t remember any examples of a similar turn structure. Do you?\nBlends It’s possible to mix all of these above. You can make some parts of the game fully sequential, while, for example, overworld gameplay happens simultaneously. This is what Humankind does with battles on a 4X map: when units overlap, battles with sequential turns start on a smaller map, but you can do everything else in your empire while waiting for your opponent’s next action.\n Notable examples: Paradox games, while being real-time, feel turn-based because players can agree to make a pause to resolve their decisions.\nDesigning the Resolution Phase This is what I’ll go into detail in this post. This type of gameplay heavily relies on short-timed planning and predicting what your opponent will do.\nPredictive Play Fully simultaneous turn-based games are more prediction-oriented and “risky” in their nature than “puzzling” and “tactical”. You can draw parallels with fighting games and other kinds of rock paper scissors. While most tactical games require some sort of prediction of the opponent’s strategy, in games with planning, you have to make micro-predictions that may win or fail immediately.\nConflicting Actions The main difficulty of working with simultaneous turns is that simultaneous player actions can’t depend on each other. You would need to implement some resolution mechanic for each conflicting action. For example, an abstract Troll can throw someone far away. What if two trolls throw each other at the same time? Moreover, what if the enemy healer casts AOE heal on the area where the thrown enemy was residing? Such cases need explicit attention in gameplay mechanics. There are multiple ways to solve it, for example:\n Implicit order and initiative: all actions are sorted using some special metric, and in case of conflicting actions that can depend on each other, this metric can resolve this. Moreover, it can be turned into an explicit stat or a resource. Many TTRPGS have initiative rolls that depend on character stats. Initiative only for conflicting actions: conflicts are not critical in most cases (two trolls just throw each other and it’s fine), but for some special cases an initiative mechanic would be used. Randomness  The impact of simultaneous action conflict may be significant in games with low amount units and fewer steps in the resolution phase. With a big enough amount of steps in the phase, gameplay moves towards being continuous, eventually becoming a real-time game.\nProgramming Many turn-based games offer some way to set things up for the following turns. In Dominions 5, you can place your formations right on the theoretical battlefield, you can set behavior for them. In the actual battle, you will then see how well your placement works, how easy it was to get to your archers, and so on.\n More extreme examples allow exact planning of micro actions, such as shooting slow-moving projectiles so that enemy would go into it. Circle Empires Tactics offers a lot of that tight prediction experience, capturing the essence of prediction-based strategy.\nI, too, implemented movement paths in my project - one of the factions will have much fewer units, but each one can be controlled individually. The implementation is not finished yet (both visually and mechanically), but here is how it looks so far:\nYour browser does not support the video tag.  Estimating Odds This can be applied not only to all kinds of games with abilities. First of all, you can graphically show predicted outcomes of player actions. For example, when a player considers throwing a fireball, it would be convenient to immediately see how much damage they would do. Take a look at health bars (red segments of triangular borders around creatures). I described tricks with healthbars in this old tweet. Here is also an idea on how movements and battles could be displayed:\nYour browser does not support the video tag.  Moreover, it’s possible to make a complete prediction of the next turn state in case of simultaneous turns - this might be useful if the design is based around an AI taking steps both for the player and the neutral/enemy units.\nYour browser does not support the video tag.  To do any kind of prediction visualization, actions need to be deterministic. It would be difficult to show prediction of attack damage if there are critical strikes possible, or to reliably draw movement trajectories, if there is any output randomness at all. For example, you can replace randomness with different mechanics: like, instead of a 10% crit chance, do a guaranteed crit every 10th turn.\nPlanning From Possible Enemy Actions Of course, the player’s predictions are more important than automatic ones! That’s why you can give players another tool to make predictions more convenient: allow planning by playing enemy units too! This is what, for example, Frozen Synapse 2 does.\n There is also an important decision: will you show the enemy’s exact action prediction for the next turn, or will you make the player think on the range of things that possibly could happen, like in multiplayer? Both have interesting implications: Into The Breach and Slay The Spire made some really fun things with telegraphing enemy actions. But this is obviously not possible in a multiplayer game - these have to stick with the second option.\nVisual Feedback A very big amount of polish in strategy games comes from actually observing your actions: when you throw a fireball, an explosion comes from the tip of your cursor. While this is not the primary kind of fun strategy gamers aim for, it is crucial for the game feel. Fully simultaneous turns struggle with this, as most actions can be played only in the resolution phase. Make sure to add enough effects on placing orders in planning-style games. For example,\n theme-specific animations: spell rituals, or, perhaps, warriors clash their swords and shields when you place a movement order, and their leader surely should do this gesture (from Warcraft 3 intro)  Your browser does not support the video tag.   trajectory visualizing lines should appear, with juicy animations epic sound, of course screenshake!  Moreover, it’s actually possible to play animations for some types of player actions. Placing buffs, non-killing damage, summoning demons: all of that could be played right away if your mechanics allow it!\nConclusion Implementing parallel gameplay into a turn-based game is a broad topic with a big space for creativity. There are a lot of ideas to come up with: don’t be lazy and playtest them immediately.\n",
+  "wordCount" : "1574",
+  "inLanguage": "en",
+  "datePublished": "2022-09-03T00:00:00Z",
+  "dateModified": "2022-09-03T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Vsevolod Kvachev"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://kvachev.com/blog/posts/simultaneous-turns/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "rasie1's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kvachev.com/blog/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://kvachev.com/blog" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
+        </div>
+        <ul id="menu">
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                        <circle fill="var(--code-bg)" cx="12" cy="12" r="12"/>
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle fill="var(--code-bg)" stroke="none" cx="12" cy="12" r="12"/>
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+            <li>
+                <a href="https://kvachev.com/blog/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Simultaneous Turns
+    </h1>
+    <div class="post-meta"><span title='2022-09-03 00:00:00 +0000 UTC'>September 3, 2022</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Vsevolod Kvachev
+
+</div>
+  </header> <div class="toc side right">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#parallel-multiplayer" aria-label="Parallel Multiplayer">Parallel Multiplayer</a><ul>
+                        
+                <li>
+                    <a href="#real-time-elements" aria-label="Real-Time Elements">Real-Time Elements</a></li>
+                <li>
+                    <a href="#resolution-phase" aria-label="Resolution Phase">Resolution Phase</a></li>
+                <li>
+                    <a href="#incomplete-information" aria-label="(In)complete Information">(In)complete Information</a><ul>
+                        
+                <li>
+                    <a href="#long-term-planning" aria-label="Long Term Planning">Long Term Planning</a></li></ul>
+                </li>
+                <li>
+                    <a href="#alternating-phases" aria-label="Alternating Phases">Alternating Phases</a></li>
+                <li>
+                    <a href="#blends" aria-label="Blends">Blends</a></li></ul>
+                </li>
+                <li>
+                    <a href="#designing-the-resolution-phase" aria-label="Designing the Resolution Phase">Designing the Resolution Phase</a><ul>
+                        
+                <li>
+                    <a href="#predictive-play" aria-label="Predictive Play">Predictive Play</a></li>
+                <li>
+                    <a href="#conflicting-actions" aria-label="Conflicting Actions">Conflicting Actions</a></li>
+                <li>
+                    <a href="#programming" aria-label="Programming">Programming</a></li>
+                <li>
+                    <a href="#estimating-odds" aria-label="Estimating Odds">Estimating Odds</a><ul>
+                        
+                <li>
+                    <a href="#planning-from-possible-enemy-actions" aria-label="Planning From Possible Enemy Actions">Planning From Possible Enemy Actions</a></li></ul>
+                </li>
+                <li>
+                    <a href="#visual-feedback" aria-label="Visual Feedback">Visual Feedback</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges</p>
+<h1 id="parallel-multiplayer">Parallel Multiplayer<a hidden class="anchor" aria-hidden="true" href="#parallel-multiplayer">#</a></h1>
+<p>
+<img loading="lazy" src="/blog/posts/simultaneous-turns/heroes.jpg" type="" alt="image"  /></p>
+<p>Showing a black screen at the time of another player&rsquo;s turn is really boring: it breaks the flow, multiplies game session times, and sometimes even makes players angry at each other for taking turns too slowly. Unless it&rsquo;s a single player game, you might want to resolve this somehow, and it&rsquo;s better to think on it as early as possible. Let&rsquo;s have an overview of alternatives to sequential turns.</p>
+<h2 id="real-time-elements">Real-Time Elements<a hidden class="anchor" aria-hidden="true" href="#real-time-elements">#</a></h2>
+<p>Some games resort to adding real-time elements: all players make moves at the same time, but you have to make important conflicting actions really fast at the beginning of your turn, otherwise your opponent will do this first and you might lose significant advantage. This opposes the cold and strategic nature of turn-based games, also it depends on internet speed, animation speed and delays after actions that your designers have unfortunately decided to set up.</p>
+<p>Notable examples: Civilization 6, modded HoMM 5</p>
+<p>There is a lot of fun in turn-based games when you add multiplayer in it, but if you want well-balanced competitive play, it&rsquo;s good to consider less straightforward options too:</p>
+<h2 id="resolution-phase">Resolution Phase<a hidden class="anchor" aria-hidden="true" href="#resolution-phase">#</a></h2>
+<p>Other games explicitly define a resolution phase: after every player has completed their turns and submitted them, the game will calculate the state for the next turn. Games with resolution phase may vary from setting AI schemes for every unit to setting movement trajectories and projectile paths.</p>
+<p>Notable examples: Dominions 5, Circle Empires Tactics, <a href="http://colossalcitadels.com">Colossal Citadels</a></p>
+<p>
+<img loading="lazy" src="/blog/posts/simultaneous-turns/atlas-reactor.jpg" type="" alt="image"  /></p>
+<p><em>Screenshot from Atlas Reactor - it based on exact planning of all actions for every unit</em></p>
+<h2 id="incomplete-information">(In)complete Information<a hidden class="anchor" aria-hidden="true" href="#incomplete-information">#</a></h2>
+<p>The third option is what most board games use: they still offer parallel gameplay without giving players the ability to make actions at other players' turns. This gameplay is represented by analyzing other players' actions: you can see everything (or at least something) that they do, making you plan changes to your strategy until it&rsquo;s your turn.</p>
+<p>With small enough turns, you possibly can eliminate waiting, as some players might think ahead and make the turns immediately after their turns have started</p>
+<p>Notable examples: Chess, Hearthstone</p>
+<p>But, of course, this category is not describing <em>purely simultaneous</em> turn games.</p>
+<h3 id="long-term-planning">Long Term Planning<a hidden class="anchor" aria-hidden="true" href="#long-term-planning">#</a></h3>
+<p>Some games with sequential turns also allow making queues of actions during player (or non-player turns). For example, place a very long movement order that will span through multiple turns, push 5 productions into a city&rsquo;s queue, and so on.</p>
+<p>Notable examples: every 4X game</p>
+<h2 id="alternating-phases">Alternating Phases<a hidden class="anchor" aria-hidden="true" href="#alternating-phases">#</a></h2>
+<p>This is a weird unexplored idea. Imagine if some parts of the game did not depend on each other at every moment of time: that would allow different players to do different things at the same time. For example, one of the players is currently in the building stage, and the other one is in the exploration stage. Both click END TURN, and their roles invert!</p>
+<p>I don&rsquo;t remember any examples of a similar turn structure. Do you?</p>
+<h2 id="blends">Blends<a hidden class="anchor" aria-hidden="true" href="#blends">#</a></h2>
+<p>It&rsquo;s possible to mix all of these above. You can make some parts of the game fully sequential, while, for example, overworld gameplay happens simultaneously. This is what Humankind does with battles on a 4X map: when units overlap, battles with sequential turns start on a smaller map, but you can do everything else in your empire while waiting for your opponent&rsquo;s next action.</p>
+<p>
+<img loading="lazy" src="/blog/posts/simultaneous-turns/humankind.jpg" type="" alt="image"  /></p>
+<p>Notable examples: Paradox games, while being real-time, feel turn-based because players can agree to make a pause to resolve their decisions.</p>
+<h1 id="designing-the-resolution-phase">Designing the Resolution Phase<a hidden class="anchor" aria-hidden="true" href="#designing-the-resolution-phase">#</a></h1>
+<p>This is what I&rsquo;ll go into detail in this post. This type of gameplay heavily relies on short-timed planning and predicting what your opponent will do.</p>
+<h2 id="predictive-play">Predictive Play<a hidden class="anchor" aria-hidden="true" href="#predictive-play">#</a></h2>
+<p>Fully simultaneous turn-based games are more prediction-oriented and &ldquo;risky&rdquo; in their nature than &ldquo;puzzling&rdquo; and &ldquo;tactical&rdquo;. You can draw parallels with fighting games and other kinds of rock paper scissors. While most tactical games require some sort of prediction of the opponent&rsquo;s strategy, in games with planning, you have to make micro-predictions that may win or fail immediately.</p>
+<h2 id="conflicting-actions">Conflicting Actions<a hidden class="anchor" aria-hidden="true" href="#conflicting-actions">#</a></h2>
+<p>The main difficulty of working with simultaneous turns is that <strong>simultaneous player actions can&rsquo;t depend on each other</strong>. You would need to implement some resolution mechanic for each conflicting action. For example, an abstract Troll can throw someone far away. What if two trolls throw each other at the same time? Moreover, what if the enemy healer casts AOE heal on the area where the thrown enemy was residing? Such cases need explicit attention in gameplay mechanics. There are multiple ways to solve it, for example:</p>
+<ul>
+<li>Implicit order and <strong>initiative</strong>: all actions are sorted using some special metric, and in case of conflicting actions that can depend on each other, this metric can resolve this. Moreover, it can be turned into an explicit stat or a resource. Many TTRPGS have initiative rolls that depend on character stats.</li>
+<li>Initiative only for conflicting actions: conflicts are not critical in most cases (two trolls just throw each other and it&rsquo;s fine), but for some special cases an initiative mechanic would be used.</li>
+<li>Randomness</li>
+</ul>
+<p>The impact of simultaneous action conflict may be significant in games with low amount units and fewer steps in the resolution phase. With a big enough amount of steps in the phase, gameplay moves towards being continuous, eventually becoming a real-time game.</p>
+<h2 id="programming">Programming<a hidden class="anchor" aria-hidden="true" href="#programming">#</a></h2>
+<p>Many turn-based games offer some way to set things up for the following turns. In Dominions 5, you can place your formations right on the theoretical battlefield, you can set behavior for them. In the actual battle, you will then see how well your placement works, how easy it was to get to your archers, and so on.</p>
+<p>
+<img loading="lazy" src="/blog/posts/simultaneous-turns/dominions-position-army.jpg" type="" alt="image"  /></p>
+<p>More extreme examples allow exact planning of micro actions, such as shooting slow-moving projectiles so that enemy would go into it. Circle Empires Tactics offers a lot of that tight prediction experience, capturing the essence of prediction-based strategy.</p>
+<p>I, too, implemented movement paths in my project - one of the factions will have much fewer units, but each one can be controlled individually. The implementation is not finished yet (both visually and mechanically), but here is how it looks so far:</p>
+
+ 
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="../images/understandings3.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<h2 id="estimating-odds">Estimating Odds<a hidden class="anchor" aria-hidden="true" href="#estimating-odds">#</a></h2>
+<p>This can be applied not only to all kinds of games with abilities. First of all, you can graphically show predicted outcomes of player actions. For example, when a player considers throwing a fireball, it would be convenient to immediately see how much damage they would do. Take a look at health bars (red segments of triangular borders around creatures). I described tricks with healthbars in this <a href="https://twitter.com/unevendungeon/status/1505521088368979971">old tweet</a>. Here is also an idea on how movements and battles could be displayed:</p>
+
+ 
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="predictions1.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<p>Moreover, it&rsquo;s possible to make a complete prediction of the next turn state in case of simultaneous turns - this might be useful if the design is based around an AI taking steps both for the player and the neutral/enemy units.</p>
+
+ 
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="predictions2.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<p>To do any kind of prediction visualization, actions need to be deterministic. It would be difficult to show prediction of attack damage if there are critical strikes possible, or to reliably draw movement trajectories, if there is any output randomness at all. For example, you can replace randomness with different mechanics: like, instead of a 10% crit chance, do a guaranteed crit every 10th turn.</p>
+<h3 id="planning-from-possible-enemy-actions">Planning From Possible Enemy Actions<a hidden class="anchor" aria-hidden="true" href="#planning-from-possible-enemy-actions">#</a></h3>
+<p>Of course, the player&rsquo;s predictions are more important than automatic ones! That&rsquo;s why you can give players another tool to make predictions more convenient: allow planning by playing enemy units too! This is what, for example, Frozen Synapse 2 does.</p>
+<p>
+<img loading="lazy" src="/blog/posts/simultaneous-turns/frozen-synapse.jpg" type="" alt="image"  /></p>
+<p>There is also an important decision: will you show the enemy&rsquo;s exact action prediction for the next turn, or will you make the player think on the range of things that possibly could happen, like in multiplayer? Both have interesting implications: Into The Breach and Slay The Spire made some really fun things with telegraphing enemy actions. But this is obviously not possible in a multiplayer game - these have to stick with the second option.</p>
+<h2 id="visual-feedback">Visual Feedback<a hidden class="anchor" aria-hidden="true" href="#visual-feedback">#</a></h2>
+<p>A very big amount of polish in strategy games comes from actually observing your actions: when you throw a fireball, an explosion comes from the tip of your cursor. While this is not the primary kind of fun strategy gamers aim for, it is crucial for the game feel. Fully simultaneous turns struggle with this, as most actions can be played only in the resolution phase. Make sure to add enough effects on placing orders in planning-style games. For example,</p>
+<ul>
+<li>theme-specific animations: spell rituals, or, perhaps, warriors clash their swords and shields when you place a movement order, and their leader surely should do this gesture (from Warcraft 3 intro)</li>
+</ul>
+
+ 
+<video width=100% autoplay loop playsinline muted [muted]="'muted'" autoplay="autoplay" loop="loop">
+    <source src="warcraft3.mp4" type="video/mp4">
+    Your browser does not support the video tag.  
+</video>
+
+<ul>
+<li>trajectory visualizing lines should appear, with juicy animations</li>
+<li>epic sound, of course</li>
+<li><del>screenshake!</del></li>
+</ul>
+<p>Moreover, it&rsquo;s actually possible to play animations for some types of player actions. Placing buffs, non-killing damage, summoning demons: all of that could be played right away if your mechanics allow it!</p>
+<h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>Implementing parallel gameplay into a turn-based game is a broad topic with a big space for creativity. There are a lot of ideas to come up with: don&rsquo;t be lazy and playtest them immediately.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://kvachev.com/blog/tags/tactics/">tactics</a></li>
+      <li><a href="https://kvachev.com/blog/tags/game-design/">game design</a></li>
+      <li><a href="https://kvachev.com/blog/tags/turn-based/">turn-based</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://kvachev.com/blog/posts/triangular-grid/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Triangle Grids</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Simultaneous Turns on twitter"
+        href="https://twitter.com/intent/tweet/?text=Simultaneous%20Turns&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f&amp;hashtags=tactics%2cgamedesign%2cturn-based">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Simultaneous Turns on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f&amp;title=Simultaneous%20Turns&amp;summary=Simultaneous%20Turns&amp;source=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Simultaneous Turns on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f&title=Simultaneous%20Turns">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Simultaneous Turns on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Simultaneous Turns on telegram"
+        href="https://telegram.me/share/url?text=Simultaneous%20Turns&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fsimultaneous-turns%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://kvachev.com/blog">rasie1&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+
+
+<script>
+  if (window.scrollListeners) {
+    
+    for (const listener of scrollListeners) {
+      window.removeEventListener('scroll', listener)
+    }
+  }
+  window.scrollListeners = []
+</script>
+
+    <script>
+    
+    
+    (function() {
+        const enableTocScroll = '1' == '1'
+        if (!enableTocScroll) {
+        return
+        }
+        if (!document.querySelector('.toc')) {
+        console.log('no toc found, ignore toc scroll')
+        return
+        }
+        
+
+        
+        const scrollListeners = window.scrollListeners
+        const headings = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+        const activeClass = 'active';
+
+        
+        let activeHeading = headings[0];
+        getLinkByHeading(activeHeading).classList.add(activeClass);
+
+        const onScroll = () => {
+        const passedHeadings = [];
+        for (const h of headings) {
+            
+            if (getOffsetTop(h) < 5) {
+            passedHeadings.push(h)
+            } else {
+            break;
+            }
+        }
+        if (passedHeadings.length > 0) {
+            newActiveHeading = passedHeadings[passedHeadings.length - 1];
+        } else {
+            newActiveHeading = headings[0];
+        }
+        if (activeHeading != newActiveHeading) {
+            getLinkByHeading(activeHeading).classList.remove(activeClass);
+            activeHeading = newActiveHeading;
+            getLinkByHeading(activeHeading).classList.add(activeClass);
+        }
+        }
+
+        let timer = null;
+        const scrollListener = () => {
+        if (timer !== null) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(onScroll, 50)
+        }
+        window.addEventListener('scroll', scrollListener, false);
+        scrollListeners.push(scrollListener)
+
+        function getLinkByHeading(heading) {
+        const id = encodeURI(heading.getAttribute('id')).toLowerCase();
+        return document.querySelector(`.toc ul li a[href="#${id}"]`);
+        }
+
+        function getOffsetTop(heading) {
+        if (!heading.getClientRects().length) {
+            return 0;
+        }
+        let rect = heading.getBoundingClientRect();
+        return rect.top
+        }
+    })();
+    </script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
