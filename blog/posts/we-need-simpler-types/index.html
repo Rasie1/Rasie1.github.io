@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>We Need Simpler Types | rasie1&#39;s blog</title>
+<meta name="keywords" content="programming language theory, refinement types, types, c(x), fantasy" />
+<meta name="description" content="Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &ndash; we are moving in the right direction">
+<meta name="author" content="Vsevolod Kvachev">
+<link rel="canonical" href="https://kvachev.com/blog/posts/we-need-simpler-types/" />
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.c37a1fc90e510161a636790676adc7ccbaebdfcd7c141a8cc34a01508787bbfc.css" integrity="sha256-w3ofyQ5RAWGmNnkGdq3HzLrr3818FBqMw0oBUIeHu/w=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/blog/assets/js/highlight.min.3845510db7f3c2a193f085acd0a874aa81a550507c81e6e2dabe1b23d41fdc60.js" integrity="sha256-OEVRDbfzwqGT8IWs0Kh0qoGlUFB8gebi2r4bI9Qf3GA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://kvachev.com/blog/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/blog/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://kvachev.com/blog/apple-touch-icon.png">
+<link rel="mask-icon" href="https://kvachev.com/blog/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: #000;
+                --entry: rgb(2, 2, 2);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                --accent: #5AF;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P7B3CD65K7"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-P7B3CD65K7', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="We Need Simpler Types" />
+<meta property="og:description" content="Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &ndash; we are moving in the right direction" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://kvachev.com/blog/posts/we-need-simpler-types/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-06T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-09-06T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="We Need Simpler Types"/>
+<meta name="twitter:description" content="Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &ndash; we are moving in the right direction"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://kvachev.com/blog/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "We Need Simpler Types",
+      "item": "https://kvachev.com/blog/posts/we-need-simpler-types/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "We Need Simpler Types",
+  "name": "We Need Simpler Types",
+  "description": "Dependent types, refinement types, gradual types, rank-n polymorphism, etc, \u0026ndash; we are moving in the right direction\n",
+  "keywords": [
+    "programming language theory", "refinement types", "types", "c(x)", "fantasy"
+  ],
+  "articleBody": "Dependent types, refinement types, gradual types, rank-n polymorphism, etc, – we are moving in the right direction\nLet’s dream a bit and try to imagine what can be improved about type systems. Ability to limit and check variables and function arguments at compile time multiplies development speeds by dozens of times, but modern type systems are STILL not expressive enough - you mostly can filter out only quite basic errors. Functional programmers excel at making the wrong state inexpressible in terms of the type system, but static type systems still can’t encode very complex logic and relations.\nWell, they do, but it is absolutely unusable for casual coding, fast prototyping, and most industrial use cases.\nIn certain fields, such as game development, the amount of rules gets crazy, and most interactions of related game mechanics can’t even be covered with tests, not to mention types. But possibly this is only because type systems are too restrictive. They don’t allow embedding crazy expressions from the the value level. Yet.\nPossible Improvements For Type Systems  Types should be first-class objects. There should be convenient type lambdas Types should be allowed to contain value-level expressions (Refinement Types) Moreover, types could contain runtime values (Gradual Types) The same code should be usable both at compile time and execution time There should be runtime conditional expressions for type checks All definitions and type specifications should share context with the code they’re in Type intersection is a fundamental operation for composing types BONUS: Types, sets, and functions should be unified with T̷y̷p̴e̷ ̵Fi̵l̷t̸e̵r̸s̴ BONUS: I̸n̵v̶e̵r̶s̶e̷ f̵un̸c̴t̵i̴o̷n̴s̸ ̵s̵h̵o̸u̸l̸d̶ ̶e̷a̴s̶e̶ work with ̷a̴l̷l t̵y̷p̵e̸ ̴s̴p̵e̴c̵i̸f̵i̴c̵a̵t̷i̸o̵n̴s (next post) BONUS: Type/value union is another fundamental operation for representing indeterminism  What in the name of satan is all of that? Possibly, I’ll explain everything in the next blog posts, but this time, let’s just review some examples.\nNotation I’ll use pseudocode in some semi-esoteric language for clarity. It’s very expressive, so if you want something more conventional, you can change to pseudo-C++ or pseudo-Haskell in every code example - see tabs above code blocks. But I suggest to glimpse through all three.\nIn this section, I’ll explain shortly how to read the ideas described in this post.\nFirstly, this is how type intersection is done. This would be a fundamental operation for composing types.\npseudocode cpp haskell  myVariable: MyType1 MyType2 \u0026 MyType3 MyIntersectionType = MyType1 \u0026 MyType2 MyType3 MyStruct = has myField: Integer has myField2: String // Values of type MyStruct are limited to those which have // both `myField` and `myField2` fields   intersectMyType1, MyType2 myVariable; using MyStruct = intersectstruct { int x; }, struct { int y; } // Values of type MyStruct are limited to those which have // both `myField` and `myField2` fields (struct { int x, y; })   type MyIntersectionType = MyType1 \u0026 MyType2 type MyStruct = { x :: Integer } \u0026 { y :: Bool } -- Values of type MyStruct are limited to those which have -- both `myField` and `myField2` fields (MyStruct { x :: Integer, y :: Bool })   In our magical language, type-level expressions could contain runtime values. This could be both constructed types and subtractive types that would filter out values of types they’re intersecting with. For example, here we use “myNaturalVariable” in inline type definition:\npseudocode cpp haskell  myNaturalVariable: Integer (=0) myVariableWithCondition: {1, 2, 3, myNaturalVariable} if myNaturalVariable  3   auto positive = [](int x){ return x = 0; }; using MyNaturalType = intersectint, refine(positive); MyNaturalType myNaturalVariable; using MyTypeWithCondition = intersect{1, 2, 3, myNaturalVariable}, condition(myNaturalVariable  3);   type MyNaturalType = Integer \u0026 refine (=0) myNaturalVariable :: MyNaturalType myNaturalVariable = 4 type MyTypeWithCondition = [ 1, 2, 3, myNaturalVariable ] \u0026 { myNaturalVariable  3}   Unique to this theoretical language. Types should not only be on the same level as variables, but also they should act as functions, collections, and as true predicates. All these concepts can be unified with one syntax for a concept of “type filter”.\nIn the examples for C++ and Haskell, I use refine function/keyword, which creates a refinement type out of function - otherwise, if we write just functions, it won’t look as clear. Also, C++ doesn’t allow type annotation of any value, so I can’t apply “type filter” idea to it.\npseudocode cpp haskell  3: Int print (Int 3) \"123\": Boolean // error 4: 0 // partially applied \"greater than zero\" function  // acts as a type (=2) 2 = 2 : (=2) // hellish mashup 1: (x-1) // lambda as set/type  myList = [1, 2, 3, 4, 5] // with this syntax, there are some cool ways to say `map (1+) myList`: print (x:myList - x+1) // [2, 3, 4. 5, 6] print {x:myList + 1} // [2, 3, 4. 5, 6]   auto positive = [](int x){ return x  0; }; refine(positive) x; // partially applied \"greater than zero\" function  // acts as a type    x :: Integer \u0026 refine (0) \"123\" :: Boolean -- error 4 :: refine (0) -- partially applied greater than zero function -- acts as a type   Dependent Types With Runtime Values This is not possible anywhere now (is it?), but I’m sure after 30 more years of research, we’ll be able to do this in some experimental Haskell extension or language. Runtime values can be used in static types and erased after compilation, leaving dynamic checks only on entry points. Here is a simple example of what this could look like:\npseudocode cpp haskell  Dog = has isAwake: Boolean bark() : String // type intersection takes place  if isAwake // String \u0026 (if not isAwake)  = \"woof\" dog: Dog dog.isAwake  read Boolean print dog.bark() // error: can't apply `dog.bark`,  // `dog.isAwake` could be false if dog.isAwake // theoretical \"if\" intersects types with  // information from the condition  print dog.bark() // woof   struct Dog { bool isAwake; auto bark() - intersectstring, condition(isAwake) { return \"woof\"; } }; ... Dog dog; std::cin  dog.isAwake; std::cout  dog.bark(); // error: can't apply `Dog::bark`,  // `dog.isAwake` could be false if auto (dog.isAwake) { // theoretical \"if auto\" intersects types with  // information from the condition  // (of course, I had to invent another use for auto)  std::cout  dog.bark(); // woof }   data Dog = Dog { isAwake :: Boolean } bark :: { this :: Dog } - String \u0026 if isAwake this bark this = \"woof\" main :: IO () main = do isDogAwake  getLine let dog = Dog { isAwake = (read isDogAwake :: Boolean) } print $ bark dog -- error: can't apply `bark`,  -- `dog.isAwake` could be false if' isAwake dog then -- theoretical \"if'\" intersects types  -- with information from the condition print $ bark dog -- woof   My dog actually can bark while sleeping, but in the example above, you won’t be able to call bark function without guaranteeing that isAwake is false.\nHere is one more example of the same concept:\npseudocode cpp haskell  Dog = has maxFood = 10 food: = 0  maxFood isHungry = food != maxFood eat newFood : where newFood + food  maxFood if isHungry = food  food + newFood dog: Dog dog.food  2 dog.eat (read Integer) // error: argument newFood doesn't satisfy `newFood + food read Integer : clamp 0 5 : dog.eat   struct Dog { int maxFood = 10; intersectint, refine(greaterEqualThan(0)), refine(lessEqualThan(maxFood))  food; bool isHungry() { return food != maxFood; } auto eat(int newFood) - intersectvoid, condition(newFood + food  maxFood), condition(isHungry())  { food += newFood; } }; ... Dog dog; dog.food = 2; int newFood; std::cin  newFood; dog.eat(newFood); // error: argument newFood doesn't satisfy  //`newFood + food  dog.eat(clamp(0, newFood, 5)); // no error   type Dog = { maxFood :: Int, food :: Int \u0026 refine (maxFood) } isHungry dog = food dog != maxFood eat :: { this :: Dog } - { newFood :: Int } - Dog \u0026 if isHungry \u0026 if food this + newFood  maxFood this = ... ... main = do foodToEatInput  getLine let foodToEat = read foodToEatInput :: Int let dog = Dog { food = 2, maxFood = 10 } print $ eat dog footToEat -- error: argument newFood doesn't satisfy: -- - food this + newFodd -- - isHungry let foodToEatLimited = clamp (0, 5) newFood print $ eat dog footToEat -- no error   Laws It can be implementation-dependent whether the value is actually stored in memory, or is it inferred at compile time like an evidence and discarded immediately. Perhaps things like implication and abstract value could be cleaner than a typed variable.\npseudocode cpp haskell  Dog = has ... food  maxFood = isHungry ... dog: Dog dog.food  read (0  _  10) dog.eat 1 // error: couldn't satisfy `isHungry` (`food   class Dog { ... implication(food  maxFood, isHungry); ... }; Dog dog; std::cin  dog.food; dog.eat(1); // error: couldn't satisfy `isHungry` (`food   type Dog = { maxFood :: Int, food :: Int \u0026 refine ({ dog :: Dog } - Dog\nmain = do foodInput isHungry (food )\n There is enough information for isHungry flag would be completely erased on runtime, even though no values are known at compile time: all checks are performed outside on input, conversions, and manual tests!\nBy the way, this actually resembles logic programming on Prolog and similar systems.\nComplex Relations Expressed With Type System Static typing in popular languages is very good for letting you know about typos, misplaced arguments, and other minor mess-ups. But it is usually too concrete to give a programmer the ability to express higher concepts and rule out possibilities of behavior-related bugs. While proposed ideas obviously can’t solve all of them, it’s certainly useful to let users describe more details of the system using the tools in the language.\nCase Study: Game UI Bugs Let’s suppose that in some game, the player is suggested to select one or more goods at the same time and click upgrade button to buy selected goods for his gold. There are many kinds of bugs for UI to protect from, such as\n buying 0 goods spending all gold in some other window and then buying something in this window because it wasn’t updated somehow buying things twice at the same time buying things for less gold than required  These errors need to be explicitly warned in UI - that means that every bug has to be mentally (and sometimes physically) procesed multiple times. It would be good to remove this burden from an UI implementor. He would be warned of each bug and he will be forced to handle each case that is described right in the type system.\npseudocode cpp haskell  GoodInShop = has item: InventoryItem cost: Cost Shop = has ... player: Player buy goods = ... where goods: [GoodInShop] this.player.gold = fold (+) (x:goods - x.cost) not goods.isEmpty   struct GoodInShop { InventoryItem item; Cost cost; }; class Shop { ... using GoodsToBuy = intersect( const std::vectorGoodInShop\u0026, // wrong  refine([](const std::vectorGoodInShop\u0026 goods){ return !goods.empty(); }), refine([this](const std::vectorGoodInShop\u0026 goods){ return player-gold() = std::ranges::accumulate(goods, 0 [](const auto\u0026 x, const auto\u0026y){ return x.cost + y.cost;} ); }) ); void buy(GoodsToBuy goods); };   data GoodInShop = GoodInShop { inventoryItem :: InventoryItem, cost :: Cost } type BuyOrder = (Player, [GoodInShop]) \u0026 refine ((!=[]) . snd) \u0026 refine (\\(player, goods) - foldl (+) 0 x  gold player) buy :: PlayerId - GoodsToBuy - Shop ()   How a game designer could try to use it at first in UI layer:\npseudocode cpp haskell  ShopWindowWidget.buyButton.onClick = do goodToBuy: this.goodsBox.children GoodInShop goodToBuy.Selected = true this.shop.buy {goodToBuy} // error:   ... this-buyButton-onClick([this](){ std::vectorGoodInShop goodsToBuy; for (auto\u0026 child: this-goodsBox) { if (auto goodToBuy = CastGoodInShop(child)) { if (goodToBuy.Selected) goodsToBuy.push_back(goodToBuy.good) } } this-shop-buy(goodsToBuy); // error:  }); ...   ... button  makeButton \"BuyButton\" $ do goodsToBuy  getSelectedGoods buy shop goodsToBuy // error: ... getSelectedGoods :: GUI [GoodInShop] getSelectedGoods = do ...   Type system immediately will stop him, noting that goodsToBuy can be empty and that he didn’t handle the case when there is not enough gold. User can then probably handle these cases like that\npseudocode cpp haskell  ShopWindowWidget.buyButton.onClick = do goodToBuy: this.goodsBox.children GoodInShop goodToBuy.Selected = true if isEmpty goodToBuy this.displayNoGoodsSelected() else if this.player.gold  fold (+) (x:goods - x.cost) this.displayNotEnoughGold() else this.shop.buy {goodToBuy}   ... this-buyButton-onClick([this](){ std::vectorGoodInShop goodsToBuy; for (auto\u0026 child: this-goodsBox) { if auto (auto goodToBuy = CastGoodInShop(child)) { if auto (goodToBuy.Selected) goodsToBuy.push_back(goodToBuy.good) } } if auto (goodsToBuy.empty()) displayNoGoodsSelected(); else if auto (player-gold() = std::ranges::accumulate(goods, Goods::cost)) displayNotEnoughGold(); else this-shop-buy(goodsToBuy); }); ...   ... button  makeButton \"BuyButton\" $ do goodsToBuy  getSelectedGoods buy shop goodsToBuy ... getSelectedGoods :: GUI [GoodInShop] getSelectedGoods = do ...   Now, type system quickly ensures that the player will never have less gold than needed on calling buy, and it won’t allow passing an empty array or any other incorrect data. It would make sense to name give these types/rules simple names and reuse them across the project.\nAsking The Type System No one would want to rewrite parts of conditions like in the previous example. You would either alias each of intersection operands and test separately, or check for generic error. Maybe there could be a special tool that would return true if an argument can be applied by function, kind of like SFINAE in C++:\npseudocode cpp haskell  if fits glDrawElementsInstanced mode count _ indexBuffer _ ... else fail \"incorrect buffer size specified\"   if constexpr (fitsglDrawElementsInstanced, mode, count, _, indexBuffer, _()) ... else return std::unexpected(\"incorrect buffer size specified\");   if fits glDrawElementsInstanced mode count _ indexBuffer _ then ... else fail \"incorrect buffer size specified\"   Perhaps we could wrap it into a language’s error management systems/patterns somehow (I suggest to read all examples\npseudocode cpp haskell  try print (read MyStructure) catch error: TypeError print e.message   try constexpr { // haha  ... } catch (std::type_error e) { ... }   parseUser :: String - String - TypeCheck User parseUser name description = parsedName  parseName name parsedDesc  parseDesc desc return $ User name desc ... checkType (parseUser \"Jane Doe\" \"123\")\"   Synergizing Types To provide easiest experience when mixing runtime and compile-time computations, we could not only erase the boundary between type-level entities and value-level entities, but also erase the boundary between types and collections.\nIn the example below, types/functions could have other operations bound to them, allowing them to be used in listing all values from the time, like in collection. Certain things, like Integers could have these operations defined so that their behaviour is obvious.\npseudocode cpp haskell  for i: (0) // error: no end condition  print i for i: (10) // error: no start condition  print i for 0  i  10 print i // 12345678910   for (auto i: moreThan(0)) // error: no end condition (or `begin`)  std::cout  i; for (auto i: lessThan(10)) // error: no start condition (or `end`)  std::cout  i; for (auto i: valuesintersectlessThan(0), moreThan(10)()) std::cout  i; // 12345678910   map print (0) -- endless print map print ((0) \u0026 (10)) -- 12345678910   So, “more-than” type would provide a way to get the beginning of the collection, “less-than” specifies an ending, and integer would tell the compiler to increment value to get the next value. All three combined allow you to go through each value.\nCase Study: Calculated Values as Evidence Let’s review something less “arithmetic” in the context of this idea.\npseudocode cpp haskell  Creature = has ... NearEnemy c: Creature = c.faction != this.faction distance c.position this.position  this.attackRange attack target: this.NearEnemy = target.applyDamage this.getDamage attackClosestEnemy() = do nearEnemies = world.creatures this.NearEnemy attack (world.random.pick nearEnemies)   class Creature { ... auto NearEnemyconst Creature\u0026 c = intersectcondition(c.faction != faction), condition(distance(c.position, position)  attackRange); void attack(const NearEnemy\u0026 target) { target.applyDamage(getDamage()); } void attackClosestEnemy() { auto nearEnemies = values(intersectworld-creatures, NearEnemy); attack(world.random.pick(nearEnemies)); } };   nearEnemy :: Creature - Creature - Boolean nearEnemy c other = faction c != faction other \u0026\u0026 distance (position c) (position other)  attackRange c attack :: Creature - NearEnemy - GameState () attack this enemy = applyDamage enemy (damage this) attackClosestEnemy :: Creature - GameState () attackClosestEnemy this = creatures  getCreatures let nearEnemies = creatures \u0026 nearEnemy randomCreature  randomPick nearEnemies attack this randomCreature   All the work happens in nearEnemies - it goes through all creatures in the world and filters only those from different faction and in near attack range. attack then takes a value that is definitely a NearEnemy. I think this could be a great improvement in readability, coding speed, and safety.\nConclusion Of course, by “simpler types” I mean that they shouldn’t be simple in terms of implementation. Supporting things above with at compile type and with type erasure could take years of research of implementation. But it will be simpler from user perspective: there should less rules and limitations of what a user can write. For example, by C++17 standard, you are not allowed to capture structured bindings into lambdas. This is a pointless limitation that was fixed in the next standard. Not allowing runtime values in types is similar too. Whatever you write, it should work as expected, like a blackboard.\n",
+  "wordCount" : "2895",
+  "inLanguage": "en",
+  "datePublished": "2022-09-06T00:00:00Z",
+  "dateModified": "2022-09-06T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Vsevolod Kvachev"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://kvachev.com/blog/posts/we-need-simpler-types/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "rasie1's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kvachev.com/blog/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://kvachev.com/blog" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
+        </div>
+        <ul id="menu">
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                        <circle fill="var(--code-bg)" cx="12" cy="12" r="12"/>
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle fill="var(--code-bg)" stroke="none" cx="12" cy="12" r="12"/>
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+            <li>
+                <a href="https://kvachev.com/blog/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://kvachev.com/blog/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      We Need Simpler Types
+    </h1>
+    <div class="post-meta"><span title='2022-09-06 00:00:00 +0000 UTC'>September 6, 2022</span>&nbsp;·&nbsp;14 min&nbsp;·&nbsp;Vsevolod Kvachev
+
+</div>
+  </header> <div class="toc side right">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#possible-improvements-for-type-systems" aria-label="Possible Improvements For Type Systems">Possible Improvements For Type Systems</a></li>
+                <li>
+                    <a href="#notation" aria-label="Notation">Notation</a></li>
+                <li>
+                    <a href="#dependent-types-with-runtime-values" aria-label="Dependent Types With Runtime Values">Dependent Types With Runtime Values</a><ul>
+                        
+                <li>
+                    <a href="#laws" aria-label="Laws">Laws</a></li></ul>
+                </li>
+                <li>
+                    <a href="#complex-relations-expressed-with-type-system" aria-label="Complex Relations Expressed With Type System">Complex Relations Expressed With Type System</a><ul>
+                        
+                <li>
+                    <a href="#case-study-game-ui-bugs" aria-label="Case Study: Game UI Bugs">Case Study: Game UI Bugs</a><ul>
+                        
+                <li>
+                    <a href="#asking-the-type-system" aria-label="Asking The Type System">Asking The Type System</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#synergizing-types" aria-label="Synergizing Types">Synergizing Types</a><ul>
+                        
+                <li>
+                    <a href="#case-study-calculated-values-as-evidence" aria-label="Case Study: Calculated Values as Evidence">Case Study: Calculated Values as Evidence</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &ndash; we are moving in the right direction</p>
+<p><strong>Let&rsquo;s dream a bit</strong> and try to imagine what can be improved about type systems. Ability to limit and check variables and function arguments at compile time <em>multiplies development speeds by dozens of times</em>, but modern type systems are STILL not expressive enough - you mostly can filter out only quite basic errors. Functional programmers excel at making the wrong state inexpressible in terms of the type system, but static type systems still can&rsquo;t encode very complex logic and relations.</p>
+<p>Well, <a href="https://coq.inria.fr/">they do</a>, but it is absolutely unusable for casual coding, fast prototyping, and most industrial use cases.</p>
+<p>In certain fields, such as game development, the amount of rules gets crazy, and most interactions of related game mechanics can&rsquo;t even be covered with tests, not to mention types. But possibly this is only because type systems are too restrictive. They don&rsquo;t allow embedding crazy expressions from the the value level. Yet.</p>
+<h2 id="possible-improvements-for-type-systems">Possible Improvements For Type Systems<a hidden class="anchor" aria-hidden="true" href="#possible-improvements-for-type-systems">#</a></h2>
+<ol>
+<li>Types should be first-class objects. There should be convenient type lambdas</li>
+<li>Types should be allowed to contain value-level expressions (Refinement Types)</li>
+<li>Moreover, types could contain runtime values (Gradual Types)</li>
+<li>The same code should be usable both at compile time and execution time</li>
+<li>There should be runtime conditional expressions for type checks</li>
+<li>All definitions and type specifications should share context with the code they&rsquo;re in</li>
+<li>Type intersection is a fundamental operation for composing types</li>
+<li>BONUS: Types, sets, and functions should be unified with T̷y̷p̴e̷ ̵Fi̵l̷t̸e̵r̸s̴</li>
+<li>BONUS: I̸n̵v̶e̵r̶s̶e̷ f̵un̸c̴t̵i̴o̷n̴s̸ ̵s̵h̵o̸u̸l̸d̶ ̶e̷a̴s̶e̶ work with ̷a̴l̷l t̵y̷p̵e̸ ̴s̴p̵e̴c̵i̸f̵i̴c̵a̵t̷i̸o̵n̴s (next post)</li>
+<li>BONUS: Type/value union is another fundamental operation for representing indeterminism</li>
+</ol>
+<p><em>What in the name of satan is all of that?</em> Possibly, I&rsquo;ll explain everything in the next blog posts, but this time, let&rsquo;s just review some examples.</p>
+<h2 id="notation">Notation<a hidden class="anchor" aria-hidden="true" href="#notation">#</a></h2>
+<p>I&rsquo;ll use pseudocode in some semi-esoteric <a href="/blog/posts/c-of-x-intro/">language</a> for clarity. It&rsquo;s very expressive, so if you want something more conventional, you can change to pseudo-C++ or pseudo-Haskell in every code example - see tabs above code blocks. But I suggest to glimpse through all three.</p>
+<p>In this section, I&rsquo;ll explain shortly how to read the ideas described in this post.</p>
+<p>Firstly, this is how <strong>type intersection</strong> is done. This would be a fundamental operation for composing types.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="n">myVariable</span><span class="k">:</span> <span class="kt">MyType1</span>
+            <span class="nc">MyType2</span> <span class="o">&amp;</span> <span class="nc">MyType3</span>
+<span class="nc">MyIntersectionType</span> <span class="k">=</span> <span class="nc">MyType1</span> <span class="o">&amp;</span> <span class="nc">MyType2</span>
+                     <span class="nc">MyType3</span>
+<span class="nc">MyStruct</span> <span class="k">=</span> <span class="n">has</span> <span class="n">myField</span><span class="k">:</span>  <span class="kt">Integer</span>
+           <span class="n">has</span> <span class="n">myField2</span><span class="k">:</span> <span class="kt">String</span>
+<span class="c1">// Values of type MyStruct are limited to those which have
+</span><span class="c1">// both `myField` and `myField2` fields
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">intersect</span><span class="o">&lt;</span><span class="n">MyType1</span><span class="p">,</span> <span class="n">MyType2</span><span class="o">&gt;</span> <span class="n">myVariable</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">MyStruct</span> <span class="o">=</span> <span class="n">intersect</span><span class="o">&lt;</span><span class="k">struct</span> <span class="p">{</span> <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> <span class="p">},</span> 
+                           <span class="k">struct</span> <span class="p">{</span> <span class="kt">int</span> <span class="n">y</span><span class="p">;</span> <span class="p">}</span><span class="o">&gt;</span>
+<span class="c1">// Values of type MyStruct are limited to those which have
+</span><span class="c1">// both `myField` and `myField2` fields (struct { int x, y; })
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">type</span> <span class="kt">MyIntersectionType</span> <span class="ow">=</span> <span class="kt">MyType1</span> <span class="o">&amp;</span> <span class="kt">MyType2</span>
+<span class="kr">type</span> <span class="kt">MyStruct</span> <span class="ow">=</span> <span class="p">{</span> <span class="n">x</span> <span class="ow">::</span> <span class="kt">Integer</span> <span class="p">}</span>
+              <span class="o">&amp;</span> <span class="p">{</span> <span class="n">y</span> <span class="ow">::</span> <span class="kt">Bool</span>    <span class="p">}</span>
+<span class="c1">-- Values of type MyStruct are limited to those which have</span>
+<span class="c1">-- both `myField` and `myField2` fields (MyStruct { x :: Integer, y :: Bool })</span>
+</code></pre></div>
+        </div>
+    
+
+<p>In our magical language, type-level expressions could <strong>contain runtime values</strong>. This could be both constructed types and subtractive types that would filter out values of types they&rsquo;re intersecting with. For example, here we use &ldquo;myNaturalVariable&rdquo; in inline type definition:</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="n">myNaturalVariable</span><span class="k">:</span> <span class="kt">Integer</span>
+                   <span class="o">(&gt;=</span><span class="mi">0</span><span class="o">)</span>
+<span class="n">myVariableWithCondition</span><span class="k">:</span> <span class="o">{</span><span class="err">1</span><span class="o">,</span> <span class="err">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="n">myNaturalVariable</span><span class="o">}</span>
+                         <span class="k">if</span> <span class="n">myNaturalVariable</span> <span class="o">&gt;</span> <span class="mi">3</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">auto</span> <span class="n">positive</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">};</span>
+<span class="k">using</span> <span class="n">MyNaturalType</span> <span class="o">=</span> <span class="n">intersect</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">refine</span><span class="p">(</span><span class="n">positive</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">MyNaturalType</span> <span class="n">myNaturalVariable</span><span class="p">;</span>
+
+<span class="k">using</span> <span class="n">MyTypeWithCondition</span> <span class="o">=</span> <span class="n">intersect</span><span class="o">&lt;</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">myNaturalVariable</span><span class="p">},</span> 
+                                      <span class="n">condition</span><span class="p">(</span><span class="n">myNaturalVariable</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">type</span> <span class="kt">MyNaturalType</span> <span class="ow">=</span> <span class="kt">Integer</span> <span class="o">&amp;</span> <span class="n">refine</span> <span class="p">(</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="nf">myNaturalVariable</span> <span class="ow">::</span> <span class="kt">MyNaturalType</span>
+<span class="nf">myNaturalVariable</span> <span class="ow">=</span> <span class="mi">4</span>
+
+<span class="kr">type</span> <span class="kt">MyTypeWithCondition</span> <span class="ow">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">myNaturalVariable</span> <span class="p">]</span>
+                         <span class="o">&amp;</span> <span class="p">{</span> <span class="n">myNaturalVariable</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">}</span>
+</code></pre></div>
+        </div>
+    
+
+<p><em>Unique to this theoretical language</em>. Types should not only be on the same level as variables, but also they should act as functions, collections, and as true predicates. All these concepts can be unified with one syntax for a concept of &ldquo;type filter&rdquo;.</p>
+<p>In the examples for C++ and Haskell, I use <code>refine</code> function/keyword, which creates a refinement type out of function - otherwise, if we write just functions, it won&rsquo;t look as clear. Also, C++ doesn&rsquo;t allow type annotation of any value, so I can&rsquo;t apply &ldquo;type filter&rdquo; idea to it.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="mi">3</span><span class="k">:</span> <span class="kt">Int</span>
+<span class="n">print</span> <span class="o">(</span><span class="nc">Int</span> <span class="mi">3</span><span class="o">)</span>
+<span class="s">&#34;123&#34;</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="c1">// error
+</span><span class="c1"></span><span class="mi">4</span><span class="k">:</span> <span class="kt">&gt;</span><span class="err">0</span>          <span class="c1">// partially applied &#34;greater than zero&#34; function
+</span><span class="c1"></span>               <span class="c1">// acts as a type
+</span><span class="c1"></span><span class="o">(</span><span class="k">=</span><span class="mi">2</span><span class="o">)</span> <span class="mi">2</span> <span class="k">=</span> <span class="mi">2</span> <span class="k">:</span> <span class="o">(=</span><span class="err">2</span><span class="o">)</span> <span class="c1">// hellish mashup
+</span><span class="c1"></span><span class="mi">1</span><span class="k">:</span> <span class="o">(</span><span class="kt">x-&gt;</span><span class="err">1</span><span class="o">)</span> <span class="c1">// lambda as set/type
+</span><span class="c1"></span>
+<span class="n">myList</span> <span class="k">=</span> <span class="o">[</span><span class="err">1</span>, <span class="err">2</span>, <span class="err">3</span>, <span class="err">4</span>, <span class="err">5</span><span class="o">]</span> 
+<span class="c1">// with this syntax, there are some cool ways to say `map (1+) myList`:
+</span><span class="c1"></span><span class="n">print</span> <span class="o">(</span><span class="n">x</span><span class="k">:</span><span class="kt">myList</span> <span class="kt">-&gt;</span> <span class="kt">x+</span><span class="err">1</span><span class="o">)</span> <span class="c1">// [2, 3, 4. 5, 6]
+</span><span class="c1"></span><span class="n">print</span> <span class="o">{</span><span class="n">x</span><span class="k">:</span><span class="kt">myList</span> <span class="kt">+</span> <span class="err">1</span><span class="o">}</span>   <span class="c1">// [2, 3, 4. 5, 6]
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">auto</span> <span class="n">positive</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="p">};</span>
+<span class="n">refine</span><span class="p">(</span><span class="n">positive</span><span class="p">)</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// partially applied &#34;greater than zero&#34; function
+</span><span class="c1"></span>                    <span class="c1">// acts as a type
+</span><span class="c1"></span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="nf">x</span> <span class="ow">::</span> <span class="kt">Integer</span> <span class="o">&amp;</span> <span class="n">refine</span> <span class="p">(</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+<span class="s">&#34;123&#34;</span> <span class="ow">::</span> <span class="kt">Boolean</span> <span class="c1">-- error</span>
+<span class="mi">4</span> <span class="ow">::</span> <span class="n">refine</span> <span class="p">(</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="c1">-- partially applied greater than zero function</span>
+                 <span class="c1">-- acts as a type</span>
+</code></pre></div>
+        </div>
+    
+
+<h2 id="dependent-types-with-runtime-values">Dependent Types With Runtime Values<a hidden class="anchor" aria-hidden="true" href="#dependent-types-with-runtime-values">#</a></h2>
+<p>This is not possible anywhere now (is it?), but I&rsquo;m sure after 30 more years of research, we&rsquo;ll be able to do this in some experimental Haskell extension or language. Runtime values <em>can</em> be used in static types and erased after compilation, leaving dynamic checks only on entry points. Here is a simple example of what this could look like:</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="2" id="pseudocode" onclick="changeTabs(event, '2', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="2" id="cpp" onclick="changeTabs(event, '2', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="2" id="haskell" onclick="changeTabs(event, '2', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="2" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">Dog</span> <span class="k">=</span> <span class="n">has</span> <span class="n">isAwake</span><span class="k">:</span> <span class="kt">Boolean</span>
+          <span class="n">bark</span><span class="o">()</span> <span class="k">:</span> <span class="kt">String</span>     <span class="c1">// type intersection takes place
+</span><span class="c1"></span>                   <span class="k">if</span> <span class="n">isAwake</span> <span class="c1">// String &amp; (if not isAwake)
+</span><span class="c1"></span>                 <span class="k">=</span> <span class="s">&#34;woof&#34;</span>
+
+<span class="n">dog</span><span class="k">:</span> <span class="kt">Dog</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">isAwake</span> <span class="k">&lt;-</span> <span class="n">read</span> <span class="nc">Boolean</span>
+<span class="n">print</span> <span class="n">dog</span><span class="o">.</span><span class="n">bark</span><span class="o">()</span> <span class="c1">// error: can&#39;t apply `dog.bark`, 
+</span><span class="c1"></span>                 <span class="c1">//        `dog.isAwake` could be false
+</span><span class="c1"></span><span class="k">if</span> <span class="n">dog</span><span class="o">.</span><span class="n">isAwake</span> <span class="c1">// theoretical &#34;if&#34; intersects types with 
+</span><span class="c1"></span>               <span class="c1">// information from the condition
+</span><span class="c1"></span>    <span class="n">print</span> <span class="n">dog</span><span class="o">.</span><span class="n">bark</span><span class="o">()</span> <span class="c1">// woof
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="2" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">Dog</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">isAwake</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="nf">bark</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">intersect</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">condition</span><span class="p">(</span><span class="n">isAwake</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&#34;woof&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">...</span>
+<span class="n">Dog</span> <span class="n">dog</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">dog</span><span class="p">.</span><span class="n">isAwake</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">dog</span><span class="p">.</span><span class="n">bark</span><span class="p">();</span> <span class="c1">// error: can&#39;t apply `Dog::bark`, 
+</span><span class="c1"></span>                         <span class="c1">//        `dog.isAwake` could be false
+</span><span class="c1"></span><span class="k">if</span> <span class="nf">auto</span> <span class="p">(</span><span class="n">dog</span><span class="p">.</span><span class="n">isAwake</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// theoretical &#34;if auto&#34; intersects types with 
+</span><span class="c1"></span>                        <span class="c1">// information from the condition
+</span><span class="c1"></span>                        <span class="c1">// (of course, I had to invent another use for auto)
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">dog</span><span class="p">.</span><span class="n">bark</span><span class="p">();</span> <span class="c1">// woof
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="2" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Dog</span> <span class="ow">=</span> <span class="kt">Dog</span> <span class="p">{</span> <span class="n">isAwake</span> <span class="ow">::</span> <span class="kt">Boolean</span> <span class="p">}</span>
+<span class="nf">bark</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">this</span> <span class="ow">::</span> <span class="kt">Dog</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="o">&amp;</span> <span class="kr">if</span> <span class="n">isAwake</span> <span class="n">this</span>
+<span class="nf">bark</span> <span class="n">this</span> <span class="ow">=</span> <span class="s">&#34;woof&#34;</span>
+
+<span class="nf">main</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="nb">()</span>
+<span class="nf">main</span> <span class="ow">=</span> <span class="kr">do</span>
+    <span class="n">isDogAwake</span> <span class="ow">&lt;-</span> <span class="n">getLine</span>
+    <span class="kr">let</span> <span class="n">dog</span> <span class="ow">=</span> <span class="kt">Dog</span> <span class="p">{</span> <span class="n">isAwake</span> <span class="ow">=</span> <span class="p">(</span><span class="n">read</span> <span class="n">isDogAwake</span> <span class="ow">::</span> <span class="kt">Boolean</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">print</span> <span class="o">$</span> <span class="n">bark</span> <span class="n">dog</span> <span class="c1">-- error: can&#39;t apply `bark`, </span>
+                     <span class="c1">--        `dog.isAwake` could be false</span>
+    <span class="n">if&#39;</span> <span class="n">isAwake</span> <span class="n">dog</span> <span class="kr">then</span> <span class="c1">-- theoretical &#34;if&#39;&#34; intersects types </span>
+                         <span class="c1">-- with information from the condition</span>
+        <span class="n">print</span> <span class="o">$</span> <span class="n">bark</span> <span class="n">dog</span> <span class="c1">-- woof</span>
+</code></pre></div>
+        </div>
+    
+
+<p>My dog actually can bark while sleeping, but in the example above, you won&rsquo;t be able to call <code>bark</code> function without guaranteeing that <code>isAwake</code> is false.</p>
+<p>Here is one more example of the same concept:</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">Dog</span> <span class="k">=</span> <span class="n">has</span> <span class="n">maxFood</span> <span class="k">=</span> <span class="mi">10</span>
+          <span class="n">food</span><span class="k">:</span> <span class="kt">&gt;=</span> <span class="err">0</span>
+                <span class="kt">&lt;=</span> <span class="kt">maxFood</span>
+          <span class="n">isHungry</span> <span class="k">=</span> <span class="n">food</span> <span class="o">!=</span> <span class="n">maxFood</span>
+
+          <span class="n">eat</span> <span class="n">newFood</span> <span class="k">:</span> <span class="kt">where</span> <span class="kt">newFood</span> <span class="kt">+</span> <span class="kt">food</span> <span class="kt">&lt;</span> <span class="kt">maxFood</span>
+                        <span class="k">if</span> <span class="n">isHungry</span>
+                      <span class="k">=</span> <span class="n">food</span> <span class="k">&lt;-</span> <span class="n">food</span> <span class="o">+</span> <span class="n">newFood</span>
+    
+<span class="n">dog</span><span class="k">:</span> <span class="kt">Dog</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">food</span> <span class="k">&lt;-</span> <span class="mi">2</span>
+
+<span class="n">dog</span><span class="o">.</span><span class="n">eat</span> <span class="o">(</span><span class="n">read</span> <span class="nc">Integer</span><span class="o">)</span> <span class="c1">// error: argument newFood doesn&#39;t satisfy `newFood + food &lt; maxFood` and `isHungry`
+</span><span class="c1"></span><span class="n">read</span> <span class="nc">Integer</span> <span class="k">:</span> <span class="kt">clamp</span> <span class="err">0</span> <span class="err">5</span> <span class="kt">:</span> <span class="kt">dog.eat</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">Dog</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">maxFood</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">intersect</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> 
+              <span class="n">refine</span><span class="p">(</span><span class="n">greaterEqualThan</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> 
+              <span class="n">refine</span><span class="p">(</span><span class="n">lessEqualThan</span><span class="p">(</span><span class="n">maxFood</span><span class="p">))</span>
+        <span class="o">&gt;</span> <span class="n">food</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="nf">isHungry</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">food</span> <span class="o">!=</span> <span class="n">maxFood</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">auto</span> <span class="nf">eat</span><span class="p">(</span><span class="kt">int</span> <span class="n">newFood</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">intersect</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">,</span>
+            <span class="n">condition</span><span class="p">(</span><span class="n">newFood</span> <span class="o">+</span> <span class="n">food</span> <span class="o">&lt;</span> <span class="n">maxFood</span><span class="p">),</span>
+            <span class="n">condition</span><span class="p">(</span><span class="n">isHungry</span><span class="p">())</span>
+        <span class="o">&gt;</span>
+    <span class="p">{</span>
+        <span class="n">food</span> <span class="o">+=</span> <span class="n">newFood</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">...</span>
+
+<span class="n">Dog</span> <span class="n">dog</span><span class="p">;</span>
+<span class="n">dog</span><span class="p">.</span><span class="n">food</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">newFood</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">newFood</span><span class="p">;</span>
+<span class="n">dog</span><span class="p">.</span><span class="n">eat</span><span class="p">(</span><span class="n">newFood</span><span class="p">);</span> <span class="c1">// error: argument newFood doesn&#39;t satisfy 
+</span><span class="c1"></span>                  <span class="c1">//`newFood + food &lt; maxFood` and `isHungry`
+</span><span class="c1"></span>
+<span class="n">dog</span><span class="p">.</span><span class="n">eat</span><span class="p">(</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">newFood</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="c1">// no error
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">type</span> <span class="kt">Dog</span> <span class="ow">=</span> <span class="p">{</span> <span class="n">maxFood</span> <span class="ow">::</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">food</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="o">&amp;</span> <span class="n">refine</span> <span class="p">(</span><span class="o">&lt;=</span><span class="n">maxFood</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">isHungry</span> <span class="n">dog</span> <span class="ow">=</span> <span class="n">food</span> <span class="n">dog</span> <span class="o">!=</span> <span class="n">maxFood</span>
+<span class="nf">eat</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">this</span> <span class="ow">::</span> <span class="kt">Dog</span> <span class="p">}</span> 
+    <span class="ow">-&gt;</span> <span class="p">{</span> <span class="n">newFood</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="p">}</span> 
+    <span class="ow">-&gt;</span> <span class="kt">Dog</span> <span class="o">&amp;</span> <span class="kr">if</span> <span class="n">isHungry</span> <span class="o">&amp;</span> <span class="kr">if</span> <span class="n">food</span> <span class="n">this</span> <span class="o">+</span> <span class="n">newFood</span> <span class="o">&lt;</span> <span class="n">maxFood</span> <span class="n">this</span>
+    <span class="ow">=</span> <span class="o">...</span>
+
+<span class="o">...</span>
+<span class="nf">main</span> <span class="ow">=</span> <span class="kr">do</span>
+    <span class="n">foodToEatInput</span> <span class="ow">&lt;-</span> <span class="n">getLine</span>
+    <span class="kr">let</span> <span class="n">foodToEat</span> <span class="ow">=</span> <span class="n">read</span> <span class="n">foodToEatInput</span> <span class="ow">::</span> <span class="kt">Int</span>
+    <span class="kr">let</span> <span class="n">dog</span> <span class="ow">=</span> <span class="kt">Dog</span> <span class="p">{</span> <span class="n">food</span> <span class="ow">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">maxFood</span> <span class="ow">=</span> <span class="mi">10</span> <span class="p">}</span>
+    <span class="n">print</span> <span class="o">$</span> <span class="n">eat</span> <span class="n">dog</span> <span class="n">footToEat</span> <span class="c1">-- error: argument newFood doesn&#39;t satisfy:</span>
+                              <span class="c1">-- - food this + newFodd &lt; maxFood this  </span>
+                              <span class="c1">-- - isHungry</span>
+
+    <span class="kr">let</span> <span class="n">foodToEatLimited</span> <span class="ow">=</span> <span class="n">clamp</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="n">newFood</span>
+    <span class="n">print</span> <span class="o">$</span> <span class="n">eat</span> <span class="n">dog</span> <span class="n">footToEat</span> <span class="c1">-- no error</span>
+
+</code></pre></div>
+        </div>
+    
+
+<h3 id="laws">Laws<a hidden class="anchor" aria-hidden="true" href="#laws">#</a></h3>
+<p>It can be implementation-dependent whether the value is actually stored in memory, or is it inferred at compile time like an evidence and discarded immediately. Perhaps things like implication and abstract value could be cleaner than a typed variable.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">Dog</span> <span class="k">=</span> <span class="n">has</span>
+    <span class="o">...</span>
+    <span class="n">food</span> <span class="o">&lt;</span> <span class="n">maxFood</span> <span class="k">=&gt;</span> <span class="n">isHungry</span>
+    <span class="o">...</span>
+
+<span class="n">dog</span><span class="k">:</span> <span class="kt">Dog</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">food</span> <span class="k">&lt;-</span> <span class="n">read</span> <span class="o">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="k">_</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="o">)</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">eat</span> <span class="mi">1</span> <span class="c1">// error: couldn&#39;t satisfy `isHungry` (`food &lt;= maxFood`)
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Dog</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">implication</span><span class="p">(</span><span class="n">food</span> <span class="o">&lt;</span> <span class="n">maxFood</span><span class="p">,</span> <span class="n">isHungry</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">};</span>
+
+<span class="n">Dog</span> <span class="n">dog</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">dog</span><span class="p">.</span><span class="n">food</span><span class="p">;</span>
+<span class="n">dog</span><span class="p">.</span><span class="n">eat</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// error: couldn&#39;t satisfy `isHungry` (`food &lt;= maxFood`)
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <p>type Dog = { maxFood :: Int, food :: Int &amp; refine (&lt;=maxFood) }
+isHungry dog = food &lt; maxFood
+eat :: { isHungry dog } =&gt; { dog :: Dog } -&gt; Dog</p>
+<p>main = do
+foodInput &lt;- getLine
+let dog = Dog { food = (read foodInput :: Int), maxFood = 10 }
+print $ eat dog 1 &ndash; error: couldn&rsquo;t satisfy <code>isHungry</code> (<code>food &lt;= maxFood</code>)</p>
+
+        </div>
+    
+
+<p>There is enough information for <code>isHungry</code> flag would be completely erased on runtime, even though no values are known at compile time: all checks are performed outside on input, conversions, and manual tests!</p>
+<p>By the way, this actually resembles logic programming on Prolog and similar systems.</p>
+<h2 id="complex-relations-expressed-with-type-system">Complex Relations Expressed With Type System<a hidden class="anchor" aria-hidden="true" href="#complex-relations-expressed-with-type-system">#</a></h2>
+<p>Static typing in popular languages is very good for letting you know about typos, misplaced arguments, and other minor mess-ups. But it is usually too concrete to give a programmer the ability to express higher concepts and rule out possibilities of behavior-related bugs. While proposed ideas obviously can&rsquo;t solve all of them, it&rsquo;s certainly useful to let users describe more details of the system using the tools in the language.</p>
+<h3 id="case-study-game-ui-bugs">Case Study: Game UI Bugs<a hidden class="anchor" aria-hidden="true" href="#case-study-game-ui-bugs">#</a></h3>
+<p>Let&rsquo;s suppose that in some game, the player is suggested to select one or more goods at the same time and click upgrade button to buy selected goods for his gold. There are many kinds of bugs for UI to protect from, such as</p>
+<ul>
+<li>buying 0 goods</li>
+<li>spending all gold in some other window and then buying something in this window because it wasn&rsquo;t updated</li>
+<li>somehow buying things twice at the same time</li>
+<li>buying things for less gold than required</li>
+</ul>
+<p>These errors need to be explicitly warned in UI - that means that every bug has to be mentally (and sometimes physically) procesed multiple times. It would be good to remove this burden from an UI implementor. He would be warned of each bug and he will be forced to handle each case that is described right in the type system.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">GoodInShop</span> <span class="k">=</span> <span class="n">has</span> <span class="n">item</span><span class="k">:</span> <span class="kt">InventoryItem</span>
+                      <span class="n">cost</span><span class="k">:</span> <span class="kt">Cost</span>
+<span class="nc">Shop</span> <span class="k">=</span> <span class="n">has</span>
+    <span class="o">...</span>
+    <span class="n">player</span><span class="k">:</span> <span class="kt">Player</span>
+    <span class="n">buy</span> <span class="n">goods</span> <span class="k">=</span> <span class="o">...</span>
+        <span class="n">where</span> <span class="n">goods</span><span class="k">:</span> <span class="err">[</span><span class="kt">GoodInShop</span><span class="err">]</span>
+              <span class="kt">this.player.gold</span> <span class="kt">&gt;=</span> <span class="kt">fold</span> <span class="o">(</span><span class="kt">+</span><span class="o">)</span> <span class="o">(</span><span class="kt">x:goods</span> <span class="kt">-&gt;</span> <span class="kt">x.cost</span><span class="o">)</span>
+              <span class="kt">not</span> <span class="kt">goods.isEmpty</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">GoodInShop</span> <span class="p">{</span>
+    <span class="n">InventoryItem</span> <span class="n">item</span><span class="p">;</span>
+    <span class="n">Cost</span> <span class="n">cost</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Shop</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="k">using</span> <span class="n">GoodsToBuy</span> <span class="o">=</span> <span class="n">intersect</span><span class="p">(</span>
+        <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;&amp;</span><span class="p">,</span> <span class="c1">// wrong
+</span><span class="c1"></span>        <span class="n">refine</span><span class="p">([](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;&amp;</span> <span class="n">goods</span><span class="p">){</span> <span class="k">return</span> <span class="o">!</span><span class="n">goods</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span> <span class="p">}),</span>
+        <span class="n">refine</span><span class="p">([</span><span class="k">this</span><span class="p">](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;&amp;</span> <span class="n">goods</span><span class="p">){</span> 
+            <span class="k">return</span> <span class="n">player</span><span class="o">-&gt;</span><span class="n">gold</span><span class="p">()</span> <span class="o">&gt;=</span> 
+                       <span class="n">std</span><span class="o">::</span><span class="n">ranges</span><span class="o">::</span><span class="n">accumulate</span><span class="p">(</span><span class="n">goods</span><span class="p">,</span> <span class="mi">0</span> <span class="p">[](</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span><span class="n">y</span><span class="p">){</span> 
+                                                    <span class="k">return</span> <span class="n">x</span><span class="p">.</span><span class="n">cost</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">cost</span><span class="p">;}</span>
+                                              <span class="p">);</span> 
+        <span class="p">})</span>
+    <span class="p">);</span>
+    <span class="kt">void</span> <span class="nf">buy</span><span class="p">(</span><span class="n">GoodsToBuy</span> <span class="n">goods</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">GoodInShop</span> <span class="ow">=</span> <span class="kt">GoodInShop</span> <span class="p">{</span> <span class="n">inventoryItem</span> <span class="ow">::</span> <span class="kt">InventoryItem</span><span class="p">,</span> <span class="n">cost</span> <span class="ow">::</span> <span class="kt">Cost</span> <span class="p">}</span>
+<span class="kr">type</span> <span class="kt">BuyOrder</span> <span class="ow">=</span> <span class="p">(</span><span class="kt">Player</span><span class="p">,</span> <span class="p">[</span><span class="kt">GoodInShop</span><span class="p">])</span>
+                <span class="o">&amp;</span> <span class="n">refine</span> <span class="p">((</span><span class="o">!=</span><span class="kt">[]</span><span class="p">)</span> <span class="o">.</span> <span class="n">snd</span><span class="p">)</span> 
+                <span class="o">&amp;</span> <span class="n">refine</span> <span class="p">(</span><span class="nf">\</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">goods</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">foldl</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">gold</span> <span class="n">player</span><span class="p">)</span>
+<span class="nf">buy</span> <span class="ow">::</span> <span class="kt">PlayerId</span> <span class="ow">-&gt;</span> <span class="kt">GoodsToBuy</span> <span class="ow">-&gt;</span> <span class="kt">Shop</span> <span class="nb">()</span>
+</code></pre></div>
+        </div>
+    
+
+<p>How a game designer could try to use it at first in UI layer:</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">ShopWindowWidget</span><span class="o">.</span><span class="n">buyButton</span><span class="o">.</span><span class="n">onClick</span> <span class="k">=</span> <span class="k">do</span>
+    <span class="n">goodToBuy</span><span class="k">:</span> <span class="kt">this.goodsBox.children</span>
+               <span class="nc">GoodInShop</span>
+    <span class="n">goodToBuy</span><span class="o">.</span><span class="nc">Selected</span> <span class="k">=</span> <span class="kc">true</span>
+
+    <span class="k">this</span><span class="o">.</span><span class="n">shop</span><span class="o">.</span><span class="n">buy</span> <span class="o">{</span><span class="n">goodToBuy</span><span class="o">}</span> <span class="c1">// error:
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">...</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">buyButton</span><span class="o">-&gt;</span><span class="n">onClick</span><span class="p">([</span><span class="k">this</span><span class="p">](){</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;</span> <span class="n">goodsToBuy</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">child</span><span class="p">:</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">goodsBox</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">auto</span> <span class="n">goodToBuy</span> <span class="o">=</span> <span class="n">Cast</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;</span><span class="p">(</span><span class="n">child</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">goodToBuy</span><span class="p">.</span><span class="n">Selected</span><span class="p">)</span>
+                    <span class="n">goodsToBuy</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">goodToBuy</span><span class="p">.</span><span class="n">good</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">shop</span><span class="o">-&gt;</span><span class="n">buy</span><span class="p">(</span><span class="n">goodsToBuy</span><span class="p">);</span> <span class="c1">// error:
+</span><span class="c1"></span>    <span class="p">});</span>
+<span class="p">...</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell">    <span class="o">...</span>
+    <span class="n">button</span> <span class="ow">&lt;-</span> <span class="n">makeButton</span> <span class="s">&#34;BuyButton&#34;</span> <span class="o">$</span> <span class="kr">do</span>
+        <span class="n">goodsToBuy</span> <span class="ow">&lt;-</span> <span class="n">getSelectedGoods</span>
+        <span class="n">buy</span> <span class="n">shop</span> <span class="n">goodsToBuy</span> <span class="o">//</span> <span class="ne">error</span><span class="kt">:</span> 
+    <span class="o">...</span>
+
+<span class="nf">getSelectedGoods</span> <span class="ow">::</span> <span class="kt">GUI</span> <span class="p">[</span><span class="kt">GoodInShop</span><span class="p">]</span>
+<span class="nf">getSelectedGoods</span> <span class="ow">=</span> <span class="kr">do</span>
+    <span class="o">...</span>
+</code></pre></div>
+        </div>
+    
+
+<p>Type system immediately will stop him, noting that <code>goodsToBuy</code> can be empty and that he didn&rsquo;t handle the case when there is not enough gold. User can then probably handle these cases like that</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">ShopWindowWidget</span><span class="o">.</span><span class="n">buyButton</span><span class="o">.</span><span class="n">onClick</span> <span class="k">=</span> <span class="k">do</span>
+    <span class="n">goodToBuy</span><span class="k">:</span> <span class="kt">this.goodsBox.children</span>
+               <span class="nc">GoodInShop</span>
+    <span class="n">goodToBuy</span><span class="o">.</span><span class="nc">Selected</span> <span class="k">=</span> <span class="kc">true</span>
+
+    <span class="k">if</span> <span class="n">isEmpty</span> <span class="n">goodToBuy</span>
+        <span class="k">this</span><span class="o">.</span><span class="n">displayNoGoodsSelected</span><span class="o">()</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="k">this</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&lt;</span> <span class="n">fold</span> <span class="o">(+)</span> <span class="o">(</span><span class="n">x</span><span class="k">:</span><span class="kt">goods</span> <span class="kt">-&gt;</span> <span class="kt">x.cost</span><span class="o">)</span>
+        <span class="k">this</span><span class="o">.</span><span class="n">displayNotEnoughGold</span><span class="o">()</span>
+    <span class="k">else</span>
+        <span class="k">this</span><span class="o">.</span><span class="n">shop</span><span class="o">.</span><span class="n">buy</span> <span class="o">{</span><span class="n">goodToBuy</span><span class="o">}</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">...</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">buyButton</span><span class="o">-&gt;</span><span class="n">onClick</span><span class="p">([</span><span class="k">this</span><span class="p">](){</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;</span> <span class="n">goodsToBuy</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">child</span><span class="p">:</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">goodsBox</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="nf">auto</span> <span class="p">(</span><span class="k">auto</span> <span class="n">goodToBuy</span> <span class="o">=</span> <span class="n">Cast</span><span class="o">&lt;</span><span class="n">GoodInShop</span><span class="o">&gt;</span><span class="p">(</span><span class="n">child</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="k">auto</span> <span class="p">(</span><span class="n">goodToBuy</span><span class="p">.</span><span class="n">Selected</span><span class="p">)</span>
+                    <span class="n">goodsToBuy</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">goodToBuy</span><span class="p">.</span><span class="n">good</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nf">auto</span> <span class="p">(</span><span class="n">goodsToBuy</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+            <span class="n">displayNoGoodsSelected</span><span class="p">();</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="nf">auto</span> <span class="p">(</span><span class="n">player</span><span class="o">-&gt;</span><span class="n">gold</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">std</span><span class="o">::</span><span class="n">ranges</span><span class="o">::</span><span class="n">accumulate</span><span class="p">(</span><span class="n">goods</span><span class="p">,</span> <span class="n">Goods</span><span class="o">::</span><span class="n">cost</span><span class="p">))</span>
+            <span class="n">displayNotEnoughGold</span><span class="p">();</span>
+        <span class="k">else</span> 
+            <span class="k">this</span><span class="o">-&gt;</span><span class="n">shop</span><span class="o">-&gt;</span><span class="n">buy</span><span class="p">(</span><span class="n">goodsToBuy</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">...</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell">    <span class="o">...</span>
+    <span class="n">button</span> <span class="ow">&lt;-</span> <span class="n">makeButton</span> <span class="s">&#34;BuyButton&#34;</span> <span class="o">$</span> <span class="kr">do</span>
+        <span class="n">goodsToBuy</span> <span class="ow">&lt;-</span> <span class="n">getSelectedGoods</span>
+        <span class="n">buy</span> <span class="n">shop</span> <span class="n">goodsToBuy</span>
+    <span class="o">...</span>
+
+<span class="nf">getSelectedGoods</span> <span class="ow">::</span> <span class="kt">GUI</span> <span class="p">[</span><span class="kt">GoodInShop</span><span class="p">]</span>
+<span class="nf">getSelectedGoods</span> <span class="ow">=</span> <span class="kr">do</span>
+    <span class="o">...</span>
+</code></pre></div>
+        </div>
+    
+
+<p>Now, type system quickly ensures that the player will never have less gold than needed on calling <code>buy</code>, and it won&rsquo;t allow passing an empty array or any other incorrect data. It would make sense to name give these types/rules simple names and reuse them across the project.</p>
+<h4 id="asking-the-type-system">Asking The Type System<a hidden class="anchor" aria-hidden="true" href="#asking-the-type-system">#</a></h4>
+<p>No one would want to rewrite parts of conditions like in the previous example. You would either alias each of intersection operands and test separately, or check for generic error. Maybe there could be a special tool that would return true if an argument can be applied by function, kind of like SFINAE in C++:</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="k">if</span> <span class="n">fits</span> <span class="n">glDrawElementsInstanced</span> <span class="n">mode</span> <span class="n">count</span> <span class="k">_</span> <span class="n">indexBuffer</span> <span class="k">_</span>
+    <span class="o">...</span>
+<span class="k">else</span>
+    <span class="n">fail</span> <span class="s">&#34;incorrect buffer size specified&#34;</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span> <span class="nf">constexpr</span> <span class="p">(</span><span class="n">fits</span><span class="o">&lt;</span><span class="n">glDrawElementsInstanced</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">indexBuffer</span><span class="p">,</span> <span class="n">_</span><span class="o">&gt;</span><span class="p">())</span>
+    <span class="p">...</span>
+<span class="k">else</span>
+    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">unexpected</span><span class="p">(</span><span class="s">&#34;incorrect buffer size specified&#34;</span><span class="p">);</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="kr">if</span> <span class="n">fits</span> <span class="n">glDrawElementsInstanced</span> <span class="n">mode</span> <span class="n">count</span> <span class="kr">_</span> <span class="n">indexBuffer</span> <span class="kr">_</span> <span class="kr">then</span>
+    <span class="o">...</span>
+<span class="kr">else</span>
+    <span class="n">fail</span> <span class="s">&#34;incorrect buffer size specified&#34;</span>
+</code></pre></div>
+        </div>
+    
+
+<p>Perhaps we could wrap it into a language&rsquo;s error management systems/patterns somehow (I suggest to read all examples</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="k">try</span>
+    <span class="n">print</span> <span class="o">(</span><span class="n">read</span> <span class="nc">MyStructure</span><span class="o">)</span>
+<span class="k">catch</span> <span class="n">error</span><span class="k">:</span> <span class="kt">TypeError</span>
+    <span class="n">print</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">try</span> <span class="k">constexpr</span> <span class="p">{</span> <span class="c1">// haha
+</span><span class="c1"></span>    <span class="p">...</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">type_error</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="nf">parseUser</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">TypeCheck</span> <span class="kt">User</span>
+<span class="nf">parseUser</span> <span class="n">name</span> <span class="n">description</span> <span class="ow">=</span> 
+    <span class="n">parsedName</span> <span class="ow">&lt;-</span> <span class="n">parseName</span> <span class="n">name</span>
+    <span class="n">parsedDesc</span> <span class="ow">&lt;-</span> <span class="n">parseDesc</span> <span class="n">desc</span>
+    <span class="n">return</span> <span class="o">$</span> <span class="kt">User</span> <span class="n">name</span> <span class="n">desc</span>
+    
+<span class="o">...</span>
+    <span class="n">checkType</span> <span class="p">(</span><span class="n">parseUser</span> <span class="s">&#34;Jane Doe&#34;</span> <span class="s">&#34;123&#34;</span><span class="p">)</span><span class="s">&#34;
+</span></code></pre></div>
+        </div>
+    
+
+<h2 id="synergizing-types">Synergizing Types<a hidden class="anchor" aria-hidden="true" href="#synergizing-types">#</a></h2>
+<p>To provide easiest experience when mixing runtime and compile-time computations, we could not only erase the boundary between type-level entities and value-level entities, but also erase the boundary between types and collections.</p>
+<p>In the example below, types/functions could have other operations bound to them, allowing them to be used in listing all values from the time, like in collection. Certain things, like Integers could have these operations defined so that their behaviour is obvious.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="k">for</span> <span class="n">i</span><span class="k">:</span> <span class="o">(</span><span class="kt">&gt;</span><span class="err">0</span><span class="o">)</span> <span class="c1">// error: no end condition
+</span><span class="c1"></span>    <span class="n">print</span> <span class="n">i</span>
+<span class="k">for</span> <span class="n">i</span><span class="k">:</span> <span class="o">(</span><span class="kt">&lt;</span><span class="err">10</span><span class="o">)</span> <span class="c1">// error: no start condition
+</span><span class="c1"></span>    <span class="n">print</span> <span class="n">i</span>
+<span class="k">for</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span>
+    <span class="n">print</span> <span class="n">i</span> <span class="c1">// 12345678910
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">i</span><span class="p">:</span> <span class="n">moreThan</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="c1">// error: no end condition (or `begin`)
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">i</span><span class="p">:</span> <span class="n">lessThan</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="c1">// error: no start condition (or `end`)
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">i</span><span class="p">:</span> <span class="n">values</span><span class="o">&lt;</span><span class="n">intersect</span><span class="o">&lt;</span><span class="n">lessThan</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">moreThan</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="p">())</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// 12345678910
+</span></code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="nf">map</span> <span class="n">print</span> <span class="p">(</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="c1">-- endless print</span>
+<span class="nf">map</span> <span class="n">print</span> <span class="p">((</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">))</span> <span class="c1">-- 12345678910</span>
+</code></pre></div>
+        </div>
+    
+
+<p>So, &ldquo;more-than&rdquo; type would provide a way to get the beginning of the collection, &ldquo;less-than&rdquo; specifies an ending, and integer would tell the compiler to increment value to get the next value. All three combined allow you to go through each value.</p>
+<h3 id="case-study-calculated-values-as-evidence">Case Study: Calculated Values as Evidence<a hidden class="anchor" aria-hidden="true" href="#case-study-calculated-values-as-evidence">#</a></h3>
+<p>Let&rsquo;s review something less &ldquo;arithmetic&rdquo; in the context of this idea.</p>
+
+
+<div class="tab">
+    
+        
+        <button class="tablinks" data-tabset="1" id="pseudocode" onclick="changeTabs(event, '1', 'pseudocode')">pseudocode</button>
+        
+        <button class="tablinks" data-tabset="1" id="cpp" onclick="changeTabs(event, '1', 'cpp')">cpp</button>
+        
+        <button class="tablinks" data-tabset="1" id="haskell" onclick="changeTabs(event, '1', 'haskell')">haskell</button>
+        
+    
+</div>
+
+
+    
+        <div class="tabcontent" data-tabset="1" id="pseudocode">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="nc">Creature</span> <span class="k">=</span> <span class="n">has</span>
+    <span class="o">...</span>
+    <span class="nc">NearEnemy</span> <span class="n">c</span><span class="k">:</span> <span class="kt">Creature</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">faction</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="n">faction</span>
+                           <span class="n">distance</span> <span class="n">c</span><span class="o">.</span><span class="n">position</span> <span class="k">this</span><span class="o">.</span><span class="n">position</span> <span class="o">&lt;</span> <span class="k">this</span><span class="o">.</span><span class="n">attackRange</span>
+    <span class="n">attack</span> <span class="n">target</span><span class="k">:</span> <span class="kt">this.NearEnemy</span> <span class="o">=</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">applyDamage</span> <span class="k">this</span><span class="o">.</span><span class="n">getDamage</span>
+
+    <span class="n">attackClosestEnemy</span><span class="o">()</span> <span class="k">=</span> <span class="k">do</span>
+        <span class="n">nearEnemies</span> <span class="k">=</span> <span class="n">world</span><span class="o">.</span><span class="n">creatures</span>
+                      <span class="k">this</span><span class="o">.</span><span class="nc">NearEnemy</span>
+        <span class="n">attack</span> <span class="o">(</span><span class="n">world</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">pick</span> <span class="n">nearEnemies</span><span class="o">)</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="cpp">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Creature</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="k">auto</span> <span class="n">NearEnemy</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Creature</span><span class="o">&amp;</span> <span class="n">c</span><span class="o">&gt;</span> <span class="o">=</span> 
+        <span class="n">intersect</span><span class="o">&lt;</span><span class="n">condition</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">faction</span> <span class="o">!=</span> <span class="n">faction</span><span class="p">),</span>
+                  <span class="n">condition</span><span class="p">(</span><span class="n">distance</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">position</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">attackRange</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="nf">attack</span><span class="p">(</span><span class="k">const</span> <span class="n">NearEnemy</span><span class="o">&amp;</span> <span class="n">target</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">target</span><span class="p">.</span><span class="n">applyDamage</span><span class="p">(</span><span class="n">getDamage</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">attackClosestEnemy</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">nearEnemies</span> <span class="o">=</span> <span class="n">values</span><span class="p">(</span><span class="n">intersect</span><span class="o">&lt;</span><span class="n">world</span><span class="o">-&gt;</span><span class="n">creatures</span><span class="p">,</span>
+                                            <span class="n">NearEnemy</span><span class="o">&gt;</span><span class="p">);</span>
+        <span class="n">attack</span><span class="p">(</span><span class="n">world</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">pick</span><span class="p">(</span><span class="n">nearEnemies</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+        </div>
+    
+        <div class="tabcontent" data-tabset="1" id="haskell">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="nf">nearEnemy</span> <span class="ow">::</span> <span class="kt">Creature</span> <span class="ow">-&gt;</span> <span class="kt">Creature</span> <span class="ow">-&gt;</span> <span class="kt">Boolean</span>
+<span class="nf">nearEnemy</span> <span class="n">c</span> <span class="n">other</span> <span class="ow">=</span> <span class="n">faction</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">faction</span> <span class="n">other</span> 
+                 <span class="o">&amp;&amp;</span> <span class="n">distance</span> <span class="p">(</span><span class="n">position</span> <span class="n">c</span><span class="p">)</span> <span class="p">(</span><span class="n">position</span> <span class="n">other</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">attackRange</span> <span class="n">c</span>
+
+<span class="nf">attack</span> <span class="ow">::</span> <span class="kt">Creature</span> <span class="ow">-&gt;</span> <span class="kt">NearEnemy</span> <span class="ow">-&gt;</span> <span class="kt">GameState</span> <span class="nb">()</span>
+<span class="nf">attack</span> <span class="n">this</span> <span class="n">enemy</span> <span class="ow">=</span> <span class="n">applyDamage</span> <span class="n">enemy</span> <span class="p">(</span><span class="n">damage</span> <span class="n">this</span><span class="p">)</span>
+
+<span class="nf">attackClosestEnemy</span> <span class="ow">::</span> <span class="kt">Creature</span> <span class="ow">-&gt;</span> <span class="kt">GameState</span> <span class="nb">()</span>
+<span class="nf">attackClosestEnemy</span> <span class="n">this</span> <span class="ow">=</span> 
+    <span class="n">creatures</span> <span class="ow">&lt;-</span> <span class="n">getCreatures</span>
+    <span class="kr">let</span> <span class="n">nearEnemies</span> <span class="ow">=</span> <span class="n">creatures</span> <span class="o">&amp;</span> <span class="n">nearEnemy</span>
+    <span class="n">randomCreature</span> <span class="ow">&lt;-</span> <span class="n">randomPick</span> <span class="n">nearEnemies</span>
+    <span class="n">attack</span> <span class="n">this</span> <span class="n">randomCreature</span>
+</code></pre></div>
+        </div>
+    
+
+<p>All the work happens in <code>nearEnemies</code> - it goes through all creatures in the world and filters only those from different faction and in near attack range. <code>attack</code> then takes a value that is definitely a NearEnemy. I think this could be a great improvement in readability, coding speed, and safety.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Of course, by &ldquo;simpler types&rdquo; I mean that they shouldn&rsquo;t be simple in terms of implementation. Supporting things above with at compile type and with type erasure could take years of research of implementation. But it will be simpler from user perspective: there should less rules and limitations of what a user can write. For example, by C++17 standard, you <a href="https://stackoverflow.com/questions/46114214/lambda-implicit-capture-fails-with-variable-declared-from-structured-binding">are not allowed to capture structured bindings into lambdas</a>. This is a pointless limitation that was fixed in the next standard. Not allowing runtime values in types is similar too. Whatever you write, it should work as expected, like a blackboard.</p>
+<hr>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://kvachev.com/blog/tags/programming-language-theory/">programming language theory</a></li>
+      <li><a href="https://kvachev.com/blog/tags/refinement-types/">refinement types</a></li>
+      <li><a href="https://kvachev.com/blog/tags/types/">types</a></li>
+      <li><a href="https://kvachev.com/blog/tags/cx/">c(x)</a></li>
+      <li><a href="https://kvachev.com/blog/tags/fantasy/">fantasy</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://kvachev.com/blog/posts/simultaneous-turns/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Simultaneous Turns</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share We Need Simpler Types on twitter"
+        href="https://twitter.com/intent/tweet/?text=We%20Need%20Simpler%20Types&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f&amp;hashtags=programminglanguagetheory%2crefinementtypes%2ctypes%2cc%28x%29%2cfantasy">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share We Need Simpler Types on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f&amp;title=We%20Need%20Simpler%20Types&amp;summary=We%20Need%20Simpler%20Types&amp;source=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share We Need Simpler Types on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f&title=We%20Need%20Simpler%20Types">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share We Need Simpler Types on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share We Need Simpler Types on telegram"
+        href="https://telegram.me/share/url?text=We%20Need%20Simpler%20Types&amp;url=https%3a%2f%2fkvachev.com%2fblog%2fposts%2fwe-need-simpler-types%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://kvachev.com/blog">rasie1&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+
+
+<script>
+  if (window.scrollListeners) {
+    
+    for (const listener of scrollListeners) {
+      window.removeEventListener('scroll', listener)
+    }
+  }
+  window.scrollListeners = []
+</script>
+
+    <script>
+    
+    
+    (function() {
+        const enableTocScroll = '1' == '1'
+        if (!enableTocScroll) {
+        return
+        }
+        if (!document.querySelector('.toc')) {
+        console.log('no toc found, ignore toc scroll')
+        return
+        }
+        
+
+        
+        const scrollListeners = window.scrollListeners
+        const headings = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+        const activeClass = 'active';
+
+        
+        let activeHeading = headings[0];
+        getLinkByHeading(activeHeading).classList.add(activeClass);
+
+        const onScroll = () => {
+        const passedHeadings = [];
+        for (const h of headings) {
+            
+            if (getOffsetTop(h) < 5) {
+            passedHeadings.push(h)
+            } else {
+            break;
+            }
+        }
+        if (passedHeadings.length > 0) {
+            newActiveHeading = passedHeadings[passedHeadings.length - 1];
+        } else {
+            newActiveHeading = headings[0];
+        }
+        if (activeHeading != newActiveHeading) {
+            getLinkByHeading(activeHeading).classList.remove(activeClass);
+            activeHeading = newActiveHeading;
+            getLinkByHeading(activeHeading).classList.add(activeClass);
+        }
+        }
+
+        let timer = null;
+        const scrollListener = () => {
+        if (timer !== null) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(onScroll, 50)
+        }
+        window.addEventListener('scroll', scrollListener, false);
+        scrollListeners.push(scrollListener)
+
+        function getLinkByHeading(heading) {
+        const id = encodeURI(heading.getAttribute('id')).toLowerCase();
+        return document.querySelector(`.toc ul li a[href="#${id}"]`);
+        }
+
+        function getOffsetTop(heading) {
+        if (!heading.getClientRects().length) {
+            return 0;
+        }
+        let rect = heading.getBoundingClientRect();
+        return rect.top
+        }
+    })();
+    </script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+    <script>
+        function changeTab(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('[data-tabset="' + tabset + '"][id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+
+            evt.currentTarget.className += " active";
+        } 
+
+        $(function() {
+            let tabsetset = [];
+
+            document.querySelectorAll('.tablinks').forEach((el) => {
+                let attr = el.attributes['data-tabset'].value;
+                if (!tabsetset.includes(attr)) {
+                    tabsetset.push(attr);
+                    el.click();
+                }
+            })
+        });
+        function changeTabs(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('.tabcontent[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+            var elements = document.querySelectorAll('.tablinks[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].className += " active";
+            }
+        } 
+    </script>
+</body>
+
+</html>

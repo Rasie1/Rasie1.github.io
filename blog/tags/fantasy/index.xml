@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>types on rasie1&#39;s blog</title>
-    <link>https://kvachev.com/blog/tags/types/</link>
-    <description>Recent content in types on rasie1&#39;s blog</description>
+    <title>fantasy on rasie1&#39;s blog</title>
+    <link>https://kvachev.com/blog/tags/fantasy/</link>
+    <description>Recent content in fantasy on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 06 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/types/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/fantasy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>We Need Simpler Types</title>
       <link>https://kvachev.com/blog/posts/we-need-simpler-types/</link>
@@ -13,15 +13,6 @@
       
       <guid>https://kvachev.com/blog/posts/we-need-simpler-types/</guid>
       <description>&lt;p&gt;Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &amp;ndash; we are moving in the right direction&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>c(x) intro</title>
-      <link>https://kvachev.com/blog/posts/c-of-x-intro/</link>
-      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://kvachev.com/blog/posts/c-of-x-intro/</guid>
-      <description>One of articles about my old project with cool type system</description>
     </item>
     
   </channel>

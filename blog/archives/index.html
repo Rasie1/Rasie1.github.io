@@ -10,7 +10,7 @@
 <meta name="description" content="archives">
 <meta name="author" content="Vsevolod Kvachev">
 <link rel="canonical" href="https://kvachev.com/blog/archives/" />
-<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.33b7062bc729efc33bd2179f7bbd47dcc11220e827d79192cbbbe3d6010e48eb.css" integrity="sha256-M7cGK8cp78M70hefe71H3MESIOgn15GSy7vj1gEOSOs=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.c37a1fc90e510161a636790676adc7ccbaebdfcd7c141a8cc34a01508787bbfc.css" integrity="sha256-w3ofyQ5RAWGmNnkGdq3HzLrr3818FBqMw0oBUIeHu/w=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://kvachev.com/blog/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/blog/favicon-32x32.png">
@@ -193,11 +193,17 @@ if (!doNotTrack) {
   <h1>Archive</h1>
 </header>
 <div class="archive-year">
-  <h2 class="archive-year-header">2022<sup class="archive-count">&nbsp;&nbsp;3</sup>
+  <h2 class="archive-year-header">2022<sup class="archive-count">&nbsp;&nbsp;4</sup>
   </h2>
   <div class="archive-month">
-    <h3 class="archive-month-header">September<sup class="archive-count">&nbsp;&nbsp;1</sup></h3>
+    <h3 class="archive-month-header">September<sup class="archive-count">&nbsp;&nbsp;2</sup></h3>
     <div class="archive-posts">
+      <div class="archive-entry">
+        <h3 class="archive-entry-title">We Need Simpler Types
+        </h3>
+        <div class="archive-meta"><span title='2022-09-06 00:00:00 +0000 UTC'>September 6, 2022</span>&nbsp;·&nbsp;14 min&nbsp;·&nbsp;Vsevolod Kvachev</div>
+        <a class="entry-link" aria-label="post link to We Need Simpler Types" href="https://kvachev.com/blog/posts/we-need-simpler-types/"></a>
+      </div>
       <div class="archive-entry">
         <h3 class="archive-entry-title">Simultaneous Turns
         </h3>
@@ -405,6 +411,57 @@ if (!doNotTrack) {
         return rect.top
         }
     })();
+    </script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+    <script>
+        function changeTab(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('[data-tabset="' + tabset + '"][id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+
+            evt.currentTarget.className += " active";
+        } 
+
+        $(function() {
+            let tabsetset = [];
+
+            document.querySelectorAll('.tablinks').forEach((el) => {
+                let attr = el.attributes['data-tabset'].value;
+                if (!tabsetset.includes(attr)) {
+                    tabsetset.push(attr);
+                    el.click();
+                }
+            })
+        });
+        function changeTabs(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('.tabcontent[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+            var elements = document.querySelectorAll('.tablinks[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].className += " active";
+            }
+        } 
     </script>
 </body>
 
