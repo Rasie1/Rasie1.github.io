@@ -320,7 +320,6 @@
 			content: "";
 			-moz-osx-font-smoothing: grayscale;
 			-webkit-font-smoothing: antialiased;
-			font-family: FontAwesome;
 			font-style: normal;
 			font-weight: normal;
 			text-transform: none !important;
@@ -385,7 +384,6 @@
 			input[type="radio"] + label:before {
 				-moz-osx-font-smoothing: grayscale;
 				-webkit-font-smoothing: antialiased;
-				font-family: FontAwesome;
 				font-style: normal;
 				font-weight: normal;
 				text-transform: none !important;
@@ -461,7 +459,6 @@
 		.icon:before {
 			-moz-osx-font-smoothing: grayscale;
 			-webkit-font-smoothing: antialiased;
-			font-family: FontAwesome;
 			font-style: normal;
 			font-weight: normal;
 			text-transform: none !important;
@@ -520,6 +517,10 @@
 				padding: 0.675em 0.5em;
 			}
 
+				p.undertext {
+					font-size: x-small;
+				}
+
 				ul.icons li a {
 					text-decoration: none;
 					position: relative;
@@ -529,16 +530,13 @@
 					border-radius: 100%;
 					border: solid 1px #c8cccf;
 					line-height: 3.75em;
-					overflow: hidden;
 					text-align: center;
-					text-indent: 3.75em;
 					white-space: nowrap;
 				}
 
 					ul.icons li a:before {
 						-moz-osx-font-smoothing: grayscale;
 						-webkit-font-smoothing: antialiased;
-						font-family: FontAwesome;
 						font-style: normal;
 						font-weight: normal;
 						text-transform: none !important;
