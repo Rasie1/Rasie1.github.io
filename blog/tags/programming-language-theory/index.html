@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=51129&amp;path=blog/livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>programming language theory | rasie1&#39;s blog</title>
+<title>Programming Language Theory | rasie1&#39;s blog</title>
 <meta name="keywords" content="" />
 <meta name="description" content="rasie1&#39;s blog">
 <meta name="author" content="Vsevolod Kvachev">
-<link rel="canonical" href="https://kvachev.com/blog/tags/programming-language-theory/" />
-<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.c37a1fc90e510161a636790676adc7ccbaebdfcd7c141a8cc34a01508787bbfc.css" integrity="sha256-w3ofyQ5RAWGmNnkGdq3HzLrr3818FBqMw0oBUIeHu/w=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://kvachev.com/blog/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://kvachev.com/blog/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://kvachev.com/blog/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://kvachev.com/blog/apple-touch-icon.png">
-<link rel="mask-icon" href="https://kvachev.com/blog/safari-pinned-tab.svg">
+<link rel="canonical" href="http://localhost:51129/blog/tags/programming-language-theory/" />
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.9eab9faa709b2884138cb8d8408ea0cdf63c6336b92c115d157675d5c9ed8625.css" integrity="sha256-nqufqnCbKIQTjLjYQI6gzfY8Yza5LBFdFXZ11cnthiU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:51129/blog/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:51129/blog/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:51129/blog/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:51129/blog/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:51129/blog/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.92.0" />
-<link rel="alternate" type="application/rss+xml" href="https://kvachev.com/blog/tags/programming-language-theory/index.xml">
+<meta name="generator" content="Hugo 0.163.2">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:51129/blog/tags/programming-language-theory/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:51129/blog/tags/programming-language-theory/" />
 <noscript>
     <style>
         #theme-toggle,
@@ -57,24 +58,228 @@
         }
 
     </style>
-</noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P7B3CD65K7"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-P7B3CD65K7', { 'anonymize_ip': false });
+</noscript><style>
+.latticefig { margin: 1.4em 0; text-align: center; }
+.latticefig img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.latticefig-switch {
+    display: inline-flex;
+    margin-top: .5em;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    font-size: .78rem;
+    line-height: 1;
 }
-</script>
-<meta property="og:title" content="programming language theory" />
+.latticefig-switch button {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    padding: .38em .8em;
+    border: 0;
+    background: none;
+    color: var(--secondary);
+    font: inherit;
+    cursor: pointer;
+}
+.latticefig-switch button + button { border-left: 1px solid var(--border); }
+.latticefig-switch button svg { fill: currentColor; }
+.latticefig-switch button:hover { color: var(--primary); }
+.latticefig-switch button[aria-pressed="true"] {
+    background: var(--tertiary);
+    color: var(--primary);
+}
+</style>
+<style>
+.chordnamer { margin: 1.6em 0; }
+.chordnamer .cn-grid { display: flex; flex-direction: column; align-items: flex-start; }
+.chordnamer .cn-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.chordnamer .cn-cell {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; border: 0; background: none;
+    color: var(--secondary);
+    font: 600 13px/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    cursor: pointer;
+}
+.chordnamer.big .cn-cell { font-size: 15px; }
+.chordnamer .cn-cell svg { position: absolute; left: 0; top: 0; }
+.chordnamer .cn-l { position: relative; }
+
+ 
+.chordnamer .cn-cell svg > * { fill: none; stroke: var(--border); stroke-width: 1.2; }
+.chordnamer .cn-cell:hover svg > * { stroke: var(--primary); }
+.chordnamer .cn-cell:hover { color: var(--primary); }
+.chordnamer .cn-cell.on svg > * { stroke-width: 1.7; }
+.chordnamer .cn-cell.on .cn-l { color: #fff; }
+.chordnamer .cn-cell.root svg > *    { fill: #c1452f; stroke: #c1452f; }
+.chordnamer .cn-cell.third svg > *   { fill: #2f6f9f; stroke: #2f6f9f; }
+.chordnamer .cn-cell.fifth svg > *   { fill: #3d8f6d; stroke: #3d8f6d; }
+.chordnamer .cn-cell.seventh svg > * { fill: #b5762a; stroke: #b5762a; }
+.chordnamer .cn-cell.tension svg > * { fill: #7a5aa6; stroke: #7a5aa6; }
+
+ 
+.chordnamer.hex .cn-row {
+    gap: 3px;
+    margin-bottom: calc(var(--hh, 37px) * -0.25);
+    margin-left: calc(var(--i) * var(--step, 0px));
+}
+.chordnamer.hex .cn-row:last-child { margin-bottom: 4px; }
+.chordnamer.hex .cn-cell {
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+.chordnamer .cn-out { margin: .9em 0 .5em; }
+.chordnamer .cn-name {
+    font: 700 1.9rem/1.15 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    color: var(--primary);
+    display: block; width: 100%; max-width: 14em;
+    border: 0; border-bottom: 1px solid transparent; border-radius: 0;
+    background: none; padding: 0 0 .05em;
+}
+.chordnamer .cn-name:hover { border-bottom-color: var(--border); }
+.chordnamer .cn-name:focus { outline: 0; border-bottom-color: var(--secondary); }
+.chordnamer .cn-name.bad { color: #c1452f; }
+.chordnamer.big .cn-name { font-size: 2.6rem; }
+.chordnamer .cn-detail { color: var(--secondary); font-size: .85rem; margin-top: .3em; }
+.chordnamer .cn-bar { display: flex; align-items: center; gap: .7em; flex-wrap: wrap; }
+.chordnamer .cn-clear, .chordnamer .cn-add,
+.chordnamer .cn-drop, .chordnamer .cn-reset {
+    border: 1px solid var(--border); border-radius: 999px;
+    background: none; color: var(--secondary);
+    font: inherit; font-size: .78rem; padding: .38em .9em; cursor: pointer;
+}
+.chordnamer .cn-clear:hover, .chordnamer .cn-add:hover,
+.chordnamer .cn-drop:hover, .chordnamer .cn-reset:hover { color: var(--primary); }
+
+ 
+.chordnamer .cn-cell.scale svg > * {
+    fill: #cabf9f; fill-opacity: .22; stroke: #cabf9f; stroke-opacity: .85;
+}
+.chordnamer .cn-cell.scale .cn-l { color: var(--primary); }
+
+ 
+.chordnamer .cn-piano { position: relative; margin-bottom: 4px; }
+.chordnamer .cn-piano .cn-cell {
+    position: absolute; top: 0; align-items: flex-end; padding-bottom: .5em;
+    border: 1px solid var(--border); border-radius: 0 0 5px 5px;
+}
+.chordnamer .cn-piano .cn-white { background: var(--theme); z-index: 1; }
+.chordnamer .cn-piano .cn-black {
+    background: var(--secondary); color: var(--theme);
+    border-color: var(--secondary); z-index: 2; font-size: .82em;
+}
+.chordnamer .cn-piano .cn-cell.scale { background: rgba(202,191,159,.3); color: var(--primary); }
+.chordnamer .cn-piano .cn-cell.on { color: #fff; border-color: transparent; }
+.chordnamer .cn-piano .cn-cell.root    { background: #c1452f; }
+.chordnamer .cn-piano .cn-cell.third   { background: #2f6f9f; }
+.chordnamer .cn-piano .cn-cell.fifth   { background: #3d8f6d; }
+.chordnamer .cn-piano .cn-cell.seventh { background: #b5762a; }
+.chordnamer .cn-piano .cn-cell.tension { background: #7a5aa6; }
+
+.chordnamer .cn-play { font-size: .95em; padding: .4em .85em; }
+.chordnamer .cn-oct {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 2.1em; color: var(--primary);
+    font: 700 .8rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+}
+.chordnamer .cn-inst { min-width: 5.4em; }
+
+ 
+.chordnamer .cn-deg {
+    border: 0; border-left: 1px solid var(--border);
+    background: none; color: var(--secondary);
+    font: 600 .78rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    padding: .45em .5em; min-width: 2.3em; cursor: pointer;
+}
+.chordnamer .cn-deg:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer .cn-deg[aria-pressed="true"] {
+    background: #cabf9f; color: #2f2a25;
+}
+.chordnamer .cn-degs { flex-wrap: wrap; }
+.chordnamer.not12 .cn-only12 { display: none; }
+
+ 
+.chordnamer.not12 .cn-needs12 { display: none; }
+
+.chordnamer .cn-names {
+    border: 0; background: var(--theme); color: var(--primary);
+    font: 400 .8rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    padding: .45em .6em; min-width: 20em; flex: 1;
+}
+.chordnamer .cn-notes { flex: 1 1 22em; }
+.chordnamer .cn-tool button[aria-pressed="true"] {
+    background: var(--tertiary); color: var(--primary);
+}
+
+ 
+.chordnamer .cn-tools {
+    display: flex; flex-wrap: wrap; gap: .55em; margin: .2em 0 1.1em;
+}
+.chordnamer .cn-tool {
+    display: inline-flex; align-items: stretch;
+    border: 1px solid var(--border); border-radius: 999px;
+    overflow: hidden; font-size: .78rem;
+}
+.chordnamer .cn-tlabel {
+    display: inline-flex; align-items: center;
+    color: var(--secondary); padding: .4em .75em;
+    border-right: 1px solid var(--border); white-space: nowrap;
+}
+.chordnamer .cn-tool button {
+    border: 0; background: none; color: var(--secondary);
+    font: inherit; font-size: 1.05em; line-height: 1;
+    padding: .4em .8em; cursor: pointer;
+}
+.chordnamer .cn-tool button:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer .cn-tool button + button,
+.chordnamer .cn-tool select + button { border-left: 1px solid var(--border); }
+.chordnamer .cn-tool select {
+    border: 0; border-right: 1px solid var(--border);
+    background: var(--theme); color: var(--primary);
+    font: inherit; padding: .3em .35em; cursor: pointer;
+}
+
+ 
+.chordnamer .cn-tune {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; flex: none;
+}
+.chordnamer .cn-tune button {
+    flex: 1;
+    border: 0; background: none; color: var(--secondary);
+    font: 600 12px/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    cursor: pointer; padding: 0;
+}
+.chordnamer .cn-tune button + button { border-top: 1px solid var(--border); }
+.chordnamer .cn-tune button:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer.hex .cn-tune {
+    height: calc(var(--hh, 44px) * 0.75);
+    align-self: center;
+}
+</style>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-P7B3CD65K7"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-P7B3CD65K7');
+        }
+      </script><meta property="og:title" content="Programming Language Theory" />
 <meta property="og:description" content="rasie1&#39;s blog" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://kvachev.com/blog/tags/programming-language-theory/" />
+<meta property="og:url" content="http://localhost:51129/blog/tags/programming-language-theory/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="programming language theory"/>
+<meta name="twitter:title" content="Programming Language Theory"/>
 <meta name="twitter:description" content="rasie1&#39;s blog"/>
 
 </head>
@@ -94,7 +299,7 @@ if (!doNotTrack) {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://kvachev.com/blog" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
+            <a href="http://localhost:51129/blog/" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
         </div>
         <ul id="menu">
             <span class="logo-switches">
@@ -119,19 +324,21 @@ if (!doNotTrack) {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </span>
             <li>
-                <a href="https://kvachev.com/blog/archives" title="Archive">
+                <a href="http://localhost:51129/blog/archives" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
             <li>
-                <a href="https://kvachev.com/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
+                <a href="http://localhost:51129/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
                     <span>Search</span>
                 </a>
             </li>
             <li>
-                <a href="https://kvachev.com/blog/tags/" title="Tags">
+                <a href="http://localhost:51129/blog/tags/" title="Tags">
                     <span>Tags</span>
                 </a>
             </li>
@@ -139,12 +346,12 @@ if (!doNotTrack) {
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="https://kvachev.com/blog">Home</a>&nbsp;»&nbsp;<a href="https://kvachev.com/blog/tags/">Tags</a></div>
-  <h1>programming language theory</h1>
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:51129/blog/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:51129/blog/tags/">Tags</a></div>
+  <h1>Programming Language Theory</h1>
 </header>
 
 <article class="post-entry tag-entry"
-    style="padding-right:184px;background-image:url(https://kvachev.com/blog/posts/we-need-simpler-types/escher_hu09b3574f6913b9dfd643d9ebabdf8d78_339121_320x320_fill_q75_box_smart1.jpg)"> 
+    style="padding-right:184px;background-image:url(http://localhost:51129/blog/posts/we-need-simpler-types/escher_hu_180cbb39cbc4b0da.jpg)"> 
   <header class="entry-header">
     <h2>We Need Simpler Types
     </h2>
@@ -154,7 +361,7 @@ if (!doNotTrack) {
 </p>
   </section>
   <footer class="entry-footer"><span title='2022-09-06 00:00:00 +0000 UTC'>September 6, 2022</span>&nbsp;·&nbsp;14 min&nbsp;·&nbsp;Vsevolod Kvachev</footer>
-  <a class="entry-link" aria-label="post link to We Need Simpler Types" href="https://kvachev.com/blog/posts/we-need-simpler-types/"></a>
+  <a class="entry-link" aria-label="post link to We Need Simpler Types" href="http://localhost:51129/blog/posts/we-need-simpler-types/"></a>
 </article>
 
 <article class="post-entry tag-entry"> 
@@ -166,12 +373,12 @@ if (!doNotTrack) {
     <p>Design and Implementation of Programming Language with Generalized Sets, Types, and Functions as First-Class Values</p>
   </section>
   <footer class="entry-footer"><span title='2017-05-10 00:00:00 +0000 UTC'>May 10, 2017</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Vsevolod Kvachev</footer>
-  <a class="entry-link" aria-label="post link to c(x) intro" href="https://kvachev.com/blog/posts/c-of-x-intro/"></a>
+  <a class="entry-link" aria-label="post link to c(x) intro" href="http://localhost:51129/blog/posts/c-of-x-intro/"></a>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://kvachev.com/blog">rasie1&#39;s blog</a></span>
+    <span>&copy; 2026 <a href="http://localhost:51129/blog/">rasie1&#39;s blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
@@ -182,7 +389,39 @@ if (!doNotTrack) {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
         <path d="M12 6H0l6-6z" />
     </svg>
-</a>
+</a><script>
+(function () {
+    var items = document.querySelectorAll('[data-lattice], figure.latticefig');
+    if (!items.length) return;
+    var KEY = 'lattice-layout';
+
+    function apply(mode) {
+        items.forEach(function (el) {
+            var img = el.querySelector('img[data-grid]');
+            if (img) {
+                var src = img.getAttribute('data-' + mode);
+                if (src && img.getAttribute('src') !== src) img.setAttribute('src', src);
+            }
+            el.classList.toggle('hex', mode === 'hex');
+            el.querySelectorAll('.latticefig-switch button').forEach(function (b) {
+                b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+            });
+        });
+        try { localStorage.setItem(KEY, mode); } catch (e) {}
+    }
+
+    document.querySelectorAll('.latticefig-switch button').forEach(function (b) {
+        b.addEventListener('click', function () { apply(b.dataset.mode); });
+    });
+
+    var initial = 'grid';
+    try { initial = localStorage.getItem(KEY) || 'grid'; } catch (e) {}
+    var asked = new URLSearchParams(location.search).get('layout');
+    if (asked === 'hex' || asked === 'grid') initial = asked;
+    if (initial === 'hex') apply('hex');
+})();
+</script>
+
 
 <script>
     let menu = document.getElementById('menu')

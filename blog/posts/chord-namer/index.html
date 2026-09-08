@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=51129&amp;path=blog/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Chord Namer | rasie1&#39;s blog</title>
+<meta name="keywords" content="chord namer, chord identifier, microtonal, microtonality, equal temperament, 12-TET, 19-TET, 24-TET, 31-EDO, EDO, xenharmonic, isomorphic keyboard, hexagonal note layout, guitar tunings, all fourths tuning, scale highlighting, music theory tool" />
+<meta name="description" content="Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things.">
+<meta name="author" content="Vsevolod Kvachev">
+<link rel="canonical" href="http://localhost:51129/blog/posts/chord-namer/" />
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.min.9eab9faa709b2884138cb8d8408ea0cdf63c6336b92c115d157675d5c9ed8625.css" integrity="sha256-nqufqnCbKIQTjLjYQI6gzfY8Yza5LBFdFXZ11cnthiU=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/blog/assets/js/highlight.min.a94e8c2e40c25d5c2c0ce351e77c6da0890c94b2c174bf2724b4985f58ad72a1.js" integrity="sha256-qU6MLkDCXVwsDONR53xtoIkMlLLBdL8nJLSYX1itcqE="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="http://localhost:51129/blog/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:51129/blog/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:51129/blog/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:51129/blog/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:51129/blog/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.163.2">
+<link rel="alternate" hreflang="en" href="http://localhost:51129/blog/posts/chord-namer/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: #000;
+                --entry: rgb(2, 2, 2);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                --accent: #5AF;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><style>
+.latticefig { margin: 1.4em 0; text-align: center; }
+.latticefig img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.latticefig-switch {
+    display: inline-flex;
+    margin-top: .5em;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    font-size: .78rem;
+    line-height: 1;
+}
+.latticefig-switch button {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    padding: .38em .8em;
+    border: 0;
+    background: none;
+    color: var(--secondary);
+    font: inherit;
+    cursor: pointer;
+}
+.latticefig-switch button + button { border-left: 1px solid var(--border); }
+.latticefig-switch button svg { fill: currentColor; }
+.latticefig-switch button:hover { color: var(--primary); }
+.latticefig-switch button[aria-pressed="true"] {
+    background: var(--tertiary);
+    color: var(--primary);
+}
+</style>
+<style>
+.chordnamer { margin: 1.6em 0; }
+.chordnamer .cn-grid { display: flex; flex-direction: column; align-items: flex-start; }
+.chordnamer .cn-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.chordnamer .cn-cell {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; border: 0; background: none;
+    color: var(--secondary);
+    font: 600 13px/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    cursor: pointer;
+}
+.chordnamer.big .cn-cell { font-size: 15px; }
+.chordnamer .cn-cell svg { position: absolute; left: 0; top: 0; }
+.chordnamer .cn-l { position: relative; }
+
+ 
+.chordnamer .cn-cell svg > * { fill: none; stroke: var(--border); stroke-width: 1.2; }
+.chordnamer .cn-cell:hover svg > * { stroke: var(--primary); }
+.chordnamer .cn-cell:hover { color: var(--primary); }
+.chordnamer .cn-cell.on svg > * { stroke-width: 1.7; }
+.chordnamer .cn-cell.on .cn-l { color: #fff; }
+.chordnamer .cn-cell.root svg > *    { fill: #c1452f; stroke: #c1452f; }
+.chordnamer .cn-cell.third svg > *   { fill: #2f6f9f; stroke: #2f6f9f; }
+.chordnamer .cn-cell.fifth svg > *   { fill: #3d8f6d; stroke: #3d8f6d; }
+.chordnamer .cn-cell.seventh svg > * { fill: #b5762a; stroke: #b5762a; }
+.chordnamer .cn-cell.tension svg > * { fill: #7a5aa6; stroke: #7a5aa6; }
+
+ 
+.chordnamer.hex .cn-row {
+    gap: 3px;
+    margin-bottom: calc(var(--hh, 37px) * -0.25);
+    margin-left: calc(var(--i) * var(--step, 0px));
+}
+.chordnamer.hex .cn-row:last-child { margin-bottom: 4px; }
+.chordnamer.hex .cn-cell {
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+.chordnamer .cn-out { margin: .9em 0 .5em; }
+.chordnamer .cn-name {
+    font: 700 1.9rem/1.15 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    color: var(--primary);
+    display: block; width: 100%; max-width: 14em;
+    border: 0; border-bottom: 1px solid transparent; border-radius: 0;
+    background: none; padding: 0 0 .05em;
+}
+.chordnamer .cn-name:hover { border-bottom-color: var(--border); }
+.chordnamer .cn-name:focus { outline: 0; border-bottom-color: var(--secondary); }
+.chordnamer .cn-name.bad { color: #c1452f; }
+.chordnamer.big .cn-name { font-size: 2.6rem; }
+.chordnamer .cn-detail { color: var(--secondary); font-size: .85rem; margin-top: .3em; }
+.chordnamer .cn-bar { display: flex; align-items: center; gap: .7em; flex-wrap: wrap; }
+.chordnamer .cn-clear, .chordnamer .cn-add,
+.chordnamer .cn-drop, .chordnamer .cn-reset {
+    border: 1px solid var(--border); border-radius: 999px;
+    background: none; color: var(--secondary);
+    font: inherit; font-size: .78rem; padding: .38em .9em; cursor: pointer;
+}
+.chordnamer .cn-clear:hover, .chordnamer .cn-add:hover,
+.chordnamer .cn-drop:hover, .chordnamer .cn-reset:hover { color: var(--primary); }
+
+ 
+.chordnamer .cn-cell.scale svg > * {
+    fill: #cabf9f; fill-opacity: .22; stroke: #cabf9f; stroke-opacity: .85;
+}
+.chordnamer .cn-cell.scale .cn-l { color: var(--primary); }
+
+ 
+.chordnamer .cn-piano { position: relative; margin-bottom: 4px; }
+.chordnamer .cn-piano .cn-cell {
+    position: absolute; top: 0; align-items: flex-end; padding-bottom: .5em;
+    border: 1px solid var(--border); border-radius: 0 0 5px 5px;
+}
+.chordnamer .cn-piano .cn-white { background: var(--theme); z-index: 1; }
+.chordnamer .cn-piano .cn-black {
+    background: var(--secondary); color: var(--theme);
+    border-color: var(--secondary); z-index: 2; font-size: .82em;
+}
+.chordnamer .cn-piano .cn-cell.scale { background: rgba(202,191,159,.3); color: var(--primary); }
+.chordnamer .cn-piano .cn-cell.on { color: #fff; border-color: transparent; }
+.chordnamer .cn-piano .cn-cell.root    { background: #c1452f; }
+.chordnamer .cn-piano .cn-cell.third   { background: #2f6f9f; }
+.chordnamer .cn-piano .cn-cell.fifth   { background: #3d8f6d; }
+.chordnamer .cn-piano .cn-cell.seventh { background: #b5762a; }
+.chordnamer .cn-piano .cn-cell.tension { background: #7a5aa6; }
+
+.chordnamer .cn-play { font-size: .95em; padding: .4em .85em; }
+.chordnamer .cn-oct {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 2.1em; color: var(--primary);
+    font: 700 .8rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+}
+.chordnamer .cn-inst { min-width: 5.4em; }
+
+ 
+.chordnamer .cn-deg {
+    border: 0; border-left: 1px solid var(--border);
+    background: none; color: var(--secondary);
+    font: 600 .78rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    padding: .45em .5em; min-width: 2.3em; cursor: pointer;
+}
+.chordnamer .cn-deg:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer .cn-deg[aria-pressed="true"] {
+    background: #cabf9f; color: #2f2a25;
+}
+.chordnamer .cn-degs { flex-wrap: wrap; }
+.chordnamer.not12 .cn-only12 { display: none; }
+
+ 
+.chordnamer.not12 .cn-needs12 { display: none; }
+
+.chordnamer .cn-names {
+    border: 0; background: var(--theme); color: var(--primary);
+    font: 400 .8rem/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    padding: .45em .6em; min-width: 20em; flex: 1;
+}
+.chordnamer .cn-notes { flex: 1 1 22em; }
+.chordnamer .cn-tool button[aria-pressed="true"] {
+    background: var(--tertiary); color: var(--primary);
+}
+
+ 
+.chordnamer .cn-tools {
+    display: flex; flex-wrap: wrap; gap: .55em; margin: .2em 0 1.1em;
+}
+.chordnamer .cn-tool {
+    display: inline-flex; align-items: stretch;
+    border: 1px solid var(--border); border-radius: 999px;
+    overflow: hidden; font-size: .78rem;
+}
+.chordnamer .cn-tlabel {
+    display: inline-flex; align-items: center;
+    color: var(--secondary); padding: .4em .75em;
+    border-right: 1px solid var(--border); white-space: nowrap;
+}
+.chordnamer .cn-tool button {
+    border: 0; background: none; color: var(--secondary);
+    font: inherit; font-size: 1.05em; line-height: 1;
+    padding: .4em .8em; cursor: pointer;
+}
+.chordnamer .cn-tool button:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer .cn-tool button + button,
+.chordnamer .cn-tool select + button { border-left: 1px solid var(--border); }
+.chordnamer .cn-tool select {
+    border: 0; border-right: 1px solid var(--border);
+    background: var(--theme); color: var(--primary);
+    font: inherit; padding: .3em .35em; cursor: pointer;
+}
+
+ 
+.chordnamer .cn-tune {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; flex: none;
+}
+.chordnamer .cn-tune button {
+    flex: 1;
+    border: 0; background: none; color: var(--secondary);
+    font: 600 12px/1 ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+    cursor: pointer; padding: 0;
+}
+.chordnamer .cn-tune button + button { border-top: 1px solid var(--border); }
+.chordnamer .cn-tune button:hover { color: var(--primary); background: var(--tertiary); }
+.chordnamer.hex .cn-tune {
+    height: calc(var(--hh, 44px) * 0.75);
+    align-self: center;
+}
+</style>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-P7B3CD65K7"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-P7B3CD65K7');
+        }
+      </script><meta property="og:title" content="Chord Namer" />
+<meta property="og:description" content="Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:51129/blog/posts/chord-namer/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2026-09-08T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2026-09-08T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Chord Namer"/>
+<meta name="twitter:description" content="Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:51129/blog/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Chord Namer",
+      "item": "http://localhost:51129/blog/posts/chord-namer/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Chord Namer",
+  "name": "Chord Namer",
+  "description": "Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things.",
+  "keywords": [
+    "chord namer", "chord identifier", "microtonal", "microtonality", "equal temperament", "12-TET", "19-TET", "24-TET", "31-EDO", "EDO", "xenharmonic", "isomorphic keyboard", "hexagonal note layout", "guitar tunings", "all fourths tuning", "scale highlighting", "music theory tool"
+  ],
+  "articleBody": "\rClick some notes.\rinversion↓↑\rtranspose−+in scaleinvert\rchord type\rtuning\rstrings+−\rnotes↺\rscaleshow\rsound▶\roct−0+\rclear\rgrid\rhex\rpiano\r",
+  "wordCount" : "18",
+  "inLanguage": "en",
+  "datePublished": "2026-09-08T00:00:00Z",
+  "dateModified": "2026-09-08T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Vsevolod Kvachev"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:51129/blog/posts/chord-namer/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "rasie1's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:51129/blog/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:51129/blog/" accesskey="h" title="rasie1&#39;s blog (Alt + H)">rasie1&#39;s blog</a>
+        </div>
+        <ul id="menu">
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                        <circle fill="var(--code-bg)" cx="12" cy="12" r="12"/>
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle fill="var(--code-bg)" stroke="none" cx="12" cy="12" r="12"/>
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+            <li>
+                <a href="http://localhost:51129/blog/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51129/blog/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51129/blog/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Chord Namer
+    </h1>
+    <div class="post-description">
+      Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things.
+    </div>
+    <div class="post-meta"><span title='2026-09-08 00:00:00 +0000 UTC'>September 8, 2026</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Vsevolod Kvachev
+
+</div>
+  </header> 
+  <div class="post-content"><div class="chordnamer big"
+     data-big="1" data-edit="1">
+  <div class="cn-grid" aria-label="Click notes to build a chord"></div>
+  <div class="cn-out">
+    <input class="cn-name" spellcheck="false" autocomplete="off" value="—"
+           aria-label="chord name — type one to put it on the board">
+    <div class="cn-detail">Click some notes.</div>
+  </div>
+  <div class="cn-tools">
+    <span class="cn-tool">
+      <span class="cn-tlabel">inversion</span
+      ><button type="button" data-t="inv-" title="top note down an octave">↓</button
+      ><button type="button" data-t="inv+" title="bottom note up an octave">↑</button>
+    </span>
+    <span class="cn-tool">
+      <span class="cn-tlabel">transpose</span
+      ><button type="button" data-t="tr-" title="down">−</button
+      ><select class="cn-dist" aria-label="transpose distance"></select
+      ><button type="button" data-t="tr+" title="up">+</button
+      ><button type="button" class="cn-inscale" aria-pressed="false"
+        title="count the distance in scale degrees instead of steps">in scale</button
+      ><button type="button" class="cn-closest" aria-pressed="false"
+        title="land on the inversion nearest to where you already are">invert</button>
+    </span>
+    <span class="cn-tool cn-needs12">
+      <span class="cn-tlabel">chord type</span
+      ><select class="cn-type" aria-label="chord type"></select>
+    </span>
+  </div>
+  <div class="cn-tools">
+    <span class="cn-tool">
+      <span class="cn-tlabel">tuning</span><select class="cn-preset" aria-label="tuning preset"></select>
+    </span>
+    <span class="cn-tool">
+      <span class="cn-tlabel">strings</span
+      ><button type="button" class="cn-add" title="add a string a fourth below the bottom">+</button
+      ><button type="button" class="cn-drop" title="drop the bottom string">−</button>
+    </span>
+  </div>
+  <div class="cn-tools">
+    <span class="cn-tool cn-notes">
+      <span class="cn-tlabel">notes</span><input class="cn-names" spellcheck="false"
+        aria-label="note names, space separated"
+        title="space-separated names; the count is the size of the system"><button
+        type="button" class="cn-names-reset" title="back to the usual twelve">↺</button>
+    </span>
+  </div>
+  <div class="cn-tools">
+    <span class="cn-tool">
+      <span class="cn-tlabel">scale</span><select class="cn-key" aria-label="key"></select
+      ><select class="cn-scale cn-only12" aria-label="scale"></select
+      ><button type="button" class="cn-hl" aria-pressed="false"
+        title="shade the notes of this scale on the board">show</button>
+    </span>
+    <span class="cn-tool cn-degs"></span>
+  </div>
+  <div class="cn-bar">
+    <span class="cn-tool">
+      <span class="cn-tlabel">sound</span
+      ><select class="cn-inst" aria-label="instrument"></select
+      ><button type="button" class="cn-play" title="play the selected notes">▶</button>
+    </span>
+    <span class="cn-tool">
+      <span class="cn-tlabel">oct</span
+      ><button type="button" data-o="-1" title="play an octave lower">−</button
+      ><span class="cn-oct">0</span
+      ><button type="button" data-o="1" title="play an octave higher">+</button>
+    </span>
+    <button type="button" class="cn-clear">clear</button>
+    <div class="latticefig-switch cn-view" role="group" aria-label="Layout">
+      <button type="button" data-mode="grid" aria-pressed="true">
+        <svg viewBox="0 0 16 16" aria-hidden="true" width="13" height="13"><rect x="1.2" y="1.2" width="5.6" height="5.6" rx="1.2"/><rect x="9.2" y="1.2" width="5.6" height="5.6" rx="1.2"/><rect x="1.2" y="9.2" width="5.6" height="5.6" rx="1.2"/><rect x="9.2" y="9.2" width="5.6" height="5.6" rx="1.2"/></svg>
+        grid</button><button type="button" data-mode="hex" aria-pressed="false">
+        <svg viewBox="0 0 16 16" aria-hidden="true" width="13" height="13"><path d="M8 1.1 13 4v6l-5 2.9L3 10V4z"/></svg>
+        hex</button><button type="button" data-mode="piano" aria-pressed="false" class="cn-needs12">
+        <svg viewBox="0 0 16 16" aria-hidden="true" width="13" height="13"><rect x="1" y="2" width="14" height="12" rx="1.5"/><rect x="4.6" y="2" width="2" height="7" fill="#000" opacity=".55"/><rect x="9.4" y="2" width="2" height="7" fill="#000" opacity=".55"/></svg>
+        piano</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var box = document.currentScript.previousElementSibling;
+  var BIG = box.dataset.big === "1";
+  var EDIT = box.dataset.edit === "1";
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  var TWELVE_NAMES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+  var DEFAULT_STRINGS = [4, 9, 14, 19, 24, 29];   
+  var WHITE = [0, 2, 4, 5, 7, 9, 11];             
+
+  var PRESETS = [
+    ["all fourths ×6", [4, 9, 14, 19, 24, 29]],
+    ["bass ×4", [4, 9, 14, 19]],
+    ["bass ×5, low B", [-1, 4, 9, 14, 19]],
+    ["bass ×6, low B", [-1, 4, 9, 14, 19, 24]],
+    ["guitar, standard", [4, 9, 14, 19, 23, 28]],
+    ["guitar, all fourths", [4, 9, 14, 19, 24, 29]],
+    ["guitar, drop D", [2, 9, 14, 19, 23, 28]],
+    ["DADGAD", [2, 9, 14, 19, 21, 26]],
+    ["open G", [2, 7, 14, 19, 23, 26]],
+    ["math rock, FACGCE", [5, 9, 12, 19, 24, 28]],
+    ["ukulele, standard high G", [19, 12, 16, 21]],
+    ["ukulele, low G", [7, 12, 16, 21]],
+    ["ukulele, baritone DGBE", [2, 7, 11, 16]],
+    ["ukulele, D tuning ADF♯B", [9, 14, 18, 23]],
+    ["ukulele, slack key GCEG", [19, 12, 16, 19]],
+    ["ukulele bass EADG", [4, 9, 14, 19]],
+    ["all fifths", [0, 7, 14, 21, 28]],
+    ["all thirds", [0, 4, 8, 12, 16, 20]],
+    ["chromatic rows", [0, 12, 24]]
+  ];
+
+  
+  
+  var RECIPES = [
+    [[0, 4, 7], ""], [[0, 3, 7], "m"], [[0, 4, 7, 10], "7"],
+    [[0, 3, 7, 10], "m7"], [[0, 4, 7, 11], "maj7"], [[0, 7], "5"],
+    [[0, 5, 7], "sus4"], [[0, 2, 7], "sus2"], [[0, 4, 7, 9], "6"],
+    [[0, 3, 7, 9], "m6"], [[0, 3, 6], "dim"], [[0, 3, 6, 10], "m7b5"],
+    [[0, 3, 6, 9], "dim7"], [[0, 4, 8], "aug"], [[0, 3, 7, 11], "m(maj7)"],
+    [[0, 2, 4, 7], "add9"], [[0, 2, 4, 7, 10], "9"],
+    [[0, 2, 3, 7, 10], "m9"], [[0, 2, 4, 7, 11], "maj9"]
+  ];
+
+  var SCALES = [
+    ["major / ionian", [0, 2, 4, 5, 7, 9, 11]],
+    ["minor / aeolian", [0, 2, 3, 5, 7, 8, 10]],
+    ["dorian", [0, 2, 3, 5, 7, 9, 10]],
+    ["phrygian", [0, 1, 3, 5, 7, 8, 10]],
+    ["lydian", [0, 2, 4, 6, 7, 9, 11]],
+    ["mixolydian", [0, 2, 4, 5, 7, 9, 10]],
+    ["locrian", [0, 1, 3, 5, 6, 8, 10]],
+    ["harmonic minor", [0, 2, 3, 5, 7, 8, 11]],
+    ["melodic minor", [0, 2, 3, 5, 7, 9, 11]],
+    ["harmonic major", [0, 2, 4, 5, 7, 8, 11]],
+    ["phrygian dominant", [0, 1, 4, 5, 7, 8, 10]],
+    ["lydian dominant", [0, 2, 4, 6, 7, 9, 10]],
+    ["altered", [0, 1, 3, 4, 6, 8, 10]],
+    ["hungarian minor", [0, 2, 3, 6, 7, 8, 11]],
+    ["double harmonic", [0, 1, 4, 5, 7, 8, 11]],
+    ["neapolitan minor", [0, 1, 3, 5, 7, 8, 11]],
+    ["minor pentatonic", [0, 3, 5, 7, 10]],
+    ["major pentatonic", [0, 2, 4, 7, 9]],
+    ["blues", [0, 3, 5, 6, 7, 10]],
+    ["japanese / in", [0, 1, 5, 7, 8]],
+    ["hirajoshi", [0, 2, 3, 7, 8]],
+    ["whole tone", [0, 2, 4, 6, 8, 10]],
+    ["diminished, whole-half", [0, 2, 3, 5, 6, 8, 9, 11]],
+    ["diminished, half-whole", [0, 1, 3, 4, 6, 7, 9, 10]],
+    ["augmented", [0, 3, 4, 7, 8, 11]],
+    ["bebop dominant", [0, 2, 4, 5, 7, 9, 10, 11]],
+    ["chromatic", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]
+  ];
+
+  
+  var DEGREE = {
+    0: "root", 2: "9th", 3: "3rd", 4: "3rd", 5: "4th", 6: "5th",
+    7: "5th", 8: "5th", 9: "6th", 10: "7th", 11: "7th"
+  };
+
+  var CELL = BIG
+    ? { gw: 56, gh: 42, hw: 38, hh: 44, min: 4, max: 18 }
+    : { gw: 46, gh: 34, hw: 32, hh: 37, min: 4, max: 14 };
+
+  function load(key, fallback, ok) {
+    if (!EDIT) return fallback;
+    try {
+      var v = JSON.parse(localStorage.getItem("chordnamer-" + key) || "null");
+      return ok(v) ? v : fallback;
+    } catch (e) { return fallback; }
+  }
+  function store(key, v) {
+    if (!EDIT) return;
+    try { localStorage.setItem("chordnamer-" + key, JSON.stringify(v)); } catch (e) {}
+  }
+
+  var names = load("names", TWELVE_NAMES.slice(), function (v) {
+    return Array.isArray(v) && v.length >= 2 &&
+           v.every(function (n) { return typeof n === "string" && n.length; });
+  });
+  var strings = load("strings", DEFAULT_STRINGS.slice(), function (v) {
+    return Array.isArray(v) && v.length >= 2 &&
+           v.every(function (n) { return typeof n === "number"; });
+  });
+  var keyRoot = load("key", 9, function (v) { return typeof v === "number" && v >= 0; });
+  var scaleIx = load("scale", 1, function (v) {
+    return typeof v === "number" && v >= -1 && v < SCALES.length;
+  });
+  
+  var scaleSet = load("scaleset", SCALES[1][1].slice(), function (v) {
+    return Array.isArray(v) && v.every(function (n) { return typeof n === "number"; });
+  });
+  var showScale = load("highlight", false, function (v) { return typeof v === "boolean"; });
+  var dist = load("dist", 1, function (v) { return typeof v === "number" && v >= 1; });
+  var inScaleMove = load("inscale", false, function (v) { return typeof v === "boolean"; });
+  var closest = load("closest", false, function (v) { return typeof v === "boolean"; });
+  var INSTRUMENTS = [
+    ["acoustic", "guitar"],
+    ["piano", "piano"],
+    ["sine", "sine"],
+    ["saw", "saw"]
+  ];
+  
+  
+  var STRINGS = {
+    acoustic: { bright: 0.42, pick: 0.24, gain: 0.9958, tone: 0.56 }
+  };
+  var inst = load("inst", "piano", function (v) {
+    return INSTRUMENTS.some(function (o) { return o[0] === v; });
+  });
+  var octave = load("oct", 0, function (v) {
+    return typeof v === "number" && v >= -3 && v <= 3;
+  });
+  var view = load("view", "grid", function (v) {
+    return v === "grid" || v === "hex" || v === "piano";
+  });
+  if (!BIG) view = "grid";
+
+  var sel = {};
+  var avail = {};
+  var cols = 0, wasView = null, wasN = 0;
+
+  function N() { return names.length; }
+  function twelve() { return N() === 12; }
+  function pc(p) { var n = N(); return ((p % n) + n) % n; }
+  function nameOf(p) { return names[pc(p)]; }
+  function cmp(a, b) {
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i];
+    return 0;
+  }
+  function mode() {
+    if (BIG) return twelve() ? view : (view === "piano" ? "grid" : view);
+    return box.classList.contains("hex") ? "hex" : "grid";
+  }
+
+  
+  function analyse() {
+    var picked = Object.keys(sel).map(Number).sort(function (a, b) { return a - b; });
+    if (!picked.length) return { pitches: [] };
+    var classes = [];
+    picked.forEach(function (p) {
+      if (classes.indexOf(pc(p)) < 0) classes.push(pc(p));
+    });
+    var bass = pc(picked[0]);
+    classes.sort(function (x, y) { return pc(x - bass) - pc(y - bass); });
+    var best = null;
+
+    if (twelve()) {
+      classes.forEach(function (root) {
+        var have = classes.map(function (c) { return pc(c - root); });
+        RECIPES.forEach(function (rec, rank) {
+          var full = rec[0];
+          
+          for (var i = 0; i < have.length; i++) {
+            if (full.indexOf(have[i]) < 0) return;
+          }
+          var missing = full.filter(function (iv) { return have.indexOf(iv) < 0; });
+          
+          
+          
+          if (missing.length && root !== bass) return;
+          
+          
+          
+          var key = [missing.length, root === bass ? 0 : 1, rank];
+          if (!best || cmp(key, best.key) < 0) {
+            best = { key: key, root: root, name: rec[1], full: full,
+                     missing: missing, rank: rank };
+          }
+        });
+      });
+    }
+    return { pitches: picked, classes: classes, bass: bass, chord: best };
+  }
+
+  function missingText(missing) {
+    var seen = [];
+    missing.forEach(function (iv) {
+      var d = DEGREE[iv];
+      if (d && seen.indexOf(d) < 0) seen.push(d);
+    });
+    if (!seen.length) return "";
+    if (seen.length === 1) return "no " + seen[0];
+    return "no " + seen.slice(0, -1).join(", ") + " or " + seen[seen.length - 1];
+  }
+
+  function roleOf(iv) {
+    if (iv === 0) return "root";
+    if (iv === 3 || iv === 4) return "third";
+    if (iv === 6 || iv === 7 || iv === 8) return "fifth";
+    if (iv === 9 || iv === 10 || iv === 11) return "seventh";
+    return "tension";
+  }
+
+  function inScale(p) {
+    if (!showScale) return false;
+    return scaleSet.indexOf(pc(p - keyRoot)) >= 0;
+  }
+
+  function paint() {
+    var a = analyse();
+    box.querySelectorAll(".cn-cell").forEach(function (b) {
+      var p = Number(b.dataset.p);
+      b.classList.remove("on", "root", "third", "fifth", "seventh", "tension", "scale");
+      b.setAttribute("aria-pressed", sel[p] ? "true" : "false");
+      if (!sel[p]) {
+        if (inScale(p)) b.classList.add("scale");
+        return;
+      }
+      b.classList.add("on");
+      if (a.chord) {
+        b.classList.add(roleOf(pc(p - a.chord.root)));
+      } else if (twelve()) {
+        b.classList.add("tension");
+      } else {
+        
+        var ORDER = ["root", "third", "fifth", "seventh", "tension"];
+        var ix = a.classes.indexOf(pc(p));
+        b.classList.add(ORDER[Math.min(ix < 0 ? 4 : ix, 4)]);
+      }
+    });
+
+    var name = box.querySelector(".cn-name");
+    var typeSel = box.querySelector(".cn-type");
+    if (typeSel) typeSel.value = a.chord ? a.chord.rank : -1;
+    var show = function (v) {
+      name.classList.remove("bad");
+      if (document.activeElement !== name) name.value = v;
+    };
+    var detail = box.querySelector(".cn-detail");
+    var rel = a.pitches ? a.classes && a.classes.map(function (c) { return pc(c - a.bass); })
+                                                .sort(function (x, y) { return x - y; }) : [];
+    if (!a.pitches.length) {
+      show("—");
+      detail.textContent = "Click some notes.";
+      return;
+    }
+    if (a.classes.length === 1) {
+      show(names[a.classes[0]]);
+      detail.textContent = "";
+      return;
+    }
+    if (!twelve()) {
+      show(names[a.bass] + "  " + rel.join(" "));
+      detail.textContent = rel.join(" ") + " from " + names[a.bass];
+      return;
+    }
+    if (!a.chord) {
+      show("—");
+      detail.textContent = rel.join(" ") + " from " + names[a.bass];
+      return;
+    }
+    var c = a.chord;
+    var slash = c.root !== a.bass ? "/" + names[a.bass] : "";
+    show(names[c.root] + c.name + slash);
+    var recipe = c.full.map(function (iv) {
+      return c.missing.indexOf(iv) < 0 ? String(iv) : "(" + iv + ")";
+    }).join(" ");
+    var bits = [names[c.root] + " + “" + (c.name || "nothing") + "”", recipe];
+    if (c.missing.length) bits.push(missingText(c.missing));
+    if (slash) bits.push(names[a.bass] + " in the bass");
+    detail.textContent = bits.join("  ·  ");
+  }
+
+  
+  function picked() {
+    return Object.keys(sel).map(Number).sort(function (a, b) { return a - b; });
+  }
+
+  function place(p) {
+    var n = N(), d = [0, n, -n, 2 * n, -2 * n];
+    for (var i = 0; i < d.length; i++) if (avail[p + d[i]]) return p + d[i];
+    return null;
+  }
+
+  
+  function voicings(base) {
+    var n = N(), out = [], cand = base.slice().sort(function (a, b) { return a - b; });
+    for (var k = 0; k < base.length; k++) {
+      for (var sh = -2; sh <= 2; sh++) {
+        out.push(cand.map(function (q) { return q + sh * n; }));
+      }
+      cand = cand.slice(1).concat([cand[0] + n]);   
+      cand.sort(function (a, b) { return a - b; });
+    }
+    return out;
+  }
+
+  function far(a, b) {
+    if (a.length === b.length) {
+      var t = 0;
+      for (var i = 0; i < a.length; i++) t += Math.abs(a[i] - b[i]);
+      return t;
+    }
+    var m = function (x) {
+      return x.reduce(function (s2, v) { return s2 + v; }, 0) / x.length;
+    };
+    return Math.abs(m(a) - m(b)) * Math.max(a.length, b.length);
+  }
+
+  
+  function nearestVoicing(next, prev) {
+    var best = null, fits = null;
+    voicings(next).forEach(function (v) {
+      var d = far(v, prev);
+      if (!best || d < best.d) best = { d: d, v: v };
+      if (v.every(function (q) { return avail[q]; })) {
+        if (!fits || d < fits.d) fits = { d: d, v: v };
+      }
+    });
+    return (fits || best).v;
+  }
+
+  
+  
+  function apply(next, revoice) {
+    if (!next.length) return;
+    if (revoice && closest) {
+      var was = picked();
+      if (was.length) next = nearestVoicing(next, was);
+    }
+    var n = N(), shifts = [0, n, -n, 2 * n, -2 * n];
+    for (var i = 0; i < shifts.length; i++) {
+      var s = next.map(function (p) { return p + shifts[i]; });
+      if (s.every(function (p) { return avail[p]; })) {
+        sel = {};
+        s.forEach(function (p) { sel[p] = 1; });
+        paint();
+        return;
+      }
+    }
+    var out = {};
+    next.forEach(function (p) {
+      var q = place(p);
+      if (q !== null) out[q] = 1;
+    });
+    if (Object.keys(out).length) { sel = out; paint(); }
+  }
+
+  function scaleTone(p, dir) {
+    if (!scaleSet.length) return p + dir;
+    for (var k = 1; k <= N(); k++) {
+      if (scaleSet.indexOf(pc(p + dir * k - keyRoot)) >= 0) return p + dir * k;
+    }
+    return p + dir;
+  }
+
+  function transform(what) {
+    var ps = picked();
+    if (!ps.length) return;
+    var n = N();
+    if (what === "inv+") {                       
+      apply(ps.slice(1).concat([ps[0] + n]), false);
+    } else if (what === "inv-") {                
+      apply([ps[ps.length - 1] - n].concat(ps.slice(0, -1)), false);
+    } else if (what === "tr+" || what === "tr-") {
+      var d = what === "tr+" ? 1 : -1;
+      var step = inScaleMove
+        ? function (p) {
+            var q = p;
+            for (var k = 0; k < dist; k++) q = scaleTone(q, d);
+            return q;
+          }
+        : function (p) { return p + d * dist; };
+      apply(ps.map(step), true);
+    }
+  }
+
+  
+  
+  
+  var actx = null, voices = [];
+  var BASE = 130.8128;                   
+
+  function audio() {
+    if (!actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      actx = new AC();
+    }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
+  }
+
+  function freq(p) {
+    var f = BASE * Math.pow(2, p / N());
+    while (f > 2200) f /= 2;             
+    while (f < 55) f *= 2;
+    return f * Math.pow(2, octave);
+  }
+
+  
+  
+  
+  function pluck(ac, f, dur, o) {
+    var sr = ac.sampleRate;
+    var D = Math.max(2, sr / f - 0.5);       
+    var len = Math.ceil(D) + 2;
+    var line = new Float32Array(len);
+    var n0 = Math.floor(D);
+
+    
+    var exc = new Float32Array(n0), lp = 0, i;
+    for (i = 0; i < n0; i++) {
+      lp += (Math.random() * 2 - 1 - lp) * o.bright;
+      exc[i] = lp;
+    }
+    var pick = Math.max(1, Math.round(n0 * o.pick));
+    for (i = n0 - 1; i >= pick; i--) exc[i] -= exc[i - pick] * 0.7;
+    var peak = 0;
+    for (i = 0; i < n0; i++) peak = Math.max(peak, Math.abs(exc[i]));
+    if (peak > 0) for (i = 0; i < n0; i++) exc[i] /= peak;
+
+    var total = Math.ceil(sr * dur);
+    var buf = ac.createBuffer(1, total, sr);
+    var out = buf.getChannelData(0);
+    var w = 0, prev = 0;
+    for (var j = 0; j < total; j++) {
+      var rp = (w - D + len) % len;
+      var i0 = Math.floor(rp), fr = rp - i0;
+      var sm = line[i0] * (1 - fr) + line[(i0 + 1) % len] * fr;
+      var y = o.gain * (o.tone * sm + (1 - o.tone) * prev);
+      prev = sm;
+      line[w] = y + (j < n0 ? exc[j] : 0);
+      out[j] = y;
+      w = (w + 1) % len;
+    }
+    for (var k = 0; k < total; k++) {        
+      var t = k / total;
+      out[k] *= Math.min(1, (1 - t) * 5);
+    }
+    return buf;
+  }
+
+  function peaking(ac, hz, q, db) {
+    var f = ac.createBiquadFilter();
+    f.type = "peaking";
+    f.frequency.value = hz; f.Q.value = q; f.gain.value = db;
+    return f;
+  }
+
+  function chain(ac, nodes, out) {          
+    for (var i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1]);
+    nodes[nodes.length - 1].connect(out);
+    return nodes[0];
+  }
+
+  function voice(ac, p, at, dur, out) {
+    var f = freq(p);
+    if (STRINGS[inst]) {
+      
+      
+      var src = ac.createBufferSource();
+      src.buffer = pluck(ac, f, dur, STRINGS[inst]);
+      var g = ac.createGain();
+      g.gain.value = 0.9;
+      var hp = ac.createBiquadFilter();
+      hp.type = "highpass"; hp.frequency.value = 75;
+      var lo = ac.createBiquadFilter();
+      lo.type = "lowpass"; lo.frequency.value = 6500;
+      chain(ac, [src, hp, peaking(ac, 105, 1.1, 5.5),
+                 peaking(ac, 230, 1.4, 3.5),
+                 peaking(ac, 430, 1.2, 2), lo, g], out);
+      src.start(at);
+      voices.push(src);
+      return;
+    }
+    if (inst === "piano") {
+      
+      [1, 2, 3, 4.02, 5.1].forEach(function (mult, i) {
+        var o = ac.createOscillator(), gp = ac.createGain();
+        o.type = "sine";
+        o.frequency.value = f * mult;
+        var amp = [0.5, 0.26, 0.13, 0.07, 0.04][i];
+        gp.gain.setValueAtTime(0.0001, at);
+        gp.gain.exponentialRampToValueAtTime(amp, at + 0.006);
+        gp.gain.exponentialRampToValueAtTime(0.0001, at + dur * (1 - i * 0.13));
+        o.connect(gp); gp.connect(out);
+        o.start(at); o.stop(at + dur);
+        voices.push(o);
+      });
+      return;
+    }
+    
+    var pk = inst === "saw" ? 0.17 : 0.34;
+    var g2 = ac.createGain();
+    g2.gain.setValueAtTime(0.0001, at);
+    g2.gain.exponentialRampToValueAtTime(pk, at + 0.02);
+    g2.gain.setValueAtTime(pk, at + dur * 0.55);
+    g2.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    g2.connect(out);
+    var o2 = ac.createOscillator();
+    o2.type = inst === "saw" ? "sawtooth" : "sine";
+    o2.frequency.value = f;
+    if (inst === "saw") {
+      var lid = ac.createBiquadFilter();
+      lid.type = "lowpass";
+      lid.Q.value = 0.7;
+      lid.frequency.value = Math.min(f * 14, 7500);
+      o2.connect(lid); lid.connect(g2);
+    } else {
+      o2.connect(g2);
+    }
+    o2.start(at); o2.stop(at + dur);
+    voices.push(o2);
+  }
+
+  function play() {
+    var ac = audio();
+    if (!ac) return;
+    voices.forEach(function (v) { try { v.stop(); } catch (e) {} });
+    voices = [];
+    var ps = picked();
+    if (!ps.length) return;
+    var master = ac.createGain();
+    master.gain.value = 0.9 / Math.sqrt(ps.length);
+    master.connect(ac.destination);
+    var now = ac.currentTime + 0.02;
+    var spread = STRINGS[inst] ? 0.032 : 0;      
+    var dur = STRINGS[inst] ? 2.8 : (inst === "piano" ? 2.4 : 1.8);
+    ps.forEach(function (q, i) { voice(ac, q, now + i * spread, dur, master); });
+  }
+
+  
+  var FLATS = { db: 1, eb: 3, gb: 6, ab: 8, bb: 10, cb: 11, "e#": 5, "b#": 0 };
+  var ALIAS = {                       
+    "": "", "maj": "", "major": "", "M": "", "min": "m", "-": "m", "minor": "m",
+    "Δ": "maj7", "Δ7": "maj7", "M7": "maj7", "ma7": "maj7", "j7": "maj7",
+    "m7-5": "m7b5", "ø": "m7b5", "ø7": "m7b5", "°": "dim", "o": "dim",
+    "°7": "dim7", "o7": "dim7", "+": "aug", "aug5": "aug", "add2": "add9",
+    "sus": "sus4", "mmaj7": "m(maj7)", "mM7": "m(maj7)", "m6/9": "m6"
+  };
+
+  function noteIndex(t) {
+    var k = t.trim().replace(/♯/g, "#").replace(/♭/g, "b");
+    for (var i = 0; i < names.length; i++) {
+      var n = names[i].replace(/♯/g, "#").replace(/♭/g, "b");
+      if (n.toLowerCase() === k.toLowerCase()) return i;
+    }
+    if (twelve() && FLATS[k.toLowerCase()] !== undefined) return FLATS[k.toLowerCase()];
+    return null;
+  }
+
+  function recipeFor(suffix) {
+    var t = suffix.trim();
+    if (ALIAS[t] !== undefined) t = ALIAS[t];
+    for (var i = 0; i < RECIPES.length; i++) if (RECIPES[i][1] === t) return i;
+    var lower = t.toLowerCase();
+    for (var j = 0; j < RECIPES.length; j++) {
+      if (RECIPES[j][1].toLowerCase() === lower) return j;
+    }
+    return -1;
+  }
+
+  
+  function rootPitchFor(rootPc) {
+    var all = Object.keys(avail).map(Number).sort(function (a, b) { return a - b; });
+    if (!all.length) return rootPc;
+    var mid = all[Math.floor(all.length / 3)];
+    var best = null;
+    all.forEach(function (q) {
+      if (pc(q) !== rootPc) return;
+      var d = Math.abs(q - mid);
+      if (best === null || d < best.d) best = { d: d, q: q };
+    });
+    return best ? best.q : rootPc;
+  }
+
+  function readChord() {
+    var name = box.querySelector(".cn-name");
+    var text = name.value.trim().replace(/♯/g, "#").replace(/♭/g, "b");
+    if (!text || text === "—") return;
+    var bass = null, m = text.match(/^(.+)\/([^\/]+)$/);
+    if (m) { text = m[1].trim(); bass = noteIndex(m[2]); }
+    var root = null, suffix = "";
+    for (var len = Math.min(4, text.length); len >= 1; len--) {
+      var ix = noteIndex(text.slice(0, len));
+      if (ix !== null) {
+        var r = recipeFor(text.slice(len));
+        if (r >= 0) { root = ix; suffix = r; break; }
+        if (root === null) { root = ix; suffix = recipeFor(text.slice(len)); }
+      }
+    }
+    if (root === null || suffix < 0 || !twelve()) { name.classList.add("bad"); return; }
+    var rp = rootPitchFor(root);
+    var next = RECIPES[suffix][0].map(function (iv) { return rp + iv; });
+    if (bass !== null) {
+      
+      var low = next[0];
+      while (pc(low) !== bass) low -= 1;
+      next = next.filter(function (q) { return pc(q) !== bass; }).concat([low]);
+    }
+    name.classList.remove("bad");
+    apply(next.sort(function (x, y) { return x - y; }), false);
+  }
+
+  
+  
+  
+  function shape(w, h, hex) {
+    var svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    var el;
+    if (hex) {
+      var size = Math.min(h / 2, w / Math.sqrt(3)) - 1;
+      var pts = [];
+      for (var i = 0; i < 6; i++) {
+        var a = Math.PI / 180 * (60 * i - 90);
+        pts.push((w / 2 + size * Math.cos(a)).toFixed(1) + "," +
+                 (h / 2 + size * Math.sin(a)).toFixed(1));
+      }
+      el = document.createElementNS(SVGNS, "polygon");
+      el.setAttribute("points", pts.join(" "));
+    } else {
+      el = document.createElementNS(SVGNS, "rect");
+      el.setAttribute("x", 1); el.setAttribute("y", 1);
+      el.setAttribute("width", w - 2); el.setAttribute("height", h - 2);
+      el.setAttribute("rx", 6);
+    }
+    svg.appendChild(el);
+    return svg;
+  }
+
+  function cellButton(p, w, h, hex) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "cn-cell";
+    b.dataset.p = p;
+    b.style.width = w + "px";
+    b.style.height = h + "px";
+    b.setAttribute("aria-pressed", "false");
+    b.appendChild(shape(w, h, hex));
+    var lab = document.createElement("span");
+    lab.className = "cn-l";
+    lab.textContent = nameOf(p);
+    b.appendChild(lab);
+    return b;
+  }
+
+  function buildRows() {
+    var hex = mode() === "hex";
+    var w = hex ? CELL.hw : CELL.gw, h = hex ? CELL.hh : CELL.gh;
+    var grid = box.querySelector(".cn-grid");
+    for (var r = strings.length - 1; r >= 0; r--) {   
+      var row = document.createElement("div");
+      row.className = "cn-row";
+      row.style.setProperty("--i", strings.length - 1 - r);
+      if (EDIT) {
+        var tune = document.createElement("div");
+        tune.className = "cn-tune";
+        tune.dataset.r = r;
+        tune.style.width = w + "px";
+        tune.innerHTML =
+          '<button type="button" data-a="up" title="this string up a step">+</button>' +
+          '<button type="button" data-a="down" title="this string down a step">−</button>';
+        row.appendChild(tune);
+      }
+      for (var c = 0; c < cols; c++) {
+        var p = strings[r] + c;
+        row.appendChild(cellButton(p, w, h, hex));
+        avail[p] = 1;
+      }
+      grid.appendChild(row);
+    }
+  }
+
+  
+  function buildPiano() {
+    var grid = box.querySelector(".cn-grid");
+    var lo = Math.min.apply(null, strings);
+    var hi = Math.max.apply(null, strings) + 12;
+    lo = Math.floor(lo / 12) * 12;
+    var whites = [];
+    for (var p = lo; p <= hi; p++) if (WHITE.indexOf(pc(p)) >= 0) whites.push(p);
+
+    var room = (box.clientWidth || 720) - 8;
+    var kw = Math.max(22, Math.min(46, Math.floor(room / whites.length)));
+    var kh = BIG ? 150 : 118;
+
+    var wrap = document.createElement("div");
+    wrap.className = "cn-piano";
+    wrap.style.height = kh + "px";
+    wrap.style.width = (kw * whites.length) + "px";
+
+    whites.forEach(function (p, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "cn-cell cn-white";
+      b.dataset.p = p;
+      b.style.left = (i * kw) + "px";
+      b.style.width = kw + "px";
+      b.style.height = kh + "px";
+      b.setAttribute("aria-pressed", "false");
+      var lab = document.createElement("span");
+      lab.className = "cn-l";
+      lab.textContent = nameOf(p);
+      b.appendChild(lab);
+      wrap.appendChild(b);
+      avail[p] = 1;
+      
+      var q = p + 1;
+      if (q <= hi && WHITE.indexOf(pc(q)) < 0) {
+        var k = document.createElement("button");
+        k.type = "button";
+        k.className = "cn-cell cn-black";
+        k.dataset.p = q;
+        k.style.left = (i * kw + kw - kw * 0.3) + "px";
+        k.style.width = (kw * 0.6) + "px";
+        k.style.height = Math.round(kh * 0.62) + "px";
+        k.setAttribute("aria-pressed", "false");
+        var l2 = document.createElement("span");
+        l2.className = "cn-l";
+        l2.textContent = nameOf(q);
+        k.appendChild(l2);
+        wrap.appendChild(k);
+        avail[q] = 1;
+      }
+    });
+    grid.appendChild(wrap);
+  }
+
+  function build() {
+    var grid = box.querySelector(".cn-grid");
+    var keep = sel;
+    avail = {};
+    grid.textContent = "";
+    if (mode() === "piano") buildPiano(); else buildRows();
+    var live = {};
+    Object.keys(keep).forEach(function (p) { if (avail[p]) live[p] = 1; });
+    sel = live;            
+    paint();
+  }
+
+  function layout() {
+    var m = mode();
+    if (m === "piano") {
+      if (m !== wasView || N() !== wasN) { wasView = m; wasN = N(); cols = 0; build(); }
+      return;
+    }
+    var hex = m === "hex";
+    var w = hex ? CELL.hw : CELL.gw;
+    var gap = hex ? 3 : 4;
+    var step = hex ? (w + gap) / 2 : 0;
+    var avw = (box.clientWidth || 640) - (EDIT ? w + gap : 0);
+    var n = Math.floor((avw - (strings.length - 1) * step + gap) / (w + gap));
+    n = Math.max(CELL.min, Math.min(CELL.max, n));
+    if (n === cols && m === wasView && N() === wasN) return;
+    cols = n;
+    wasView = m;
+    wasN = N();
+    box.style.setProperty("--step", step + "px");
+    box.style.setProperty("--hh", (hex ? CELL.hh : CELL.gh) + "px");
+    build();
+  }
+
+  function relayout() { cols = 0; wasView = null; layout(); }
+
+  function syncFlags() {
+    box.classList.toggle("hex", mode() === "hex");
+    box.classList.toggle("piano", mode() === "piano");
+    box.classList.toggle("not12", !twelve());
+    box.querySelectorAll(".cn-view button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.mode === mode()));
+    });
+    var hl = box.querySelector(".cn-hl");
+    if (hl) hl.setAttribute("aria-pressed", String(!!showScale));
+    var isc = box.querySelector(".cn-inscale");
+    if (isc) isc.setAttribute("aria-pressed", String(!!inScaleMove));
+    var cl = box.querySelector(".cn-closest");
+    if (cl) cl.setAttribute("aria-pressed", String(!!closest));
+  }
+
+  
+  box.querySelector(".cn-grid").addEventListener("click", function (e) {
+    var t = e.target.closest(".cn-tune button");
+    if (t) {
+      var r = Number(t.parentNode.dataset.r);
+      strings[r] += t.dataset.a === "up" ? 1 : -1;
+      store("strings", strings);
+      build();
+      return;
+    }
+    var b = e.target.closest(".cn-cell");
+    if (!b) return;
+    var p = Number(b.dataset.p);
+    if (sel[p]) delete sel[p]; else sel[p] = 1;
+    paint();
+  });
+
+  box.querySelector(".cn-clear").addEventListener("click", function () {
+    sel = {};
+    paint();
+  });
+
+  var instSel = box.querySelector(".cn-inst");
+  INSTRUMENTS.forEach(function (o) {
+    var e = document.createElement("option");
+    e.value = o[0]; e.textContent = o[1];
+    instSel.appendChild(e);
+  });
+  instSel.value = inst;
+  instSel.addEventListener("change", function () {
+    inst = instSel.value; store("inst", inst);
+  });
+  box.querySelector(".cn-play").addEventListener("click", play);
+
+  var octOut = box.querySelector(".cn-oct");
+  function showOct() { octOut.textContent = (octave > 0 ? "+" : "") + octave; }
+  showOct();
+  box.querySelectorAll("button[data-o]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      octave = Math.max(-3, Math.min(3, octave + Number(b.dataset.o)));
+      store("oct", octave);
+      showOct();
+      play();
+    });
+  });
+
+  var nameIn = box.querySelector(".cn-name");
+  nameIn.addEventListener("change", readChord);
+  nameIn.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); readChord(); nameIn.blur(); }
+  });
+  nameIn.addEventListener("focus", function () { nameIn.select(); });
+
+  if (BIG) {
+    var typeSel = box.querySelector(".cn-type");
+    var none = document.createElement("option");
+    none.value = -1; none.textContent = "—";
+    typeSel.appendChild(none);
+    RECIPES.forEach(function (rec, i) {
+      var o = document.createElement("option");
+      o.value = i;
+      o.textContent = (rec[1] || "major") + "   " + rec[0].join(" ");
+      typeSel.appendChild(o);
+    });
+    typeSel.addEventListener("change", function () {
+      var ix = Number(typeSel.value);
+      if (ix < 0) return;
+      var ps = picked();
+      if (!ps.length) return;
+      var a = analyse();
+      var rootPc = a.chord ? a.chord.root : pc(ps[0]);
+      var rp = ps.filter(function (q) { return pc(q) === rootPc; })[0];
+      if (rp === undefined) rp = ps[0];
+      apply(RECIPES[ix][0].map(function (iv) { return rp + iv; }), true);
+    });
+
+    var presetSel = box.querySelector(".cn-preset");
+    PRESETS.forEach(function (p, i) {
+      var o = document.createElement("option");
+      o.value = i; o.textContent = p[0];
+      presetSel.appendChild(o);
+    });
+    presetSel.addEventListener("change", function () {
+      strings = PRESETS[Number(presetSel.value)][1].slice();
+      store("strings", strings);
+      relayout();
+    });
+
+    var keySel = box.querySelector(".cn-key");
+    var scaleSel = box.querySelector(".cn-scale");
+    var degBar = box.querySelector(".cn-degs");
+
+    function fillKeys() {
+      keySel.textContent = "";
+      names.forEach(function (n, i) {
+        var o = document.createElement("option");
+        o.value = i; o.textContent = n;
+        keySel.appendChild(o);
+      });
+      keySel.value = Math.min(keyRoot, N() - 1);
+      keyRoot = Number(keySel.value);
+    }
+
+    function fillScales() {
+      scaleSel.textContent = "";
+      var custom = document.createElement("option");
+      custom.value = -1; custom.textContent = "custom";
+      scaleSel.appendChild(custom);
+      SCALES.forEach(function (sc, i) {
+        var o = document.createElement("option");
+        o.value = i; o.textContent = sc[0];
+        scaleSel.appendChild(o);
+      });
+      scaleSel.value = scaleIx;
+    }
+
+    
+    function fillDegrees() {
+      degBar.textContent = "";
+      var lab = document.createElement("span");
+      lab.className = "cn-tlabel";
+      lab.textContent = "notes in it";
+      degBar.appendChild(lab);
+      for (var i = 0; i < N(); i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cn-deg";
+        b.dataset.pc = i;
+        b.textContent = names[i];
+        b.title = "is " + names[i] + " in the scale?";
+        degBar.appendChild(b);
+      }
+      markDegrees();
+    }
+
+    function markDegrees() {
+      degBar.querySelectorAll(".cn-deg").forEach(function (b) {
+        var on = scaleSet.indexOf(pc(Number(b.dataset.pc) - keyRoot)) >= 0;
+        b.setAttribute("aria-pressed", String(on));
+      });
+    }
+
+    
+    function detectScale() {
+      var want = scaleSet.slice().sort(function (a, b) { return a - b; });
+      var key = want.join(",");
+      for (var i = 0; i < SCALES.length; i++) {
+        if (SCALES[i][1].slice().sort(function (a, b) { return a - b; }).join(",") === key) {
+          return { ix: i, root: keyRoot };
+        }
+      }
+      if (!twelve()) return null;
+      
+      for (var r = 1; r < N(); r++) {
+        var rot = want.map(function (v) { return pc(v - r); })
+                      .sort(function (a, b) { return a - b; }).join(",");
+        for (var j = 0; j < SCALES.length; j++) {
+          if (SCALES[j][1].slice().sort(function (a, b) { return a - b; }).join(",") === rot) {
+            return { ix: j, root: pc(keyRoot + r) };
+          }
+        }
+      }
+      return null;
+    }
+
+    function nameScale() {
+      var hit = detectScale();
+      if (!hit) { scaleIx = -1; scaleSel.value = -1; store("scale", -1); return; }
+      keyRoot = hit.root;
+      scaleIx = hit.ix;
+      keySel.value = keyRoot;
+      scaleSel.value = scaleIx;
+      store("key", keyRoot);
+      store("scale", scaleIx);
+    }
+
+    function setScale(set, ix) {
+      scaleSet = set.slice().sort(function (a, b) { return a - b; });
+      scaleIx = ix;
+      store("scaleset", scaleSet);
+      store("scale", scaleIx);
+      scaleSel.value = ix;
+      markDegrees();
+      paint();
+    }
+
+    fillKeys();
+    fillScales();
+    fillDegrees();
+
+    keySel.addEventListener("change", function () {
+      keyRoot = Number(keySel.value); store("key", keyRoot); markDegrees(); paint();
+    });
+    scaleSel.addEventListener("change", function () {
+      var ix = Number(scaleSel.value);
+      if (ix >= 0) setScale(SCALES[ix][1], ix);
+    });
+    degBar.addEventListener("click", function (e) {
+      var b = e.target.closest(".cn-deg");
+      if (!b) return;
+      var step = pc(Number(b.dataset.pc) - keyRoot);
+      var next = scaleSet.slice();
+      var at = next.indexOf(step);
+      if (at >= 0) next.splice(at, 1); else next.push(step);
+      setScale(next, -1);
+      nameScale();                 
+      markDegrees();
+    });
+    box.querySelector(".cn-hl").addEventListener("click", function () {
+      showScale = !showScale; store("highlight", showScale); syncFlags(); paint();
+    });
+    box.querySelector(".cn-inscale").addEventListener("click", function () {
+      inScaleMove = !inScaleMove; store("inscale", inScaleMove); syncFlags();
+    });
+    box.querySelector(".cn-closest").addEventListener("click", function () {
+      closest = !closest; store("closest", closest); syncFlags();
+    });
+
+    var distSel = box.querySelector(".cn-dist");
+    function fillDist() {
+      distSel.textContent = "";
+      for (var i = 1; i <= N(); i++) {
+        var o = document.createElement("option");
+        o.value = i; o.textContent = i;
+        distSel.appendChild(o);
+      }
+      distSel.value = Math.min(dist, N());
+      dist = Number(distSel.value);
+    }
+    fillDist();
+    distSel.addEventListener("change", function () {
+      dist = Number(distSel.value); store("dist", dist);
+    });
+
+    box.querySelectorAll(".cn-tools").forEach(function (bar) {
+      bar.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-t]");
+        if (b) transform(b.dataset.t);
+      });
+    });
+
+    box.querySelector(".cn-add").addEventListener("click", function () {
+      strings.unshift(strings[0] - 5);
+      store("strings", strings); relayout();
+    });
+    box.querySelector(".cn-drop").addEventListener("click", function () {
+      if (strings.length > 2) { strings.shift(); store("strings", strings); relayout(); }
+    });
+
+    
+    var namesIn = box.querySelector(".cn-names");
+    namesIn.value = names.join(" ");
+    function readNames() {
+      var v = namesIn.value.split(/[\s,]+/).filter(function (s) { return s.length; });
+      if (v.length < 2) { namesIn.value = names.join(" "); return; }
+      names = v;
+      store("names", names);
+      if (!twelve() && view === "piano") view = "grid";
+      keyRoot = Math.min(keyRoot, N() - 1);
+      scaleSet = scaleSet.filter(function (v) { return v < N(); });
+      fillDist(); fillKeys(); fillDegrees();
+      syncFlags();
+      relayout();
+    }
+    namesIn.addEventListener("change", readNames);
+    namesIn.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); readNames(); }
+    });
+    box.querySelector(".cn-names-reset").addEventListener("click", function () {
+      names = TWELVE_NAMES.slice();
+      namesIn.value = names.join(" ");
+      store("names", names);
+      fillDist(); fillKeys(); fillDegrees(); syncFlags(); relayout();
+    });
+
+    box.querySelector(".cn-view").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-mode]");
+      if (!b) return;
+      view = b.dataset.mode;
+      if (view === "piano" && !twelve()) view = "grid";
+      store("view", view);
+      syncFlags();
+      relayout();
+    });
+
+    var asked = new URLSearchParams(location.search).get("layout");
+    if (asked === "hex" || asked === "grid" || asked === "piano") view = asked;
+  }
+
+  [9, 12, 16].forEach(function (p) { sel[p] = 1; });   
+
+  syncFlags();
+  layout();
+  if (window.ResizeObserver) new ResizeObserver(layout).observe(box);
+  else window.addEventListener("resize", layout);
+  if (!BIG) {
+    
+    new MutationObserver(layout).observe(box, {
+      attributes: true, attributeFilter: ["class"]
+    });
+  }
+})();
+</script>
+
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:51129/blog/tags/music-theory/">Music Theory</a></li>
+      <li><a href="http://localhost:51129/blog/tags/grids/">Grids</a></li>
+      <li><a href="http://localhost:51129/blog/tags/microtonality/">Microtonality</a></li>
+      <li><a href="http://localhost:51129/blog/tags/guitar/">Guitar</a></li>
+      <li><a href="http://localhost:51129/blog/tags/exquis/">Exquis</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:51129/blog/posts/we-need-simpler-types/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>We Need Simpler Types</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Chord Namer on twitter"
+        href="https://twitter.com/intent/tweet/?text=Chord%20Namer&amp;url=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f&amp;hashtags=musictheory%2cgrids%2cmicrotonality%2cguitar%2cexquis">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Chord Namer on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f&amp;title=Chord%20Namer&amp;summary=Chord%20Namer&amp;source=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Chord Namer on reddit"
+        href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f&title=Chord%20Namer">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Chord Namer on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Chord Namer on telegram"
+        href="https://telegram.me/share/url?text=Chord%20Namer&amp;url=http%3a%2f%2flocalhost%3a51129%2fblog%2fposts%2fchord-namer%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="http://localhost:51129/blog/">rasie1&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><script>
+(function () {
+    var items = document.querySelectorAll('[data-lattice], figure.latticefig');
+    if (!items.length) return;
+    var KEY = 'lattice-layout';
+
+    function apply(mode) {
+        items.forEach(function (el) {
+            var img = el.querySelector('img[data-grid]');
+            if (img) {
+                var src = img.getAttribute('data-' + mode);
+                if (src && img.getAttribute('src') !== src) img.setAttribute('src', src);
+            }
+            el.classList.toggle('hex', mode === 'hex');
+            el.querySelectorAll('.latticefig-switch button').forEach(function (b) {
+                b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+            });
+        });
+        try { localStorage.setItem(KEY, mode); } catch (e) {}
+    }
+
+    document.querySelectorAll('.latticefig-switch button').forEach(function (b) {
+        b.addEventListener('click', function () { apply(b.dataset.mode); });
+    });
+
+    var initial = 'grid';
+    try { initial = localStorage.getItem(KEY) || 'grid'; } catch (e) {}
+    var asked = new URLSearchParams(location.search).get('layout');
+    if (asked === 'hex' || asked === 'grid') initial = asked;
+    if (initial === 'hex') apply('hex');
+})();
+</script>
+
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+
+
+<script>
+  if (window.scrollListeners) {
+    
+    for (const listener of scrollListeners) {
+      window.removeEventListener('scroll', listener)
+    }
+  }
+  window.scrollListeners = []
+</script>
+
+    <script>
+    
+    
+    (function() {
+        const enableTocScroll = '' == '1'
+        if (!enableTocScroll) {
+        return
+        }
+        if (!document.querySelector('.toc')) {
+        console.log('no toc found, ignore toc scroll')
+        return
+        }
+        
+
+        
+        const scrollListeners = window.scrollListeners
+        const headings = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+        const activeClass = 'active';
+
+        
+        let activeHeading = headings[0];
+        getLinkByHeading(activeHeading).classList.add(activeClass);
+
+        const onScroll = () => {
+        const passedHeadings = [];
+        for (const h of headings) {
+            
+            if (getOffsetTop(h) < 5) {
+            passedHeadings.push(h)
+            } else {
+            break;
+            }
+        }
+        if (passedHeadings.length > 0) {
+            newActiveHeading = passedHeadings[passedHeadings.length - 1];
+        } else {
+            newActiveHeading = headings[0];
+        }
+        if (activeHeading != newActiveHeading) {
+            getLinkByHeading(activeHeading).classList.remove(activeClass);
+            activeHeading = newActiveHeading;
+            getLinkByHeading(activeHeading).classList.add(activeClass);
+        }
+        }
+
+        let timer = null;
+        const scrollListener = () => {
+        if (timer !== null) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(onScroll, 50)
+        }
+        window.addEventListener('scroll', scrollListener, false);
+        scrollListeners.push(scrollListener)
+
+        function getLinkByHeading(heading) {
+        const id = encodeURI(heading.getAttribute('id')).toLowerCase();
+        return document.querySelector(`.toc ul li a[href="#${id}"]`);
+        }
+
+        function getOffsetTop(heading) {
+        if (!heading.getClientRects().length) {
+            return 0;
+        }
+        let rect = heading.getBoundingClientRect();
+        return rect.top
+        }
+    })();
+    </script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+    <script>
+        function changeTab(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks[data-tabset="' + tabset + '"]');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('[data-tabset="' + tabset + '"][id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+
+            evt.currentTarget.className += " active";
+        } 
+
+        $(function() {
+            let tabsetset = [];
+
+            document.querySelectorAll('.tablinks').forEach((el) => {
+                let attr = el.attributes['data-tabset'].value;
+                if (!tabsetset.includes(attr)) {
+                    tabsetset.push(attr);
+                    el.click();
+                }
+            })
+        });
+        function changeTabs(evt, tabset, tabName) {
+            var tabcontent = document.querySelectorAll('.tabcontent');
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tablinks = document.querySelectorAll('.tablinks');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            var elements = document.querySelectorAll('.tabcontent[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].style.display = "block";
+            }
+            var elements = document.querySelectorAll('.tablinks[id=' + tabName + ']');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].className += " active";
+            }
+        } 
+    </script>
+</body>
+
+</html>

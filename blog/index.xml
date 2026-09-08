@@ -2,61 +2,71 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>rasie1&#39;s blog</title>
-    <link>https://kvachev.com/blog/</link>
+    <link>http://localhost:51129/blog/</link>
     <description>Recent content on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 06 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51129/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Chord Namer</title>
+      <link>http://localhost:51129/blog/posts/chord-namer/</link>
+      <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:51129/blog/posts/chord-namer/</guid>
+      <description>Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things.</description>
+    </item>
+    
     <item>
       <title>We Need Simpler Types</title>
-      <link>https://kvachev.com/blog/posts/we-need-simpler-types/</link>
+      <link>http://localhost:51129/blog/posts/we-need-simpler-types/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/we-need-simpler-types/</guid>
+      <guid>http://localhost:51129/blog/posts/we-need-simpler-types/</guid>
       <description>&lt;p&gt;Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &amp;ndash; we are moving in the right direction&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Simultaneous Turns</title>
-      <link>https://kvachev.com/blog/posts/simultaneous-turns/</link>
+      <link>http://localhost:51129/blog/posts/simultaneous-turns/</link>
       <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/simultaneous-turns/</guid>
+      <guid>http://localhost:51129/blog/posts/simultaneous-turns/</guid>
       <description>&lt;p&gt;Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Triangle Grids</title>
-      <link>https://kvachev.com/blog/posts/triangular-grid/</link>
+      <link>http://localhost:51129/blog/posts/triangular-grid/</link>
       <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/triangular-grid/</guid>
+      <guid>http://localhost:51129/blog/posts/triangular-grid/</guid>
       <description>&lt;p&gt;Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&amp;rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Fog for Top-Down Games</title>
-      <link>https://kvachev.com/blog/posts/fog-for-topdown-games/</link>
+      <link>http://localhost:51129/blog/posts/fog-for-topdown-games/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/fog-for-topdown-games/</guid>
+      <guid>http://localhost:51129/blog/posts/fog-for-topdown-games/</guid>
       <description>&lt;p&gt;This fog looks almost like volumetrics but takes almost no time to render&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>GRPC with Unreal Engine</title>
-      <link>https://kvachev.com/blog/posts/grpc-with-unreal-engine/</link>
+      <link>http://localhost:51129/blog/posts/grpc-with-unreal-engine/</link>
       <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/grpc-with-unreal-engine/</guid>
+      <guid>http://localhost:51129/blog/posts/grpc-with-unreal-engine/</guid>
       <description>&lt;p&gt;&lt;em&gt;There was some unsolved issues in my old Medium article, dozens of people viewed it every day and tried to use it nevetheless, so I deleted it. Now there are no issues, and it&amp;rsquo;s possible to link and flawlessly use protobuf without restrictions&lt;/em&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>c(x) intro</title>
-      <link>https://kvachev.com/blog/posts/c-of-x-intro/</link>
+      <link>http://localhost:51129/blog/posts/c-of-x-intro/</link>
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://kvachev.com/blog/posts/c-of-x-intro/</guid>
+      <guid>http://localhost:51129/blog/posts/c-of-x-intro/</guid>
       <description>One of articles about my old project with cool type system</description>
     </item>
     
