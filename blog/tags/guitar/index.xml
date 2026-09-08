@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Guitar on rasie1&#39;s blog</title>
-    <link>http://localhost:51612/blog/tags/guitar/</link>
+    <link>https://kvachev.com/blog/tags/guitar/</link>
     <description>Recent content in Guitar on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51612/blog/tags/guitar/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/guitar/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Chord Namer</title>
-      <link>http://localhost:51612/blog/posts/chord-namer/</link>
+      <link>https://kvachev.com/blog/posts/chord-namer/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51612/blog/posts/chord-namer/</guid>
+      <guid>https://kvachev.com/blog/posts/chord-namer/</guid>
       <description>Here is a simple chord visualization tool to quickly find chords using instruments based on different kinds of grids. Select tuning, tonal system, scale, grid type, and other things.</description>
     </item>
     

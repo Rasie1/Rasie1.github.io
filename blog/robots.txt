@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: http://localhost:51612/blog/sitemap.xml
+Sitemap: https://kvachev.com/blog/sitemap.xml

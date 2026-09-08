@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Fantasy on rasie1&#39;s blog</title>
-    <link>http://localhost:51612/blog/tags/fantasy/</link>
+    <link>https://kvachev.com/blog/tags/fantasy/</link>
     <description>Recent content in Fantasy on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 06 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51612/blog/tags/fantasy/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kvachev.com/blog/tags/fantasy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>We Need Simpler Types</title>
-      <link>http://localhost:51612/blog/posts/we-need-simpler-types/</link>
+      <link>https://kvachev.com/blog/posts/we-need-simpler-types/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51612/blog/posts/we-need-simpler-types/</guid>
+      <guid>https://kvachev.com/blog/posts/we-need-simpler-types/</guid>
       <description>&lt;p&gt;Dependent types, refinement types, gradual types, rank-n polymorphism, etc, &amp;ndash; we are moving in the right direction&lt;/p&gt;</description>
     </item>
     
