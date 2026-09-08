@@ -2,206 +2,206 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on rasie1&#39;s blog</title>
-    <link>http://localhost:51129/blog/tags/</link>
+    <link>http://localhost:51612/blog/tags/</link>
     <description>Recent content in Tags on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51129/blog/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51612/blog/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Exquis</title>
-      <link>http://localhost:51129/blog/tags/exquis/</link>
+      <link>http://localhost:51612/blog/tags/exquis/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/exquis/</guid>
+      <guid>http://localhost:51612/blog/tags/exquis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Grids</title>
-      <link>http://localhost:51129/blog/tags/grids/</link>
+      <link>http://localhost:51612/blog/tags/grids/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/grids/</guid>
+      <guid>http://localhost:51612/blog/tags/grids/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Guitar</title>
-      <link>http://localhost:51129/blog/tags/guitar/</link>
+      <link>http://localhost:51612/blog/tags/guitar/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/guitar/</guid>
+      <guid>http://localhost:51612/blog/tags/guitar/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Microtonality</title>
-      <link>http://localhost:51129/blog/tags/microtonality/</link>
+      <link>http://localhost:51612/blog/tags/microtonality/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/microtonality/</guid>
+      <guid>http://localhost:51612/blog/tags/microtonality/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Music Theory</title>
-      <link>http://localhost:51129/blog/tags/music-theory/</link>
+      <link>http://localhost:51612/blog/tags/music-theory/</link>
       <pubDate>Tue, 08 Sep 2026 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/music-theory/</guid>
+      <guid>http://localhost:51612/blog/tags/music-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C(x)</title>
-      <link>http://localhost:51129/blog/tags/cx/</link>
+      <link>http://localhost:51612/blog/tags/cx/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/cx/</guid>
+      <guid>http://localhost:51612/blog/tags/cx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fantasy</title>
-      <link>http://localhost:51129/blog/tags/fantasy/</link>
+      <link>http://localhost:51612/blog/tags/fantasy/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/fantasy/</guid>
+      <guid>http://localhost:51612/blog/tags/fantasy/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Programming Language Theory</title>
-      <link>http://localhost:51129/blog/tags/programming-language-theory/</link>
+      <link>http://localhost:51612/blog/tags/programming-language-theory/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/programming-language-theory/</guid>
+      <guid>http://localhost:51612/blog/tags/programming-language-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Refinement Types</title>
-      <link>http://localhost:51129/blog/tags/refinement-types/</link>
+      <link>http://localhost:51612/blog/tags/refinement-types/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/refinement-types/</guid>
+      <guid>http://localhost:51612/blog/tags/refinement-types/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Types</title>
-      <link>http://localhost:51129/blog/tags/types/</link>
+      <link>http://localhost:51612/blog/tags/types/</link>
       <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/types/</guid>
+      <guid>http://localhost:51612/blog/tags/types/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Game Design</title>
-      <link>http://localhost:51129/blog/tags/game-design/</link>
+      <link>http://localhost:51612/blog/tags/game-design/</link>
       <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/game-design/</guid>
+      <guid>http://localhost:51612/blog/tags/game-design/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tactics</title>
-      <link>http://localhost:51129/blog/tags/tactics/</link>
+      <link>http://localhost:51612/blog/tags/tactics/</link>
       <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/tactics/</guid>
+      <guid>http://localhost:51612/blog/tags/tactics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Turn-Based</title>
-      <link>http://localhost:51129/blog/tags/turn-based/</link>
+      <link>http://localhost:51612/blog/tags/turn-based/</link>
       <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/turn-based/</guid>
+      <guid>http://localhost:51612/blog/tags/turn-based/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fog</title>
-      <link>http://localhost:51129/blog/tags/fog/</link>
+      <link>http://localhost:51612/blog/tags/fog/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/fog/</guid>
+      <guid>http://localhost:51612/blog/tags/fog/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tech Art</title>
-      <link>http://localhost:51129/blog/tags/tech-art/</link>
+      <link>http://localhost:51612/blog/tags/tech-art/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/tech-art/</guid>
+      <guid>http://localhost:51612/blog/tags/tech-art/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tutorial</title>
-      <link>http://localhost:51129/blog/tags/tutorial/</link>
+      <link>http://localhost:51612/blog/tags/tutorial/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/tutorial/</guid>
+      <guid>http://localhost:51612/blog/tags/tutorial/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Unreal Engine</title>
-      <link>http://localhost:51129/blog/tags/unreal-engine/</link>
+      <link>http://localhost:51612/blog/tags/unreal-engine/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/unreal-engine/</guid>
+      <guid>http://localhost:51612/blog/tags/unreal-engine/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Vfx</title>
-      <link>http://localhost:51129/blog/tags/vfx/</link>
+      <link>http://localhost:51612/blog/tags/vfx/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/vfx/</guid>
+      <guid>http://localhost:51612/blog/tags/vfx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Boilerplate</title>
-      <link>http://localhost:51129/blog/tags/boilerplate/</link>
+      <link>http://localhost:51612/blog/tags/boilerplate/</link>
       <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/boilerplate/</guid>
+      <guid>http://localhost:51612/blog/tags/boilerplate/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Grpc</title>
-      <link>http://localhost:51129/blog/tags/grpc/</link>
+      <link>http://localhost:51612/blog/tags/grpc/</link>
       <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/grpc/</guid>
+      <guid>http://localhost:51612/blog/tags/grpc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Protobuf</title>
-      <link>http://localhost:51129/blog/tags/protobuf/</link>
+      <link>http://localhost:51612/blog/tags/protobuf/</link>
       <pubDate>Fri, 12 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/protobuf/</guid>
+      <guid>http://localhost:51612/blog/tags/protobuf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fp</title>
-      <link>http://localhost:51129/blog/tags/fp/</link>
+      <link>http://localhost:51612/blog/tags/fp/</link>
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/tags/fp/</guid>
+      <guid>http://localhost:51612/blog/tags/fp/</guid>
       <description></description>
     </item>
     

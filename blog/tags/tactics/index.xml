@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tactics on rasie1&#39;s blog</title>
-    <link>http://localhost:51129/blog/tags/tactics/</link>
+    <link>http://localhost:51612/blog/tags/tactics/</link>
     <description>Recent content in Tactics on rasie1&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 03 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51129/blog/tags/tactics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:51612/blog/tags/tactics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Simultaneous Turns</title>
-      <link>http://localhost:51129/blog/posts/simultaneous-turns/</link>
+      <link>http://localhost:51612/blog/posts/simultaneous-turns/</link>
       <pubDate>Sat, 03 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/posts/simultaneous-turns/</guid>
+      <guid>http://localhost:51612/blog/posts/simultaneous-turns/</guid>
       <description>&lt;p&gt;Simultaneous turns are useful for providing balanced parallel turn-based gameplay, but they will also provide you with a lot of design challenges&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Triangle Grids</title>
-      <link>http://localhost:51129/blog/posts/triangular-grid/</link>
+      <link>http://localhost:51612/blog/posts/triangular-grid/</link>
       <pubDate>Thu, 07 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:51129/blog/posts/triangular-grid/</guid>
+      <guid>http://localhost:51612/blog/posts/triangular-grid/</guid>
       <description>&lt;p&gt;Grids are great for tactical gameplay of turn-based games because they allow discrete movement steps. That means that you can bind positioning to other resources such as movement points, action points, food, etc. Grids divide the infinite variety of movement options into a few specific ones, which can be considered separately by the player&amp;rsquo;s tactical mind. The most popular grid types are hexes and squares. But what about triangles?&lt;/p&gt;</description>
     </item>
     

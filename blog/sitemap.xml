@@ -2,106 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:51129/blog/posts/chord-namer/</loc>
+    <loc>http://localhost:51612/blog/posts/chord-namer/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/exquis/</loc>
+    <loc>http://localhost:51612/blog/tags/exquis/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/grids/</loc>
+    <loc>http://localhost:51612/blog/tags/grids/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/guitar/</loc>
+    <loc>http://localhost:51612/blog/tags/guitar/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/microtonality/</loc>
+    <loc>http://localhost:51612/blog/tags/microtonality/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/music-theory/</loc>
+    <loc>http://localhost:51612/blog/tags/music-theory/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/</loc>
+    <loc>http://localhost:51612/blog/posts/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/</loc>
+    <loc>http://localhost:51612/blog/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/</loc>
+    <loc>http://localhost:51612/blog/tags/</loc>
     <lastmod>2026-09-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/cx/</loc>
+    <loc>http://localhost:51612/blog/tags/cx/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/fantasy/</loc>
+    <loc>http://localhost:51612/blog/tags/fantasy/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/programming-language-theory/</loc>
+    <loc>http://localhost:51612/blog/tags/programming-language-theory/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/refinement-types/</loc>
+    <loc>http://localhost:51612/blog/tags/refinement-types/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/types/</loc>
+    <loc>http://localhost:51612/blog/tags/types/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/we-need-simpler-types/</loc>
+    <loc>http://localhost:51612/blog/posts/we-need-simpler-types/</loc>
     <lastmod>2022-09-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/game-design/</loc>
+    <loc>http://localhost:51612/blog/tags/game-design/</loc>
     <lastmod>2022-09-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/simultaneous-turns/</loc>
+    <loc>http://localhost:51612/blog/posts/simultaneous-turns/</loc>
     <lastmod>2022-09-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/tactics/</loc>
+    <loc>http://localhost:51612/blog/tags/tactics/</loc>
     <lastmod>2022-09-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/turn-based/</loc>
+    <loc>http://localhost:51612/blog/tags/turn-based/</loc>
     <lastmod>2022-09-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/triangular-grid/</loc>
+    <loc>http://localhost:51612/blog/posts/triangular-grid/</loc>
     <lastmod>2022-07-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/fog/</loc>
+    <loc>http://localhost:51612/blog/tags/fog/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/fog-for-topdown-games/</loc>
+    <loc>http://localhost:51612/blog/posts/fog-for-topdown-games/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/tech-art/</loc>
+    <loc>http://localhost:51612/blog/tags/tech-art/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/tutorial/</loc>
+    <loc>http://localhost:51612/blog/tags/tutorial/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/unreal-engine/</loc>
+    <loc>http://localhost:51612/blog/tags/unreal-engine/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/vfx/</loc>
+    <loc>http://localhost:51612/blog/tags/vfx/</loc>
     <lastmod>2022-07-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/boilerplate/</loc>
+    <loc>http://localhost:51612/blog/tags/boilerplate/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/grpc/</loc>
+    <loc>http://localhost:51612/blog/tags/grpc/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/grpc-with-unreal-engine/</loc>
+    <loc>http://localhost:51612/blog/posts/grpc-with-unreal-engine/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/protobuf/</loc>
+    <loc>http://localhost:51612/blog/tags/protobuf/</loc>
     <lastmod>2021-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/posts/c-of-x-intro/</loc>
+    <loc>http://localhost:51612/blog/posts/c-of-x-intro/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/tags/fp/</loc>
+    <loc>http://localhost:51612/blog/tags/fp/</loc>
     <lastmod>2017-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:51129/blog/archives/</loc>
+    <loc>http://localhost:51612/blog/archives/</loc>
   </url><url>
-    <loc>http://localhost:51129/blog/search/</loc>
+    <loc>http://localhost:51612/blog/search/</loc>
   </url><url>
-    <loc>http://localhost:51129/blog/series/</loc>
+    <loc>http://localhost:51612/blog/series/</loc>
   </url>
 </urlset>
