@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TEMPORAL ARRAY">
+  <!-- One ring, four onsets, the playhead white. Nothing else survives 16px. -->
+  <rect width="64" height="64" fill="#0d0922"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#8f6fff" stroke-opacity="0.67" stroke-width="2"/>
+  <g fill="#8f6fff">
+    <circle cx="51" cy="32" r="3.2"/>
+    <circle cx="32" cy="51" r="3.2"/>
+    <circle cx="13" cy="32" r="3.2"/>
+  </g>
+  <circle cx="32" cy="13" r="4.6" fill="#ffffff"/>
+</svg>
