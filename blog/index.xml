@@ -13,10 +13,11 @@
       <pubDate>Sat, 26 Sep 2026 00:00:00 +0000</pubDate>
       
       <guid>https://kvachev.com/blog/posts/euclidean-sequencers/</guid>
-      <description>&lt;p&gt;I just released my first VST plugin! I&amp;rsquo;ve been polishing it on music jams for about an year. In this post I&amp;rsquo;ll tell some bits about euclidean drums and why I made this at all.&lt;/p&gt;
+      <description>&lt;p&gt;I just released my first VST plugin! I&amp;rsquo;ve been polishing it on music jams for about an year. In this post I&amp;rsquo;ll tell some bits about euclidean drums and why I made this at all. And write a little bit of guidelines on it&amp;rsquo;s features.&lt;/p&gt;
+&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
 &lt;p&gt;As a progmetal guitar-synth player, I have a crazy pedalboard with tons of effects:&lt;/p&gt;
 &lt;p&gt;
-&lt;img loading=&#34;lazy&#34; src=&#34;images/pedalboard.jpg&#34; alt=&#34;&#34;  /&gt;&lt;/p&gt;
+&lt;img loading=&#34;lazy&#34; src=&#34;https://kvachev.com/blog/posts/euclidean-sequencers/pedalboard.jpg&#34; type=&#34;&#34; alt=&#34;&#34;  /&gt;&lt;/p&gt;
 &lt;p&gt;OF COURSE that thing needed a drum module. Sometimes I do drums on synth jams, and I want to be able to play guitar or Exquis at the same time as switching drums and adding fills. Of course, the result is much better when you&amp;rsquo;re a dedicated drummer with full attention, but sometimes the drummer is away, or someone puts you in charge. Anyway, it&amp;rsquo;s a lot of fun to play harmonic instrument and switch drum pattern with odd number accents and also play that on your instrument.&lt;/p&gt;</description>
     </item>
     
